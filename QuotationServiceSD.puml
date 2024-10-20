@@ -1,0 +1,66 @@
+@startuml
+  participant Console as Console
+  participant Server as Server
+  collections DropOffLocations as DropOffLocations
+  participant MapService as MapService
+  collections Users as Users
+  participant User as "u: User"
+  collections Quotations as Quotations
+
+  activate Console
+  Console -> Server ++ : getDefaultOriginLocation(userID)
+  Server -> Users ++: findUser(userID)
+  Users --> Server --: User u
+  Server -> User ++: getDefaultOriginLocation()
+  User --> Server --: defaultOriginLocation
+  Server --> Console -- : defaultOriginLocation
+
+  group select a different origin location
+    alt select a drop off location 
+      Console -> Server ++: getDropOffLocations()
+      Server -> DropOffLocations ++ : getAll()
+      DropOffLocations --> Server -- : allDropOffLocations[ ]
+      Server --> Console -- : allDropOffLocations[ ]
+    else select your home address
+      Console -> Server ++: getAddress(userID)
+      Server -> Users ++: findUser(userID)
+      Users --> Server -- : User u
+      Server -> User ++: getAddress()
+      User --> Server --: address
+      Server --> Console --: address
+    else enter a new address
+      Console -> Console: enterNewAddressDetails(details)
+    end
+  end
+
+  Console -> Server ++ : createNewQuote(userID, packageInfo, origin, destination)
+  Server -> Users ++: findUser(userID)
+  Users --> Server -- : User u
+  Server -> MapService ++ : getDistance(origin, destination)
+  MapService --> Server -- : distance: float
+  Server -> Quotation as "q: Quotation" ** : create(origin, destination, distance, packageInfo, addOns)
+  Server -> User ++: addQuotation(quotation)
+  User -> Quotations --: push(quotation)
+  Server --> Console -- : Quotation q
+
+  group update quotation parameters
+    loop
+      Console -> Server ++: update(userID, quotationID, paramValuePairs[])
+      Server -> Users ++: findUser(userID)
+      Users --> Server -- : User u
+      Server -> Quotations ++: findQuotation(quotationID)
+      Quotations --> Server -- :Quotation q
+      Server --> Quotation :update(param, value)
+      Server --> Console -- : Quotation q
+    end
+  end
+
+group discard quotation
+  Console -> Server ++ : deleteQuotation(quotationID)
+  Server -> Quotation !!: delete
+  Server --> Console -- : successfullyDeletedMessage
+end
+
+  deactivate Console
+
+@enduml

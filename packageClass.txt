@@ -1,0 +1,15 @@
+class Package {
+  TrackingID ID;
+  Location origin;
+  Location destination;
+  Location currentLocation;
+  LocationHistory history;
+
+  Package (TrackingID ID, Location origin, Location destination){
+    this.ID = ID;
+    this.origin = origin;
+    this.destination = destination;
+    this.currentLocation = origin;
+    this.LocationHistory = new LocationHistory(origin, destination);
+  }
+}
