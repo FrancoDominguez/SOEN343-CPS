@@ -1,0 +1,97 @@
+@startuml
+actor Customer as Sender
+participant Console
+participant Server
+participant Users
+collections User
+participant "u:User"
+
+participant DeliveryServices
+collections DeliveryService
+participant "ds:DeliveryService"
+participant Quotations
+collections Quotation
+participant "q:Quotation"
+participant PaymentGatewayStripeAPI
+...
+Sender -> Console: identifyService(user, deliveryRequestID)
+Console -> Server: findService(user, deliveryRequestID)
+activate Server
+Server -> Users: getUser(user)
+activate Users
+Users -> User: find(user)
+activate User
+User --> Users: u
+deactivate User
+Users -> "u:User" : getUserId()
+activate "u:User"
+"u:User" --> Users : userId
+deactivate "u:User"
+Users --> Server : userId
+deactivate Users
+Server -> DeliveryServices: findDeliveryRequestDetails(deliveryRequestID)
+activate DeliveryServices
+DeliveryServices -> DeliveryService: findDelivery(deliveryRequestID)
+activate DeliveryService
+DeliveryService --> DeliveryServices : ds
+deactivate DeliveryService
+DeliveryServices --> Server : ds
+deactivate DeliveryServices
+
+Server -> Quotations: getQuotation(ds)
+activate Quotations
+Quotations -> Quotation: find(ds)
+activate Quotation
+Quotation --> Quotations: q
+deactivate Quotation
+Quotations -> "q:Quotation": getTotalCost()
+activate "q:Quotation"
+"q:Quotation" --> Quotations: totalCost
+deactivate "q:Quotation"
+Quotations --> Server: totalCost
+deactivate Quotations
+deactivate Server
+...
+
+Sender -> Console: checkout()
+Console -> Server: createPaymentSession()
+activate Server
+Server -> PaymentGatewayStripeAPI: createPaymentIntent(userId, ds, totalCost)
+activate PaymentGatewayStripeAPI
+PaymentGatewayStripeAPI --> Server: payment session created
+
+Console -> Sender: enter payment card information
+Sender -> Console: confirmPayment(address, cardDetails)
+Console -> Server: makePayment(address, cardDetails)
+
+Server -> PaymentGatewayStripeAPI: validatePaymentDetails(address, cardDetails)
+PaymentGatewayStripeAPI --> Server: payment details validated
+
+Server -> PaymentGatewayStripeAPI: authorizePayment(address, cardDetails)
+PaymentGatewayStripeAPI --> Server: payment authorized
+
+Server -> PaymentGatewayStripeAPI: capturePayment(address, cardDetails)
+PaymentGatewayStripeAPI --> Server: payment processed
+
+deactivate PaymentGatewayStripeAPI
+Server --> Console: payment confirmation
+deactivate Server
+Console --> Sender: send payment confirmation message
+
+...
+
+Server -> DeliveryService: updateDeliveryStatus(deliveryRequestID, "Paid")
+activate Server
+activate DeliveryService
+
+DeliveryService -> DeliveryService: idTracking := generateTrackingID()
+DeliveryService -> DeliveryService: confirmCode := generateConfirmCode()
+DeliveryService -> "ds:DeliveryService": setStatus("Paid")
+DeliveryService --> Server: ds
+deactivate DeliveryService
+Server -> Console: invoiceWithTrackingID
+deactivate Server
+Console -> Sender: send invoiceWithTrackingID
+
+deactivate DeliveryService
+@enduml
