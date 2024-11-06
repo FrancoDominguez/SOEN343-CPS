@@ -150,7 +150,14 @@ export default function OrderForm() {
               />
               <TextField
                 id="postalcode"
-                label="PostalCode"
+                label="Postal Code"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+              />
+              <TextField
+                id="streetaddress"
+                label="Street Address"
                 variant="outlined"
                 fullWidth
                 margin="normal"
