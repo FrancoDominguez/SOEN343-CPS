@@ -25,5 +25,5 @@ dist-ssr
 
 # Custom
 .*env
-target
-dependency-reduced-pom.xml
+backend/target/
+backend/dependency-reduced-pom.xml
