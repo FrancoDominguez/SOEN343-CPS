@@ -1,4 +1,4 @@
-package models;
+package cps.models;
 
 public class Package {
 

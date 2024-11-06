@@ -1,4 +1,4 @@
-package models;
+package cps.models;
 
 import java.sql.*;
 import io.github.cdimascio.dotenv.Dotenv;
