@@ -14,8 +14,19 @@
 
 https://www.oracle.com/ca-en/java/technologies/downloads/
 
+# Running the App
+
 ### Run the Frontend
 
-1. `cd frontend`
-2. `npm i`
-3. `npm run dev`
+note: vite works better on cmd rather than wsl
+
+1. Navigate to the frontend directory `cd frontend`
+2. Install dependencies `npm i`
+3. Run the app `npm run dev`
+
+### Compile and run the backend
+
+1. Install maven
+2. Stay on the root directory
+3. run `mvn -f backend/pom.xml clean package` to compile and install dependencies
+4. run `java -jar path/to/your/project/target/your-app.jar` to run the code
