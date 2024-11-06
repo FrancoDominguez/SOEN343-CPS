@@ -13,3 +13,9 @@
 ### Install Springboot
 
 https://www.oracle.com/ca-en/java/technologies/downloads/
+
+### Run the Frontend
+
+1. `cd frontend`
+2. `npm i`
+3. `npm run dev`

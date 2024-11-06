@@ -1,4 +1,4 @@
-@startuml
+@startuml paymentDelivery
 actor Customer as Sender
 participant Console
 participant Server
