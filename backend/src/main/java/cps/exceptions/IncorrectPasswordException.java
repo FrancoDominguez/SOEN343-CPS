@@ -1,4 +1,4 @@
-package exceptions;
+package cps.exceptions;
 
 public class IncorrectPasswordException extends Exception {
   public IncorrectPasswordException(String message) {
