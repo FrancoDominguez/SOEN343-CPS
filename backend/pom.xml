@@ -11,7 +11,7 @@
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
-      <version>8.0.33</version> <!-- Update to latest version if needed -->
+      <version>8.0.33</version>
     </dependency>
 
     <dependency>
@@ -30,6 +30,7 @@
         <configuration>
           <source>1.8</source>
           <target>1.8</target>
+          <createDependencyReducedPom>false</createDependencyReducedPom>
         </configuration>
       </plugin>
       <plugin>
