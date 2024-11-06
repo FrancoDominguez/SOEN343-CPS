@@ -4,24 +4,29 @@ import java.sql.*;
 import io.github.cdimascio.dotenv.Dotenv;
 
 public class Mysqlcon {
-  public void connect() {
+  String url;
+  String user;
+  String password;
+
+  public Mysqlcon() {
+    Dotenv dotenv = Dotenv.load();
+    String endpoint = dotenv.get("AWS_MYSQL_ENDPOINT");
+    String port = dotenv.get("AWS_MYSQL_PORT");
+    String dbName = dotenv.get("AWS_MYSQL_DB_NAME");
+    this.url = "jdbc:mysql://" + endpoint + ":" + port + "/" + dbName;
+    this.user = dotenv.get("AWS_MYSQL_USER");
+    this.password = dotenv.get("AWS_MYSQL_PASSWORD");
+  }
+
+  public void executeQuery(String query) {
     try {
-      Dotenv dotenv = Dotenv.load();
-      String endpoint = dotenv.get("AWS_MYSQL_ENDPOINT");
-      String port = dotenv.get("AWS_MYSQL_PORT");
-      String dbName = dotenv.get("AWS_MYSQL_DB_NAME");
-      String url = "jdbc:mysql://" + endpoint + ":" + port + "/" + dbName;
-
-      String user = dotenv.get("AWS_MYSQL_USER");
-      String password = dotenv.get("AWS_MYSQL_PASSWORD");
-
       Class.forName("com.mysql.cj.jdbc.Driver");
-      Connection con = DriverManager.getConnection(
-          url, user, password);
-      Statement stmt = con.createStatement();
-      ResultSet rs = stmt.executeQuery("select * from Client");
-      System.out.println(rs);
-      con.close();
+      Connection connection = DriverManager.getConnection(
+          this.url, this.user, this.password);
+      Statement statement = connection.createStatement();
+      ResultSet resultSet = statement.executeQuery(query);
+      System.out.println(resultSet);
+      connection.close();
     } catch (Exception e) {
       System.out.println(e);
     }
