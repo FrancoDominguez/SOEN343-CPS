@@ -31,7 +31,7 @@ function App() {
     console.log("api key", GoogleApiKey);
   }, [GoogleApiKey]);
 
-  // Conditional class to check if we're on the dashboard route
+  // Check if the current route is the dashboard
   const isDashboard = location.pathname === "/";
 
   return (
@@ -40,7 +40,8 @@ function App() {
           <TopNavBar navigation={navigation} userNavigation={userNavigation} />
         </div>
 
-        <div className={`h-full overflow-y-auto ${isDashboard ? "" : "flex justify-center mx-auto max-w-7xl py-6 sm:px-6 lg:px-8"}`}>
+        {/* Apply overflow-hidden when on the dashboard page to prevent scrolling */}
+        <div className={`h-full ${isDashboard ? "overflow-hidden" : "overflow-y-auto"} ${isDashboard ? "" : "flex justify-center mx-auto max-w-7xl py-6 sm:px-6 lg:px-8"}`}>
           <Routes>
             <Route path="/" element={<DashboardPage />} />
             <Route path="/deliver" element={<DeliverPage />} />
