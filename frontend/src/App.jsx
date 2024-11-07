@@ -1,6 +1,5 @@
 import { useContext, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { EnvContext } from "./components/EnvProvider";
 import DashboardPage from "./components/Pages/DashboardPage";
 import DeliverPage from "./components/Pages/DeliverPage";
@@ -26,19 +25,22 @@ const userNavigation = [
 function App() {
   const GoogleApiKey = useContext(EnvContext);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     console.log("api key", GoogleApiKey);
   }, [GoogleApiKey]);
 
-  return (
-    <div className="h-screen flex flex-col">
-      <div className="sticky top-0 z-50">
-        <TopNavBar navigation={navigation} userNavigation={userNavigation} />
-      </div>
+  // Conditional class to check if we're on the dashboard route
+  const isDashboard = location.pathname === "/";
 
-      <div className="h-full overflow-y-auto">
-        <div className="flex justify-center mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+  return (
+      <div className="h-screen flex flex-col">
+        <div className="sticky top-0 z-50">
+          <TopNavBar navigation={navigation} userNavigation={userNavigation} />
+        </div>
+
+        <div className={`h-full overflow-y-auto ${isDashboard ? "" : "flex justify-center mx-auto max-w-7xl py-6 sm:px-6 lg:px-8"}`}>
           <Routes>
             <Route path="/" element={<DashboardPage />} />
             <Route path="/deliver" element={<DeliverPage />} />
@@ -46,7 +48,6 @@ function App() {
           </Routes>
         </div>
       </div>
-    </div>
   );
 }
 
