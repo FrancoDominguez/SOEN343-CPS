@@ -14,9 +14,11 @@
     "@emotion/styled": "^11.13.0",
     "@headlessui/react": "^2.2.0",
     "@mui/material": "^6.1.6",
+    "js-cookie": "^3.0.5",
     "my-app": "file:",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-hook-form": "^7.53.1",
     "react-router-dom": "^6.26.2"
   },
   "devDependencies": {
