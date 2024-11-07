@@ -2,23 +2,21 @@ package cps;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.SpringApplication;
-import cps.services.Mysqlcon;
 import cps.services.MapsService;
+import cps.utils.Pair;
 
 @SpringBootApplication
 public class Driver {
   public static void main(String[] args) {
-    MapsService mapService = new MapsService();
-    String origin = "2144 Guy St, Montreal, Quebec H3H 2L8";
-    String destination = "1909 Av. des Canadiens-de-Montréal, Montréal, QC H3B 5E8";
-    mapService.getDistance(origin, destination);
-    try {
-      Mysqlcon mysql = new Mysqlcon();
-      mysql.executeQuery("SQL QUERY HERE");
 
-    } catch (Exception e) {
-      System.out.println(e);
-    }
     SpringApplication.run(Driver.class, args);
+  }
+
+  public static void testMapsApi() {
+    MapsService mapService = new MapsService();
+    String origin = "13069 rue Ramsay h8z2z7 Quebec";
+    String destination = "21 Crois Donnacona h9b2s3 Quebec";
+    Pair<Integer, Integer> pair = mapService.getDurationDistance(origin, destination);
+    System.out.printf("duration in seconds: %s, distance in meters: %s", pair.getFirst(), pair.getSecond());
   }
 }

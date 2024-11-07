@@ -1,16 +1,16 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { ApiProvider } from "./components/ApiProvider";
+import { EnvProvider } from "./components/EnvProvider";
 import { BrowserRouter as Router } from "react-router-dom";
 import App from "./App.jsx";
 import "./styles.css";
 
 createRoot(document.getElementById("root")).render(
   <Router>
-    <ApiProvider>
+    <EnvProvider>
       <StrictMode>
         <App />
       </StrictMode>
-    </ApiProvider>
+    </EnvProvider>
   </Router>
 );

@@ -1,0 +1,23 @@
+{
+  "destinationAddress": {
+    "title": "Destination Address",
+    "textFields": [
+      { "id": "country", "label": "Country" },
+      { "id": "province", "label": "Province" },
+      { "id": "city", "label": "City" },
+      { "id": "postalCode", "label": "Postal Code" },
+      { "id": "streetAddress", "label": "Street Address" }
+    ]
+  },
+  "packageInfo": {
+    "title": "Package Information",
+    "textFields": [
+      { "id": "height", "label": "Height" },
+      { "id": "width", "label": "Width" },
+      { "id": "length", "label": "Length" },
+      { "id": "weight", "label": "Weight" }
+    ]
+  },
+  "addOns": { "title": "Add Ons" },
+  "review": { "title": "Review Details" }
+}
