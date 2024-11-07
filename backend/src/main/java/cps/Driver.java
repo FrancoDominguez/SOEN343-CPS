@@ -3,14 +3,11 @@ package cps;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.SpringApplication;
 import cps.services.MapsService;
-import java.util.ArrayList;
 import cps.utils.Pair;
 
 @SpringBootApplication
 public class Driver {
   public static void main(String[] args) {
-    ArrayList<String> list = new ArrayList<String>();
-    
 
     SpringApplication.run(Driver.class, args);
   }

@@ -6,7 +6,7 @@ import cps.services.Mysqlcon;
 import java.util.ArrayList;
 
 @RestController
-public class DropOffLocations {
+public class DropoffLocationsController {
 
   @GetMapping("/dropoff-locations")
   public String index() {

@@ -1,0 +1,13 @@
+@startuml relationalDataModel
+
+hide circle
+skinparam linetype ortho
+
+entity "dropoff_locations" as dropoff_locations {
+ id: number <PK> auto-increment
+ --
+ name: varchar(255) not null
+ address: varchar(255) not null
+}
+
+@enduml
