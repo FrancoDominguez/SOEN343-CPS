@@ -1,7 +1,9 @@
+import { Typography } from "@mui/material";
+
 function DashboardPage() {
   return (
-    <div className="flex flex-col justify-center items-center">
-      <div>Dashboard</div>
+    <div className="mt-20 w-4/5 mx-80%">
+      <Typography variant="h4">Dashboard</Typography>
     </div>
   );
 }
