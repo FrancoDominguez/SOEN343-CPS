@@ -23,7 +23,7 @@ public final class AuthenticationService {
     ResultSet rs;
     Mysqlcon mysqlConnection = new Mysqlcon();
     mysqlConnection.connect();
-    String queryString = String.format("SELECT * FROM client WHERE email='%s'", email);
+    String queryString = String.format("SELECT * FROM clients WHERE email='%s'", email);
     mysqlConnection.executeQuery(queryString);
     rs = mysqlConnection.getResultSet();
     User user;

@@ -35,4 +35,4 @@ note: if you are on wsl, you can alias `alias runjava='mvn clean package && java
 
 ### Make direct changes to the db
 
-- To connect to the mysql server and make direct changes run the following `mysql -h franco-db.czes8i20a6iw.us-east-1.rds.amazonaws.com -P 3306 -u admin -p`. To exit type `\q` and press enter.
+To connect to the mysql server and make direct changes run the following `mysql -h franco-db.czes8i20a6iw.us-east-1.rds.amazonaws.com -P 3306 -u admin -p`. To exit type `\q` and press enter.

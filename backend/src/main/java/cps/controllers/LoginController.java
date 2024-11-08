@@ -6,47 +6,24 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import cps.services.AuthenticationService;
+import cps.models.requestBodies.LoginRequestBody;
+import cps.models.responseBodies.LoginResponseBody;
 
 @RestController
 public class LoginController {
 
   @PostMapping("/login")
-  public ResponseEntity<LoginResponse> index(@RequestBody LoginRequest loginRequest) {
+  public ResponseEntity<LoginResponseBody> index(@RequestBody LoginRequestBody loginRequest) {
     String email = loginRequest.getEmail();
     String password = loginRequest.getPassword();
     String token;
     try {
       token = AuthenticationService.login(email, password);
-      LoginResponse loginResponse = new LoginResponse(token);
+      LoginResponseBody loginResponse = new LoginResponseBody(token);
       return new ResponseEntity<>(loginResponse, HttpStatus.OK);
     } catch (Exception e) {
       System.out.println(e.getMessage());
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-    }
-  }
-
-  private class LoginRequest {
-    private String email;
-    private String password;
-
-    public String getEmail() {
-      return email;
-    }
-
-    public String getPassword() {
-      return password;
-    }
-  }
-
-  private class LoginResponse {
-    private String token;
-
-    public LoginResponse(String token) {
-      this.token = token;
-    }
-
-    public String getToken() {
-      return this.token;
     }
   }
 }
