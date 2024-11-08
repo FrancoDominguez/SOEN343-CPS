@@ -7,6 +7,22 @@ public class User {
   private String email;
   private String password;
 
+  public int getUserId() {
+    return this.userId;
+  }
+
+  public String getFirstname() {
+    return this.firstname;
+  }
+
+  public String getLastname() {
+    return this.lastname;
+  }
+
+  public String getEmail() {
+    return this.email;
+  }
+
   // new user constructor
   public User(String firstname, String lastname, String email, String password) {
     this.firstname = firstname;
@@ -22,5 +38,9 @@ public class User {
     this.lastname = lastname;
     this.email = email;
     this.password = password;
+  }
+
+  public boolean validatePassword(String password) {
+    return this.password.equals(password);
   }
 }
