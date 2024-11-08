@@ -1,5 +1,7 @@
-import { Button, Container, TextField, Typography } from "@mui/material";
-import { Controller, useForm } from "react-hook-form";
+import { Button, Typography } from "@mui/material";
+import { useForm } from "react-hook-form";
+import axios from "axios";
+
 import TextInput from "../TextInput";
 
 function LoginPage() {
@@ -12,10 +14,22 @@ function LoginPage() {
 
   const handleLogin = (values) => {
     console.log(values);
+
+    axios
+      .post("http://localhost:8080", {
+        email: values.email,
+        password: values.password,
+      })
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error("Error submitting data:", error);
+      });
   };
 
   return (
-    <div className="mt-20 w-4/5 mx-80%">
+    <div className="mt-20 w-[80%] mx-auto%">
       <Typography variant="h4">Login</Typography>
       <form
         className="flex flex-col gap-4 my-3"
