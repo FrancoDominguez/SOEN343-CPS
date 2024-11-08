@@ -14,13 +14,21 @@ public class LoginController {
 
   @PostMapping("/login")
   public ResponseEntity<LoginResponseBody> index(@RequestBody LoginRequestBody loginRequest) {
-    String email = loginRequest.getEmail();
-    String password = loginRequest.getPassword();
-    String token;
+    // take in the request body in the parameters ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^
+    // each request body needs its own class to match the json format you receive
+    // for this endpoint I made one called LoginRequestBody
     try {
-      token = AuthenticationService.login(email, password);
+      String email = loginRequest.getEmail();
+      String password = loginRequest.getPassword();
+
+      // this is the body of the request, it will execute the main functionality
+      String token = AuthenticationService.login(email, password);
+
+      // I specifically made a class to return the jwt to make this cleaner and easier
       LoginResponseBody loginResponse = new LoginResponseBody(token);
-      return new ResponseEntity<>(loginResponse, HttpStatus.OK);
+
+      // In this example I return a ResponseEntity so I can include the status code
+      return new ResponseEntity<LoginResponseBody>(loginResponse, HttpStatus.OK);
     } catch (Exception e) {
       System.out.println(e.getMessage());
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);

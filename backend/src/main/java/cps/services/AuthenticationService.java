@@ -4,7 +4,7 @@ import cps.models.User;
 import java.sql.ResultSet;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
+// import com.auth0.jwt.interfaces.DecodedJWT;
 import io.github.cdimascio.dotenv.Dotenv;
 
 public final class AuthenticationService {
@@ -19,15 +19,21 @@ public final class AuthenticationService {
     // prevent instantiation
   }
 
+  // example of how to use the mysql connector
   public static String login(String email, String password) throws Exception {
-    ResultSet rs;
+    // establish connection
     Mysqlcon mysqlConnection = new Mysqlcon();
     mysqlConnection.connect();
+
+    // this will execute the query and fetch the result
     String queryString = String.format("SELECT * FROM clients WHERE email='%s'", email);
     mysqlConnection.executeQuery(queryString);
-    rs = mysqlConnection.getResultSet();
+    ResultSet rs = mysqlConnection.getResultSet();
+
     User user;
+    // confirm that the user was found
     if (rs.next()) {
+      // create the user object with the information
       int userId = rs.getInt("userId");
       String userFirstname = rs.getString("firstname");
       String userLastname = rs.getString("lastname");
