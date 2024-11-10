@@ -27,7 +27,7 @@ note: vite works better on cmd than wsl.
 ### Compile and run the backend
 
 1. Install maven
-2. Stay on the root directory
+2. Navigate to the backend directory `cd backend`
 3. run `mvn clean package` to compile and install dependencies
 4. run `java -jar target/CPS-backend-1.0-SNAPSHOT.jar` to run the code
 
