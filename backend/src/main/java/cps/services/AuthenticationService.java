@@ -1,5 +1,6 @@
 package cps.services;
 
+import cps.exceptions.UnauthorizedException;
 import cps.models.User;
 import java.sql.ResultSet;
 import com.auth0.jwt.JWT;
@@ -53,7 +54,9 @@ public final class AuthenticationService {
 
   // this function should be a decorator that wraps around any other function
   // that requires the user to be authenticated
-  public void Authenticate(String token) {
+  public void Authenticate(String token) throws UnauthorizedException {
+
+    
     // validate the JWT
     // fetch and save the user's information somewhere
   }

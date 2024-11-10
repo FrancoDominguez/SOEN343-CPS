@@ -1,4 +1,4 @@
-package cps.models.responseBodies;
+package cps.models.ResponseBodies;
 
 public class LoginResponseBody {
   private String token;

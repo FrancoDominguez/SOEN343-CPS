@@ -6,14 +6,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import cps.services.AuthenticationService;
-import cps.models.requestBodies.LoginRequestBody;
-import cps.models.responseBodies.LoginResponseBody;
+import cps.models.ResponseBodies.LoginResponseBody;
+import cps.models.RequestBodies.LoginRequestBody;
 
 @RestController
 public class LoginController {
 
   @PostMapping("/login")
-  public ResponseEntity<LoginResponseBody> index(@RequestBody LoginRequestBody loginRequest) {
+  public ResponseEntity<LoginResponseBody> login(@RequestBody LoginRequestBody loginRequest) {
     // take in the request body in the parameters ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^
     // each request body needs its own class to match the json format you receive
     // for this endpoint I made one called LoginRequestBody

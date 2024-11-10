@@ -39,8 +39,14 @@ public class Mysqlcon {
     this.resultSet = statement.executeQuery(statementString);
   }
 
-  public void executeUpdate(String statementString) throws Exception {
+  public String executeUpdate(String statementString) throws Exception {
     Statement statement = this.connection.createStatement();
+    int rowsAffected = statement.executeUpdate(statementString);
+    if (rowsAffected > 0) {
+      return "Update successful. Rows affected: " + rowsAffected;
+    } else {
+      return "Update failed.";
+    }
   }
 
   public ResultSet getResultSet() {

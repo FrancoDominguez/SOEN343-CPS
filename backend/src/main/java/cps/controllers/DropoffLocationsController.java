@@ -12,7 +12,7 @@ public class DropoffLocationsController {
 
   // example of a get request
   @GetMapping("/dropoff-locations")
-  public ArrayList<DropoffLocation> index() {
+  public ArrayList<DropoffLocation> getDropoffLocations() {
     try {
       // establish a connection object
       Mysqlcon mysqlConnection = new Mysqlcon();

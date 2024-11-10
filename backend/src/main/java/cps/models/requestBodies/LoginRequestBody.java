@@ -1,4 +1,4 @@
-package cps.models.requestBodies;
+package cps.models.RequestBodies;
 
 public class LoginRequestBody {
   private String email;
