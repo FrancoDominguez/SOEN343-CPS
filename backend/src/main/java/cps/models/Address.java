@@ -14,7 +14,6 @@ public class Address {
     this.country = country;
   }
 
-  // Getters
   public String getStreetAddress() {
     return streetAddress;
   }
@@ -31,7 +30,6 @@ public class Address {
     return country;
   }
 
-  // Setters
   public void setStreetAddress(String streetAddress) {
     this.streetAddress = streetAddress;
   }
@@ -48,7 +46,6 @@ public class Address {
     this.country = country;
   }
 
-  // toString method
   @Override
   public String toString() {
     return "Address{" +
