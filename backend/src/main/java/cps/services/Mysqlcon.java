@@ -4,50 +4,52 @@ import java.sql.*;
 import io.github.cdimascio.dotenv.Dotenv;
 
 public class Mysqlcon {
-  String url;
-  String user;
-  String password;
+  private static String url;
+  private static String user;
+  private static String password;
+  private Connection connection;
+  private ResultSet resultSet;
 
-  public Mysqlcon() {
+  static {
     Dotenv dotenv = Dotenv.load();
     String endpoint = dotenv.get("AWS_MYSQL_ENDPOINT");
     String port = dotenv.get("AWS_MYSQL_PORT");
     String dbName = dotenv.get("AWS_MYSQL_DB_NAME");
-    String user = dotenv.get("AWS_MYSQL_USER");
-    String password = dotenv.get("AWS_MYSQL_PASSWORD");
-    this.url = "jdbc:mysql://" + endpoint + ":" + port + "/" + dbName;
-    this.user = user;
-    this.password = password;
+    user = dotenv.get("AWS_MYSQL_USER");
+    password = dotenv.get("AWS_MYSQL_PASSWORD");
+    url = "jdbc:mysql://" + endpoint + ":" + port + "/" + dbName;
   }
 
-  /**
-   * Executes the given SQL query and returns the result set.
-   * 
-   * @param query the SQL query string to execute
-   * @return the ResultSet of the executed query
-   * @throws Exception if a database access error occurs or the query is invalid
-   */
-  public String executeQuery(String query) throws Exception {
+  public Mysqlcon() {
+    // Constructor can be empty or used for other initializations
+  }
+
+  public void connect() throws Exception {
     Class.forName("com.mysql.cj.jdbc.Driver");
-    Connection connection = DriverManager.getConnection(
-        this.url, this.user, this.password);
+    this.connection = DriverManager.getConnection(
+        url, user, password);
+  }
 
-    Statement statement = connection.createStatement();
-    ResultSet resultSet = statement.executeQuery(query);
+  public void close() throws Exception {
+    this.connection.close();
+  }
 
-    StringBuilder stringBuilder = new StringBuilder();
-    ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
-    int columnsNumber = resultSetMetaData.getColumnCount();
-    while (resultSet.next()) {
-      for (int i = 1; i <= columnsNumber; i++) {
-        stringBuilder.append(resultSet.getString(i));
-        if (i != columnsNumber) {
-          stringBuilder.append(" | ");
-        }
-      }
-      stringBuilder.append("<br>");
+  public void executeQuery(String statementString) throws Exception {
+    Statement statement = this.connection.createStatement();
+    this.resultSet = statement.executeQuery(statementString);
+  }
+
+  public String executeUpdate(String statementString) throws Exception {
+    Statement statement = this.connection.createStatement();
+    int rowsAffected = statement.executeUpdate(statementString);
+    if (rowsAffected > 0) {
+      return "Update successful. Rows affected: " + rowsAffected;
+    } else {
+      return "Update failed.";
     }
-    connection.close();
-    return stringBuilder.toString();
+  }
+
+  public ResultSet getResultSet() {
+    return this.resultSet;
   }
 }
