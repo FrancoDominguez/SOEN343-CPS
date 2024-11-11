@@ -7,7 +7,7 @@ import DeliverPage from "./components/Pages/DeliverPage";
 import ReceivingPage from "./components/Pages/ReceivingPage";
 import TopNavBar from "./components/TopNavbar";
 import LoginPage from "./components/Pages/LoginPage";
-import PaymentPage from "./components/Pages/PaymentPage"; // Import the new PaymentPage component
+import PaymentPage from "./components/Pages/PaymentPage"; // Import the PaymentPage component
 
 const navigation = [
   { name: "Dashboard", href: "/", current: true },
@@ -21,17 +21,18 @@ const userNavigation = [
     name: "Sign out",
     href: "/",
     onClick: () => {
+      // Handle sign out logic
       Cookies.remove("access_token");
     },
   },
 ];
 
 function App() {
-  const GoogleApiKey = useContext(EnvContext);
-  const navigate = useNavigate();
+  const GoogleApiKey = useContext(EnvContext); // Access environment variable
+  const navigate = useNavigate(); // For navigation programmatically
 
   useEffect(() => {
-    console.log("api key", GoogleApiKey);
+    console.log("Google API Key:", GoogleApiKey);
   }, [GoogleApiKey]);
 
   return (
@@ -47,7 +48,7 @@ function App() {
             <Route path="/deliver" element={<DeliverPage />} />
             <Route path="/tracking" element={<ReceivingPage />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/payment" element={<PaymentPage />} /> {/* Add payment route */}
+            <Route path="/payment" element={<PaymentPage />} /> {/* Add Payment route */}
           </Routes>
         </div>
       </div>
