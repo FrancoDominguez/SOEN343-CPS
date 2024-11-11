@@ -19,48 +19,36 @@ const CheckoutForm = () => {
   const [amount, setAmount] = useState(5000); // Default: 50 CAD (in cents)
   const [paymentStatus, setPaymentStatus] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [cardErrors, setCardErrors] = useState({}); // Validation errors for card fields
+  const [cardErrors, setCardErrors] = useState({}); // Stores validation errors
 
-  // Handle card input changes and validation
   const handleCardChange = (event, field) => {
     setCardErrors((prev) => ({
       ...prev,
-      [field]: event.error ? event.error.message : "", // Set error message or clear it
+      [field]: event.error ? event.error.message : "",
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!stripe || !elements) {
-      setPaymentStatus("Stripe is not loaded yet.");
-      return;
-    }
+    if (!stripe || !elements) return;
 
     if (amount <= 0) {
       setPaymentStatus("Amount must be greater than 0.");
       return;
     }
 
-    // Check for card errors before submitting
-    if (Object.values(cardErrors).some((error) => error)) {
-      setPaymentStatus("Please fix the errors in the form.");
-      return;
-    }
-
     setLoading(true);
 
     try {
-      // Fetch client secret from the backend
       const response = await fetch("/api/payment/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount }), // Send amount in cents
+        body: JSON.stringify({ amount }), // Send the amount in cents to the backend
       });
 
       const { clientSecret } = await response.json();
 
-      // Confirm the payment with Stripe
       const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
           card: elements.getElement(CardNumberElement),
@@ -68,9 +56,9 @@ const CheckoutForm = () => {
       });
 
       if (error) {
-        setPaymentStatus(error.message); // Show Stripe error
+        setPaymentStatus(error.message);
       } else {
-        setPaymentStatus(`Payment successful: ${paymentIntent.status}`); // Show success
+        setPaymentStatus(`Payment successful: ${paymentIntent.status}`);
       }
     } catch (err) {
       setPaymentStatus("An error occurred during payment.");
@@ -167,13 +155,7 @@ const CheckoutForm = () => {
 
       {/* Payment Status Message */}
       {paymentStatus && (
-        <div
-          className={`mt-4 p-2 rounded ${
-            paymentStatus.includes("error") || paymentStatus.includes("fix")
-              ? "bg-red-100 text-red-500"
-              : "bg-green-100 text-green-500"
-          }`}
-        >
+        <div className="mt-4 p-2 bg-gray-200 rounded">
           <p>{paymentStatus}</p>
         </div>
       )}
