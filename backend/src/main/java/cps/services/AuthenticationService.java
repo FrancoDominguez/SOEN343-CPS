@@ -56,7 +56,6 @@ public final class AuthenticationService {
   // that requires the user to be authenticated
   public void Authenticate(String token) throws UnauthorizedException {
 
-    
     // validate the JWT
     // fetch and save the user's information somewhere
   }
@@ -65,7 +64,7 @@ public final class AuthenticationService {
     Algorithm algorithm = Algorithm.HMAC256(secretKey);
     String token = JWT.create()
         .withIssuer("auth0")
-        .withClaim("userId", user.getUserId())
+        .withClaim("userId", user.getId())
         .withClaim("firstname", user.getFirstname())
         .withClaim("lastname", user.getLastname())
         .withClaim("email", user.getEmail())
