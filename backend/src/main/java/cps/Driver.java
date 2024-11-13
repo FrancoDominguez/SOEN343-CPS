@@ -1,27 +1,26 @@
 package cps;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
 
-import com.stripe.exception.StripeException;
-
-import cps.controllers.PaymentController;
 import cps.services.MapsService;
 import cps.utils.Pair;
+
+import java.util.HashMap;
+import java.util.Map;
+import org.springframework.context.ApplicationContext;
+import com.stripe.exception.StripeException;
+import cps.controllers.PaymentController;
 
 @SpringBootApplication
 public class Driver {
   public static void main(String[] args) {
-    // Run the Spring Boot application and get the application context
-    ApplicationContext context = SpringApplication.run(Driver.class, args);
 
-    // Test the APIs
-    // testMapsApi();
+    SpringApplication.run(Driver.class, args);
+    ApplicationContext context = SpringApplication.run(Driver.class, args);
     testPaymentApi(context);
+
+    
   }
 
   public static void testMapsApi() {
@@ -29,7 +28,7 @@ public class Driver {
     String origin = "13069 rue Ramsay h8z2z7 Quebec";
     String destination = "21 Crois Donnacona h9b2s3 Quebec";
     Pair<Integer, Integer> pair = mapService.getDurationDistance(origin, destination);
-    System.out.printf("duration in seconds: %s, distance in meters: %s%n", pair.getFirst(), pair.getSecond());
+    System.out.printf("duration in seconds: %s, distance in meters: %s", pair.getFirst(), pair.getSecond());
   }
 
   public static void testPaymentApi(ApplicationContext context) {
@@ -45,4 +44,5 @@ public class Driver {
       System.err.println("StripeException occurred: " + e.getMessage());
     }
   }
+
 }
