@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import cps.services.AuthenticationService;
-import cps.models.ResponseBodies.LoginResponseBody;
 import cps.models.RequestBodies.LoginRequestBody;
+import cps.models.responseBodies.LoginResponseBody;
 
 @RestController
 public class LoginController {
