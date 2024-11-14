@@ -7,6 +7,7 @@ import DeliverPage from "./components/Pages/DeliverPage";
 import ReceivingPage from "./components/Pages/ReceivingPage";
 import TopNavBar from "./components/TopNavbar";
 import LoginPage from "./components/Pages/LoginPage";
+import TrackingInfo from "./components/Pages/TrackingInfo";
 
 const navigation = [
   { name: "Dashboard", href: "/", current: true },
@@ -43,7 +44,7 @@ function App() {
           <Routes>
             <Route path="/" element={<DashboardPage />} />
             <Route path="/deliver" element={<DeliverPage />} />
-            <Route path="/tracking" element={<ReceivingPage />} />
+            <Route path="/tracking" element={<TrackingInfo />} />
             <Route path="/login" element={<LoginPage />} />
           </Routes>
         </div>
