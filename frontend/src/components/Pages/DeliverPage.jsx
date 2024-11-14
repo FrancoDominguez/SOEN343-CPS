@@ -6,28 +6,39 @@ import {
   StepLabel,
   Button,
   Typography,
-  TextField,
   FormGroup,
   FormControlLabel,
   Checkbox,
 } from "@mui/material";
+import TextInput from "../TextInput";
+import { useForm } from "react-hook-form";
 
 const steps = Object.values(formDataJSON).map((step) => step.title);
 
 function DeliverPage() {
   const [activeStep, setActiveStep] = React.useState(0);
-  const [formData, setFormData] = React.useState(formDataJSON);
+  const {
+    control,
+    handleSubmit,
+    formState: { isValid },
+    getValues,
+  } = useForm({ mode: "onChange" });
 
   const isStepOptional = (step) => {
     return step === 2;
   };
   const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    if (isValid) {
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    } else {
+      console.log("Form is invalid");
+    }
   };
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
   const handleDone = () => {
+    console.log(getValues());
     setActiveStep(0);
   };
 
@@ -75,43 +86,61 @@ function DeliverPage() {
               Back
             </Button>
             <div className="flex-1" />
-            <Button onClick={handleNext} variant="contained">
+            <Button onClick={handleSubmit(handleNext)} variant="contained">
               {activeStep === steps.length - 1 ? "Finish" : "Next"}
             </Button>
           </div>
           {activeStep === 0 && (
-            <form name="packageinfo">
-              <FormGroup>
-                {formData.destinationAddress.textFields.map((field) => (
-                  <TextField
+            <form name="destinationInfo">
+              <div className="flex flex-col gap-3 w-[100%] py-3">
+                {formDataJSON.destinationAddress.textFields.map((field) => (
+                  <TextInput
+                    control={control}
                     key={field.id}
                     id={field.id}
                     label={field.label}
+                    name={field.name}
                     variant="outlined"
                     fullWidth
                     margin="normal"
+                    rules={{
+                      required: {
+                        value: true,
+                        message: `Please enter a ${field.label}`,
+                      },
+                    }}
                   />
                 ))}
-              </FormGroup>
+              </div>
             </form>
           )}
           {activeStep === 1 && (
-            <div className="">
-              <form>
-                <FormGroup>
-                  {formData.packageInfo.textFields.map((field) => (
-                    <TextField
-                      key={field.id}
-                      id={field.id}
-                      label={field.label}
-                      variant="outlined"
-                      fullWidth
-                      margin="normal"
-                    />
-                  ))}
-                </FormGroup>
-              </form>
-            </div>
+            <form name="packageInfo">
+              <div className="flex flex-col gap-3 w-[100%] py-3">
+                {formDataJSON.packageInfo.textFields.map((field) => (
+                  <TextInput
+                    control={control}
+                    key={field.id}
+                    id={field.id}
+                    label={field.label}
+                    name={field.name}
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    rules={{
+                      required: {
+                        value: true,
+                        message: `Please enter a ${field.label}`,
+                      },
+                      pattern: {
+                        value: /^\d+$/,
+                        message: "Please enter a number",
+                      },
+                    }}
+                  />
+                ))}
+              </div>
+            </form>
           )}
           {activeStep === 2 && (
             <form>
@@ -131,6 +160,10 @@ function DeliverPage() {
               </FormGroup>
             </form>
           )}
+          {activeStep === 3 &&
+            Object.entries(getValues()).map((key, value) => (
+              <Typography>{key + value}</Typography>
+            ))}
         </React.Fragment>
       )}
     </div>
