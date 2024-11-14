@@ -1,0 +1,61 @@
+@startuml classDiagram
+skinparam linetype ortho
+
+
+
+abstract class User {
+  trackOrder()
+
+}
+class Address{}
+class RegisteredUser extends User {
+  + firstname : String
+  + lastname : String
+  + email : String
+  + password : String
+}
+
+class Payment{
+  + amount : Number
+  + collectDetails()
+  + validatePayment() : boolean
+  + process()
+}
+
+
+class Package{
+  + packageHeight : int
+  + packageLength : int
+  + packageWidth : int
+  + packageWeight : int
+}
+
+class Quotation{}
+
+class Delivery extends Quotation{
+  + trackingId
+  deliver() : void
+}
+class StationDropoff extends Delivery{
+
+}
+class DropoffLocation {
+  
+}
+class ScheduledPickup extends Delivery{
+
+}
+class ShipmentStatus{
+  + trackingId
+  trackOrder(trackingId)
+}
+
+StationDropoff "1" --> "1" DropoffLocation : assigned
+Delivery "1" --> "1" Package
+ShipmentStatus "1" -- "1" Delivery
+(Delivery, RegisteredUser) .. Payment
+DropoffLocation -- Address
+RegisteredUser -- Address
+User --> ShipmentStatus: trackOrder
+
+@enduml

@@ -23,9 +23,10 @@ public class LoginController {
 
       // this is the body of the request, it will execute the main functionality
       String token = AuthenticationService.login(email, password);
+      String message = "Login successful";
 
       // I specifically made a class to return the jwt to make this cleaner and easier
-      LoginResponseBody loginResponse = new LoginResponseBody(token);
+      LoginResponseBody loginResponse = new LoginResponseBody(message, token);
 
       // In this example I return a ResponseEntity so I can include the status code
       return new ResponseEntity<LoginResponseBody>(loginResponse, HttpStatus.OK);
