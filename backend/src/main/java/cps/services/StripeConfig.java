@@ -1,7 +1,9 @@
 // StripeConfig.java
 package cps.services;
 import org.springframework.context.annotation.Configuration;
+
 import com.stripe.Stripe;
+
 import io.github.cdimascio.dotenv.Dotenv;
 
 @Configuration
