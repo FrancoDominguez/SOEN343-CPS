@@ -3,59 +3,91 @@ skinparam linetype ortho
 
 
 
-abstract class User {
-  trackOrder()
-
+class Guest {
+  + trackOrder() : ShippingStatus
 }
-class Address{}
-class RegisteredUser extends User {
+
+class Client {
   + firstname : String
   + lastname : String
   + email : String
   + password : String
+  + login() : void
+  + createQuotation() : void
+  + plateOrder(paymentInfo) : void
+  - makePayment(Quotation quotation) : void
 }
 
-class Payment{
-  + amount : Number
-  + collectDetails()
-  + validatePayment() : boolean
-  + process()
+class Payment {
+  + amount
+  - cardNumber
+  - cardExpirationDate
+  - cardCvv
+  + getCardInfo()
+}
+
+class Location {
+  + streetAddress : String
+  + postalCode : String
+  + city : String
+  + country : String
+}
+
+abstract class Origin {
+  + getOriginAddress()
+}
+
+class HomePickup{}
+class ScheduledHomePickup{
+  + pickupTime : DateTime
+  + changePickupTime(DateTime time) : void
+}
+
+class StationDropoff{
+  + station : Location
+  + changeStation(Location location) : void
+}
+
+class Quotation {
+  + expectedDelay : Number
+  + price : Number
+  + someVariablewithalongname
+}
+
+class Delivery {
+  + isCompleted() : Boolean
+}
+
+class ShippingStatus {
+  + eta : DateTime
+  + travelPath : Location[]
+  - currentLocation : number
+  + getCurrentLocation() : Location
+  + getTravelPath() : Location[]
+  + getEta() : DateTime
 }
 
 
-class Package{
-  + packageHeight : int
-  + packageLength : int
-  + packageWidth : int
-  + packageWeight : int
+class Parcel {
+  + weight : number
+  + height : number
+  + width : number
+  + length : number
 }
 
-class Quotation{}
+Guest <|-- Client
+Quotation --|> Delivery
+StationDropoff --|> Origin
+HomePickup --|> Origin
+ScheduledHomePickup --|> HomePickup
 
-class Delivery extends Quotation{
-  + trackingId
-  deliver() : void
-}
-class StationDropoff extends Delivery{
+Client "1" -left- "*" Quotation : CRUD
+Parcel "1" -- "1" Quotation
+Location "1" - "1" Quotation : destination
+Location "1" - "1" Quotation
+(Client, Delivery) .. Payment
+Origin .. (Quotation, Location)
+Delivery "1" -right- "1" ShippingStatus
 
-}
-class DropoffLocation {
-  
-}
-class ScheduledPickup extends Delivery{
-
-}
-class ShipmentStatus{
-  + trackingId
-  trackOrder(trackingId)
-}
-
-StationDropoff "1" --> "1" DropoffLocation : assigned
-Delivery "1" --> "1" Package
-ShipmentStatus "1" -- "1" Delivery
-(Delivery, RegisteredUser) .. Payment
-DropoffLocation -- Address
-RegisteredUser -- Address
-User --> ShipmentStatus: trackOrder
 
 @enduml
