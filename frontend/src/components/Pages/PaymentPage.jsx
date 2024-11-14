@@ -37,18 +37,13 @@ const CheckoutForm = () => {
       return;
     }
 
-    if (amount <= 0) {
-      setPaymentStatus("Amount must be greater than 0.");
-      return;
-    }
-
     setLoading(true);
 
     try {
       const response = await fetch("http://localhost:8080/api/payment/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount }),
+        body: JSON.stringify({}),
       });
 
       if (!response.ok) {
@@ -57,8 +52,10 @@ const CheckoutForm = () => {
         throw new Error("Failed to create PaymentIntent");
       }
 
-      const { clientSecret } = await response.json();
+      const { clientSecret, amount: backendAmount } = await response.json();
       console.log("Client Secret:", clientSecret);
+
+      setAmount(backendAmount); // Use amount provided by the backend
 
       const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
@@ -88,48 +85,62 @@ const CheckoutForm = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-gray-100 rounded shadow">
-      <h2 className="text-lg font-bold mb-4">Make a Payment</h2>
+    <div className="max-w-xl mx-auto p-8 bg-gray-100 rounded shadow min-h-[400px]">
+    {/* Flex container to align the heading and image side by side */}
+    <div className="flex items-center justify-between mb-6">
+      <h2 className="text-2xl font-bold">Make a Payment</h2>
+      <img
+        src="/StripeLogo4.png" // Path to your image
+        alt="Stripe Logo"
+        className="w-40 h-auto" // Adjust width/height as needed
+      />
+    </div>
 
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label htmlFor="amount" className="block font-medium mb-2">
+          <label htmlFor="amount" className="block font-medium text-lg mb-2">
             Amount (CAD):
           </label>
           <input
             id="amount"
-            type="number"
-            value={amount / 100}
-            onChange={(e) => {
-              const value = e.target.value * 100;
-              setAmount(value >= 0 ? value : 0);
-            }}
-            className="w-full p-2 border rounded"
-            placeholder="Enter amount"
-            required
+            type="text"
+            value={(amount / 100).toFixed(2)} // Display amount in dollars
+            className="w-full h-10 p-2 border rounded text-lg"
+            readOnly // Make the input read-only
           />
-          {amount <= 0 && <p className="text-red-500 text-sm">Amount must be greater than 0.</p>}
         </div>
 
         <div className="mb-4">
-          <label className="block font-medium mb-2">Card Number:</label>
-          <div className={`p-2 border rounded ${cardErrors.number ? "border-red-500" : ""}`}>
+          <label className="block font-medium text-lg mb-2">Card Number:</label>
+          <div
+            className={`p-2 border rounded h-10 ${
+              cardErrors.number ? "border-red-500" : ""
+            }`}
+          >
             <CardNumberElement onChange={(e) => handleCardChange(e, "number")} />
           </div>
           {cardErrors.number && <p className="text-red-500 text-sm">{cardErrors.number}</p>}
         </div>
 
         <div className="mb-4">
-          <label className="block font-medium mb-2">Expiration Date:</label>
-          <div className={`p-2 border rounded ${cardErrors.expiry ? "border-red-500" : ""}`}>
+          <label className="block font-medium text-lg mb-2">Expiration Date:</label>
+          <div
+            className={`p-2 border rounded h-10 ${
+              cardErrors.expiry ? "border-red-500" : ""
+            }`}
+          >
             <CardExpiryElement onChange={(e) => handleCardChange(e, "expiry")} />
           </div>
           {cardErrors.expiry && <p className="text-red-500 text-sm">{cardErrors.expiry}</p>}
         </div>
 
         <div className="mb-4">
-          <label className="block font-medium mb-2">CVC:</label>
-          <div className={`p-2 border rounded ${cardErrors.cvc ? "border-red-500" : ""}`}>
+          <label className="block font-medium text-lg mb-2">CVC:</label>
+          <div
+            className={`p-2 border rounded h-10 ${
+              cardErrors.cvc ? "border-red-500" : ""
+            }`}
+          >
             <CardCvcElement onChange={(e) => handleCardChange(e, "cvc")} />
           </div>
           {cardErrors.cvc && <p className="text-red-500 text-sm">{cardErrors.cvc}</p>}
@@ -137,7 +148,7 @@ const CheckoutForm = () => {
 
         <button
           type="submit"
-          className="w-full p-2 bg-blue-500 text-white rounded"
+          className="w-full p-3 bg-blue-500 text-white rounded text-lg"
           disabled={!stripe || loading}
         >
           {loading ? "Processing..." : "Pay Now"}
@@ -145,7 +156,7 @@ const CheckoutForm = () => {
       </form>
 
       {paymentStatus && (
-        <div className="mt-4 p-2 bg-gray-200 rounded">
+        <div className="mt-4 p-3 bg-gray-200 rounded text-lg">
           <p>{paymentStatus}</p>
         </div>
       )}
