@@ -1,16 +1,17 @@
 package cps;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import cps.services.MapsService;
-import cps.utils.Pair;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
+
 import com.stripe.exception.StripeException;
+
 import cps.controllers.PaymentController;
+import cps.services.MapsService;
+import cps.utils.Pair;
 
 @SpringBootApplication
 public class Driver {
@@ -18,7 +19,7 @@ public class Driver {
 
     SpringApplication.run(Driver.class, args);
     
-    // testPaymentApi(context);
+    
 
     
   }

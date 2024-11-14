@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 import { loadStripe } from "@stripe/stripe-js";
 import {
   Elements,
@@ -15,7 +15,7 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 const CheckoutForm = () => {
   const stripe = useStripe();
   const elements = useElements();
-  const navigate = useNavigate(); // Initialize the useNavigate hook
+  const navigate = useNavigate();
 
   const [amount, setAmount] = useState(3000); // Default amount: 30 CAD (in cents)
   const [paymentStatus, setPaymentStatus] = useState(null);
@@ -43,7 +43,7 @@ const CheckoutForm = () => {
       const response = await fetch("http://localhost:8080/api/payment/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({}),
+        body: JSON.stringify({ amount }), // Include the amount in the request body
       });
 
       if (!response.ok) {
@@ -52,10 +52,8 @@ const CheckoutForm = () => {
         throw new Error("Failed to create PaymentIntent");
       }
 
-      const { clientSecret, amount: backendAmount } = await response.json();
+      const { clientSecret } = await response.json();
       console.log("Client Secret:", clientSecret);
-
-      setAmount(backendAmount); // Use amount provided by the backend
 
       const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
@@ -70,10 +68,9 @@ const CheckoutForm = () => {
         console.log("PaymentIntent:", paymentIntent);
         setPaymentStatus(`Payment successful: ${paymentIntent.status}`);
 
-        // Show alert and redirect to Dashboard if the payment is successful
         if (paymentIntent.status === "succeeded") {
-          alert("Payment Successful"); // Show alert
-          navigate("/"); // Redirect to Dashboard page
+          alert("Payment Successful");
+          navigate("/");
         }
       }
     } catch (err) {
@@ -86,15 +83,15 @@ const CheckoutForm = () => {
 
   return (
     <div className="max-w-xl mx-auto p-8 bg-gray-100 rounded shadow min-h-[400px]">
-    {/* Flex container to align the heading and image side by side */}
-    <div className="flex items-center justify-between mb-6">
-      <h2 className="text-2xl font-bold">Make a Payment</h2>
-      <img
-        src="/StripeLogo4.png" // Path to your image
-        alt="Stripe Logo"
-        className="w-40 h-auto" // Adjust width/height as needed
-      />
-    </div>
+      {/* Flex container to align the heading and image side by side */}
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold">Make a Payment</h2>
+        <img
+          src="/StripeLogo4.png" // Path to your image
+          alt="Stripe Logo"
+          className="w-40 h-auto" // Adjust width/height as needed
+        />
+      </div>
 
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
