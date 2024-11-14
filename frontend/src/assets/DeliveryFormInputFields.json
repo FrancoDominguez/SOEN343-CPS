@@ -2,20 +2,24 @@
   "destinationAddress": {
     "title": "Destination Address",
     "textFields": [
-      { "id": "country", "label": "Country" },
-      { "id": "province", "label": "Province" },
-      { "id": "city", "label": "City" },
-      { "id": "postalCode", "label": "Postal Code" },
-      { "id": "streetAddress", "label": "Street Address" }
+      { "id": "country", "label": "Country", "name": "country" },
+      { "id": "province", "label": "Province", "name": "province" },
+      { "id": "city", "label": "City", "name": "city" },
+      { "id": "postalCode", "label": "Postal Code", "name": "postalCode" },
+      {
+        "id": "streetAddress",
+        "label": "Street Address",
+        "name": "streetAddress"
+      }
     ]
   },
   "packageInfo": {
     "title": "Package Information",
     "textFields": [
-      { "id": "height", "label": "Height" },
-      { "id": "width", "label": "Width" },
-      { "id": "length", "label": "Length" },
-      { "id": "weight", "label": "Weight" }
+      { "id": "height", "label": "Height(in)", "name": "height" },
+      { "id": "width", "label": "Width(in)", "name": "width" },
+      { "id": "length", "label": "Length(in)", "name": "length" },
+      { "id": "weight", "label": "Weight(pounds)", "name": "weight" }
     ]
   },
   "addOns": { "title": "Add Ons" },
