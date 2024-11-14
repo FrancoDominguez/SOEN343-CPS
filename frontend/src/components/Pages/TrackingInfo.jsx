@@ -1,9 +1,13 @@
 import React from 'react';
+import { useParams } from 'react-router-dom';
 
 const TrackingInfo = () => {
-    // Sample hardcoded tracking data
+    // Get the tracking number from the URL parameters
+    const { trackingNumber } = useParams();
+
+    // Sample hardcoded tracking data, simulating a dynamic response
     const trackingData = {
-        trackingId: "1234567890",
+        trackingId: trackingNumber,
         status: "Item delayed - stay tuned for updates",
         sender: "Unavailable",
         deliveryPreference: "None",
@@ -17,7 +21,7 @@ const TrackingInfo = () => {
     };
 
     return (
-        <div className="max-w-md mx-auto p-6 bg-white border border-gray-300 rounded-lg shadow-md">
+        <div className="max-w-md mx-auto p-6 bg-white border border-gray-300 rounded-lg shadow-md mt-10">
             <h2 className="text-2xl font-semibold text-center mb-4 text-gray-800">Track Your Package</h2>
 
             <div className="mb-4">
