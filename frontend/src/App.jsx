@@ -39,7 +39,7 @@ function App() {
       </div>
 
       <div className="h-full overflow-y-auto">
-        <div className="flex justify-center mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+        <div className="flex justify-center mx-auto max-w-7xl py-6 sm:px-6 lg:px-8 h-full">
           <Routes>
             <Route path="/" element={<DashboardPage />} />
             <Route path="/deliver" element={<DeliverPage />} />
