@@ -1,0 +1,56 @@
+@startuml
+interface PaymentStrategy {
+    + void collectPaymentDetails()
+    + boolean validatePaymentDetails()
+    + void pay(int amount)
+}
+
+class PaymentByCreditCardStripe implements PaymentStrategy {
+    - CreditCard card
+    + void collectPaymentDetails()
+    + boolean validatePaymentDetails()
+    + void pay(int amount)
+}
+
+class PaymentByPayPal implements PaymentStrategy {
+    - String email
+    - String password
+    + void collectPaymentDetails()
+    + boolean validatePaymentDetails()
+    + void pay(int amount)
+}
+
+class PaymentService {
+    - int amount
+    - boolean includeDelivery
+    - PaymentStrategy strategy
+    + void processOrder()
+    + int getTotal()
+    + void setStrategy(PaymentStrategy strategy)
+}
+
+class CreditCard {
+    - String cardNumber
+    - String expiryDate
+    - String cvv
+    - long amount
+    + CreditCard(String cardNumber, String expiryDate, String cvv, long amount)
+    + String getCardNumber()
+    + void setCardNumber(String cardNumber)
+    + String getExpiryDate()
+    + void setExpiryDate(String expiryDate)
+    + String getCvv()
+    + void setCvv(String cvv)
+    + long getAmount()
+    + void setAmount(long amount)
+}
+
+class Client {}
+
+Client ---> PaymentService
+Client ---> PaymentByPayPal
+Client ---> PaymentByCreditCardStripe
+PaymentService --> PaymentStrategy
+PaymentByCreditCardStripe --> CreditCard
+
+@enduml
