@@ -8,6 +8,7 @@ import ReceivingPage from "./components/Pages/ReceivingPage";
 import TopNavBar from "./components/TopNavbar";
 import LoginPage from "./components/Pages/LoginPage";
 import PaymentPage from "./components/Pages/PaymentPage"; // Import the PaymentPage component
+import TrackingInfo from "./components/Pages/TrackingInfo";
 
 const navigation = [
   { name: "Dashboard", href: "/", current: true },
@@ -46,7 +47,7 @@ function App() {
           <Routes>
             <Route path="/" element={<DashboardPage />} />
             <Route path="/deliver" element={<DeliverPage />} />
-            <Route path="/tracking" element={<ReceivingPage />} />
+            <Route path="/tracking" element={<TrackingInfo />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/payment" element={<PaymentPage />} /> {/* Add Payment route */}
           </Routes>
