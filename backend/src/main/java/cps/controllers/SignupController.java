@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import cps.models.RequestBodies.SignupRequestbody;
-import cps.models.User;
+import cps.DTO.RequestBodies.SignupRequestbody;
+import cps.models.Client;
 
 @RestController
 public class SignupController {
@@ -22,7 +22,7 @@ public class SignupController {
       String password = signupRequest.getPassword();
 
       // Create a new User object
-      User newUser = new User(firstname, lastname, email, password);
+      Client newUser = new Client(firstname, lastname, email, password);
 
       // Save the user to the database
       newUser.save();

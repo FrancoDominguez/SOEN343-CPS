@@ -1,7 +1,7 @@
 package cps.services;
 
 import cps.exceptions.UnauthorizedException;
-import cps.models.User;
+import cps.models.Client;
 import java.sql.ResultSet;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -31,7 +31,7 @@ public final class AuthenticationService {
     mysqlConnection.executeQuery(queryString);
     ResultSet rs = mysqlConnection.getResultSet();
 
-    User user;
+    Client user;
     // confirm that the user was found
     if (rs.next()) {
       // create the user object with the information
@@ -40,7 +40,7 @@ public final class AuthenticationService {
       String userLastname = rs.getString("lastname");
       String userEmail = rs.getString("email");
       String userPassword = rs.getString("password");
-      user = new User(userId, userFirstname, userLastname, userEmail, userPassword);
+      user = new Client(userId, userFirstname, userLastname, userEmail, userPassword);
     } else {
       throw new Exception(String.format("User with email '%s' not found", email));
     }
@@ -60,7 +60,7 @@ public final class AuthenticationService {
     // fetch and save the user's information somewhere
   }
 
-  private static String generateToken(User user) {
+  private static String generateToken(Client user) {
     Algorithm algorithm = Algorithm.HMAC256(secretKey);
     String token = JWT.create()
         .withIssuer("auth0")

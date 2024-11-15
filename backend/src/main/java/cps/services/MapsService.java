@@ -21,7 +21,7 @@ public class MapsService {
     apiKey = dotenv.get("GOOGLE_MAPS_API_KEY");
   }
 
-  public static Pair<Integer, Integer> getDurationDistance(String origin, String destination) {
+  public Pair<Integer, Integer> getDurationDistance(String origin, String destination) {
     try {
       String encodedOrigin = URLEncoder.encode(origin, StandardCharsets.UTF_8);
       String encodedDestination = URLEncoder.encode(destination, StandardCharsets.UTF_8);

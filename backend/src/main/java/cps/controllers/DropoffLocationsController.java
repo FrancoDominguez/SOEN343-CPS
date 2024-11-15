@@ -2,7 +2,7 @@ package cps.controllers;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import cps.models.DropoffLocation;
+import cps.models.DropoffStation;
 import cps.services.Mysqlcon;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ public class DropoffLocationsController {
 
   // example of a get request
   @GetMapping("/dropoff-locations")
-  public ArrayList<DropoffLocation> getDropoffLocations() {
+  public ArrayList<DropoffStation> getDropoffLocations() {
     try {
       // establish a connection object
       Mysqlcon mysqlConnection = new Mysqlcon();
@@ -24,12 +24,12 @@ public class DropoffLocationsController {
       ResultSet rs = mysqlConnection.getResultSet();
 
       // Iterate through each row of the table with rs.next()
-      ArrayList<DropoffLocation> locations = new ArrayList<DropoffLocation>();
+      ArrayList<DropoffStation> locations = new ArrayList<DropoffStation>();
       while (rs.next()) {
         // create an object out of each row
         String name = rs.getString("name");
         String address = rs.getString("address");
-        locations.add(new DropoffLocation(name, address));
+        locations.add(new DropoffStation(name, address));
       }
 
       // remember to close the connection

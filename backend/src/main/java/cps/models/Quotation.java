@@ -1,44 +1,101 @@
 package cps.models;
 
-import java.math.BigDecimal;
-import static cps.services.MapsService.getDurationDistance;
+import java.time.Duration;
+
+import cps.services.MapsService;
 import cps.utils.Pair;
 
 public class Quotation {
-  private User user;
-  private Address origin;
-  private Address destination;
-  private Package packageUnit;
-  private int distanceInMeters;
-  private int eta;
-  private BigDecimal price;
+  private int id;
+  private int clientId;
+  private Parcel parcel;
+  private Origin origin;
+  private Location destination;
+  private Duration initialExpectedDelay;
+  private double price;
+  private Boolean hasPriority;
+  private double warrantedAmount;
+  private static MapsService mapsService;
 
-  public Quotation(User user, Address origin, Address destination, Package packageUnit) {
-    this.user = user;
+  public Quotation(int clientId, Parcel parcel, Origin origin, Location destination, Boolean hasPriority,
+      double warrantedAmount) {
+    this.id = -1;
+    this.clientId = clientId;
+    this.parcel = parcel;
     this.origin = origin;
     this.destination = destination;
-    this.packageUnit = packageUnit;
-    Pair<Integer, Integer> durationDistance = getDurationDistance(origin.toString(), destination.toString());
-    // determine algo to get eta from below variable
-    int durationInSeconds = durationDistance.getFirst();
-    this.distanceInMeters = durationDistance.getSecond();
-    this.eta = determineETA();
-    this.price = determinePrice();
-    this.save();
+    this.hasPriority = hasPriority;
+    this.warrantedAmount = warrantedAmount;
+    this.initialExpectedDelay = null;
+    this.price = -1;
   }
 
-  public void save() {
+  public Quotation(int id, int clientId, Parcel parcel, Origin origin, Location destination, Boolean hasPriority,
+      double warrantedAmount) {
+    this.id = id;
+    this.clientId = clientId;
+    this.parcel = parcel;
+    this.origin = origin;
+    this.destination = destination;
+    this.hasPriority = hasPriority;
+    this.warrantedAmount = warrantedAmount;
+    this.initialExpectedDelay = null;
+    this.price = -1;
   }
 
-  private int determineETA() {
-    return 0;
+  public void processQuote() {
+    Pair<Integer, Integer> durationDistance = mapsService.getDurationDistance(this.origin.getLocation().toString(),
+        this.destination.toString());
+    int duration = durationDistance.getFirst();
+    int distance = durationDistance.getSecond();
+    // to give a price you must account for add ons
   }
 
-  private BigDecimal determinePrice() {
-    return null;
+  public Boolean isProcessed() {
+    return (this.initialExpectedDelay == null || this.price == -1);
   }
 
-  public String toString() {
-    return null;
+  public String getDeliveryType() {
+    if (origin instanceof StationDropoff) {
+      return "Station Dropoff";
+    } else if (origin instanceof ScheduledHomePickup) {
+      return "Scheduled Home Pickup";
+    } else if (origin instanceof HomePickup) {
+      return "Regular Home Pickup";
+    } else {
+      return "Unknown Delivery Type";
+    }
+  }
+
+  public void changeDeliveryType(Origin origin) {
+    this.origin = origin;
+  }
+
+  public int getId() {
+    return this.id;
+  }
+
+  public int getClientId() {
+    return this.clientId;
+  }
+
+  public Parcel getParcel() {
+    return this.parcel;
+  }
+
+  public Origin getOrigin() {
+    return this.origin;
+  }
+
+  public Location getDestination() {
+    return this.destination;
+  }
+
+  public Duration getInitialExpectedDelay() {
+    return this.initialExpectedDelay;
+  }
+
+  public double getPrice() {
+    return this.price;
   }
 }
