@@ -1,7 +1,15 @@
 package cps;
 
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+
+import com.stripe.exception.StripeException;
+
+import cps.controllers.PaymentController;
 
 import cps.utils.MapsService;
 import cps.utils.Pair;
@@ -11,6 +19,10 @@ public class Driver {
   public static void main(String[] args) {
 
     SpringApplication.run(Driver.class, args);
+    
+    
+
+    
   }
 
   public static void testMapsApi() {
@@ -20,4 +32,19 @@ public class Driver {
     Pair<Integer, Integer> pair = mapService.getDurationDistance(origin, destination);
     System.out.printf("duration in seconds: %s, distance in meters: %s", pair.getFirst(), pair.getSecond());
   }
+
+  public static void testPaymentApi(ApplicationContext context) {
+    PaymentController paymentController = context.getBean(PaymentController.class);
+    Map<String, Object> requestData = new HashMap<>();
+    requestData.put("amount", 1000L); // 1000 cents = $10.00 CAD
+
+    try {
+      Map<String, String> response = paymentController.createPaymentIntent(requestData);
+      System.out.println("PaymentIntent created successfully!");
+      System.out.println("Client Secret: " + response.get("clientSecret"));
+    } catch (StripeException e) {
+      System.err.println("StripeException occurred: " + e.getMessage());
+    }
+  }
+
 }
