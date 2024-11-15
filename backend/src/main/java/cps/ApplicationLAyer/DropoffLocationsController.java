@@ -2,7 +2,8 @@ package cps.ApplicationLayer;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import cps.models.DropoffLocation;
+
+import cps.DomainLayer.models.DropoffLocation;
 import cps.utils.Mysqlcon;
 
 import java.sql.ResultSet;

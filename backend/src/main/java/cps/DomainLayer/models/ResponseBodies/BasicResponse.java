@@ -1,4 +1,4 @@
-package cps.models.ResponseBodies;
+package cps.DomainLayer.models.ResponseBodies;
 
 public class BasicResponse {
     protected String message;
@@ -6,7 +6,7 @@ public class BasicResponse {
     public BasicResponse(){
         this.message = "there was an error";
     }
-    
+
     public BasicResponse(String message){
         this.message = message;
     }

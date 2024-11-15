@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import cps.DomainLayer.AuthenticationService;
-import cps.models.RequestBodies.SignupRequestbody;
+import cps.DomainLayer.Services.AuthenticationService;
+import cps.DomainLayer.models.RequestBodies.SignupRequestbody;
 
 @RestController
 public class SignupController {

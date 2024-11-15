@@ -1,6 +1,6 @@
 package cps.FoundationLayer;
 
-import cps.models.Client;
+import cps.DomainLayer.models.Client;
 import cps.utils.Mysqlcon;
 import java.sql.*;
 

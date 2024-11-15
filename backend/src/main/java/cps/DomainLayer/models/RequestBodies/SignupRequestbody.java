@@ -1,4 +1,4 @@
-package cps.models.RequestBodies;
+package cps.DomainLayer.models.RequestBodies;
 
 public class SignupRequestbody {
   private String email;

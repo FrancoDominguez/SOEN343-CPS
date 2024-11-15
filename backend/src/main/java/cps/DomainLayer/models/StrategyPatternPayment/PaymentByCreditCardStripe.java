@@ -1,4 +1,4 @@
-package cps.models.StrategyPatternPayment;
+package cps.DomainLayer.models.StrategyPatternPayment;
 
 public class PaymentByCreditCardStripe implements PaymentStrategy {
     private CreditCard card;
