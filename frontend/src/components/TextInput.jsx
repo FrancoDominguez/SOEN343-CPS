@@ -1,7 +1,7 @@
 import { TextField } from "@mui/material";
 import { Controller } from "react-hook-form";
 
-const TextInput = ({ control, label, name, required, rules }) => {
+const TextInput = ({ control, label, name, rules, type }) => {
   return (
     <Controller
       control={control}
@@ -11,6 +11,7 @@ const TextInput = ({ control, label, name, required, rules }) => {
         <TextField
           label={label}
           error={!!fieldState.error}
+          type={type}
           helperText={fieldState?.error ? fieldState.error.message : ""}
           {...field}
         />

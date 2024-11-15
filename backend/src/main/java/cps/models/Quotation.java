@@ -1,5 +1,7 @@
 package cps.models;
 
+import static cps.utils.MapsService.getDurationDistance;
+
 import java.time.Duration;
 
 import cps.services.MapsService;
