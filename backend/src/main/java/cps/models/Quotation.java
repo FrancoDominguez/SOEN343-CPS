@@ -9,8 +9,8 @@ public class Quotation {
   private int id;
   private int clientId;
   private Parcel parcel;
-  private Origin origin;
-  private Location destination;
+  private Departure departure;
+  private Location departure;
   private Duration initialExpectedDelay;
   private double price;
   private Boolean hasPriority;
@@ -18,13 +18,13 @@ public class Quotation {
   private Boolean signatureRequired;
   private static MapsService mapsService;
 
-  public Quotation(int clientId, Parcel parcel, Origin origin, Location destination, Boolean hasPriority,
+  public Quotation(int clientId, Parcel parcel, Departure departure, Location departure, Boolean hasPriority,
       double warrantedAmount, Boolean signatureRequired) {
     this.id = -1;
     this.clientId = clientId;
     this.parcel = parcel;
-    this.origin = origin;
-    this.destination = destination;
+    this.departure = departure;
+    this.departure = departure;
     this.hasPriority = hasPriority;
     this.warrantedAmount = warrantedAmount;
     this.signatureRequired = signatureRequired;
@@ -32,13 +32,14 @@ public class Quotation {
     this.price = -1;
   }
 
-  public Quotation(int id, int clientId, Parcel parcel, Origin origin, Location destination, Boolean hasPriority,
+  public Quotation(int id, int clientId, Parcel parcel, Departure departure, Location departure,
+      Boolean hasPriority,
       double warrantedAmount, Boolean signatureRequired) {
     this.id = id;
     this.clientId = clientId;
     this.parcel = parcel;
-    this.origin = origin;
-    this.destination = destination;
+    this.departure = departure;
+    this.departure = departure;
     this.hasPriority = hasPriority;
     this.warrantedAmount = warrantedAmount;
     this.signatureRequired = signatureRequired;
@@ -47,8 +48,8 @@ public class Quotation {
   }
 
   public void processQuote() {
-    Pair<Integer, Integer> durationDistance = mapsService.getDurationDistance(this.origin.getLocation().toString(),
-        this.destination.toString());
+    Pair<Integer, Integer> durationDistance = mapsService.getDurationDistance(this.departure.getLocation().toString(),
+        this.departure.toString());
     int duration = durationDistance.getFirst();
     int distance = durationDistance.getSecond();
     // to give a price you must account for add ons
@@ -59,39 +60,55 @@ public class Quotation {
   }
 
   public String getDeliveryType() {
-    if (origin instanceof StationDropoff) {
-      return "Station Dropoff";
-    } else if (origin instanceof ScheduledHomePickup) {
-      return "Scheduled Home Pickup";
-    } else if (origin instanceof HomePickup) {
-      return "Regular Home Pickup";
+    if (departure instanceof StationDropoff) {
+      return "station dropoff";
+    } else if (departure instanceof ScheduledHomePickup) {
+      return "scheduled home pickup";
+    } else if (departure instanceof HomePickup) {
+      return "regular home pickup";
     } else {
-      return "Unknown Delivery Type";
+      return "unknown delivery type";
     }
   }
 
-  public void changeDeliveryType(Origin origin) {
-    this.origin = origin;
+  public void changeDeliveryType(Departure departure) {
+    this.departure = departure;
+  }
+
+  public Boolean isParcelOversized() {
+    return this.parcel.isOversized();
   }
 
   public int getId() {
     return this.id;
   }
 
+  public int getParcelId() {
+    return this.parcel.getId();
+  }
+
+  public int getdepartureId() {
+    return this.departure.getId();
+  }
+
   public int getClientId() {
     return this.clientId;
+  }
+
+  public int getOriginLocationId() {
+    return this.departure.getLocation().getId();
   }
 
   public Parcel getParcel() {
     return this.parcel;
   }
 
-  public Origin getOrigin() {
-    return this.origin;
+  public Departure getOrigin() {
+    return this.departure;
   }
 
-  public Location getDestination() {
-    return this.destination;
+  public Location getdeparture() {
+    return this.departure;
   }
 
   public Duration getInitialExpectedDelay() {

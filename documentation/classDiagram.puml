@@ -40,7 +40,11 @@ class Location {
   + country : String
 }
 
-abstract class Origin {
+class DropoffStation {
+  + name
+}
+
+abstract class Departure {
   + getOriginAddress()
 }
 
@@ -60,6 +64,7 @@ class Quotation {
   + price : Number
   + hasPriority : Boolean
   + warantedAmount : Number
+  + signatureRequired : Boolean
   + getDeliveryType() : String
 }
 
@@ -79,7 +84,6 @@ class ShippingStatus {
   + getStatus() : String
 }
 
-
 class Parcel {
   + weight : number
   + height : number
@@ -91,17 +95,17 @@ class Parcel {
 
 Guest <|-- Client
 Quotation <|-- Delivery
-StationDropoff --|> Origin
-HomePickup --|> Origin
+StationDropoff --|> Departure
+HomePickup --|> Departure
 ScheduledHomePickup --|> HomePickup
+DropoffStation -down-|> Location
 
 Client "1" -left- "*" Quotation : CRUD
 Parcel "1" -- "1" Quotation
 Location "1" - "1" Quotation : destination
 Location "1" - "1" Quotation
 (Client, Delivery) .. Payment
-Origin .. (Quotation, Location)
+Departure .. (Quotation, Location)
 Delivery "1" -left- "1" ShippingStatus
-
 
 @enduml
