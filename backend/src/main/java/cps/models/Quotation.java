@@ -1,7 +1,9 @@
 package cps.models;
 
+import static cps.utils.MapsService.getDurationDistance;
+
 import java.math.BigDecimal;
-import static cps.services.MapsService.getDurationDistance;
+
 import cps.utils.Pair;
 
 public class Quotation {

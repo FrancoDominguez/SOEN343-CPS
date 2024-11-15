@@ -2,6 +2,7 @@ package cps.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,6 +13,7 @@ import cps.models.User;
 @RestController
 public class SignupController {
 
+  @CrossOrigin(origins = "http://localhost:5173")
   @PostMapping("/signup")
   public ResponseEntity<String> signup(@RequestBody SignupRequestbody signupRequest) {
     try {

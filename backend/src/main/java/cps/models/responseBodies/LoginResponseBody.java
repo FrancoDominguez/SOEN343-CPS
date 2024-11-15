@@ -1,10 +1,11 @@
 package cps.models.ResponseBodies;
 
-public class LoginResponseBody {
+public class LoginResponseBody extends BasicResponse {
   private String token;
   private String message;
 
   public LoginResponseBody(String message, String token) {
+    super(message);
     this.token = token;
   }
 

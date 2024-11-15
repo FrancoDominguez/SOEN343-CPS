@@ -2,7 +2,8 @@ package cps;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.SpringApplication;
-import cps.services.MapsService;
+
+import cps.utils.MapsService;
 import cps.utils.Pair;
 
 @SpringBootApplication

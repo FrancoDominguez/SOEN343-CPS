@@ -2,18 +2,22 @@ package cps.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import cps.services.AuthenticationService;
-import cps.models.ResponseBodies.LoginResponseBody;
+
 import cps.models.RequestBodies.LoginRequestBody;
+import cps.models.ResponseBodies.BasicResponse;
+import cps.models.ResponseBodies.LoginResponseBody;
+import cps.utils.AuthenticationService;
 
 @RestController
 public class LoginController {
 
+  @CrossOrigin(origins = "http://localhost:5173")
   @PostMapping("/login")
-  public ResponseEntity<LoginResponseBody> login(@RequestBody LoginRequestBody loginRequest) {
+  public ResponseEntity<BasicResponse> login(@RequestBody LoginRequestBody loginRequest) {
     // take in the request body in the parameters ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^
     // each request body needs its own class to match the json format you receive
     // for this endpoint I made one called LoginRequestBody
@@ -29,10 +33,11 @@ public class LoginController {
       LoginResponseBody loginResponse = new LoginResponseBody(message, token);
 
       // In this example I return a ResponseEntity so I can include the status code
-      return new ResponseEntity<LoginResponseBody>(loginResponse, HttpStatus.OK);
+      return new ResponseEntity<BasicResponse>(loginResponse, HttpStatus.OK);
     } catch (Exception e) {
       System.out.println(e.getMessage());
-      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+      BasicResponse response = new BasicResponse(e.getMessage());
+      return new ResponseEntity<BasicResponse>(response, HttpStatus.UNAUTHORIZED);
     }
   }
 }

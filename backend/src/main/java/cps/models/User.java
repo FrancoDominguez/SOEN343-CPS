@@ -1,8 +1,6 @@
 package cps.models;
 
-import cps.services.Mysqlcon;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import cps.utils.Mysqlcon;
 
 public class User {
     private int id;
