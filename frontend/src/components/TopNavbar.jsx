@@ -1,5 +1,5 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
-import GoogleLoginButton from "../components/GoogleLoginButton";
+import LoginButton from "../components/LoginButton";
 import { NavLink } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
@@ -100,7 +100,7 @@ function TopNavBar({ navigation, userNavigation }) {
                   </MenuItems>
                 </div>
               ) : (
-                <GoogleLoginButton />
+                <LoginButton />
               )}
             </Menu>
           </div>
