@@ -25,6 +25,7 @@ function LoginButton() {
 
   const handleLogout = () => {
     logout();
+    navigate("/");
     handleClose();
   };
 
