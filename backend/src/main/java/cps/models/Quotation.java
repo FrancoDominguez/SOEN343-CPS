@@ -10,7 +10,7 @@ public class Quotation {
   private int clientId;
   private Parcel parcel;
   private Departure departure;
-  private Location departure;
+  private Location destination;
   private Duration initialExpectedDelay;
   private double price;
   private Boolean hasPriority;
@@ -18,13 +18,13 @@ public class Quotation {
   private Boolean signatureRequired;
   private static MapsService mapsService;
 
-  public Quotation(int clientId, Parcel parcel, Departure departure, Location departure, Boolean hasPriority,
+  public Quotation(int clientId, Parcel parcel, Departure departure, Location destination, Boolean hasPriority,
       double warrantedAmount, Boolean signatureRequired) {
     this.id = -1;
     this.clientId = clientId;
     this.parcel = parcel;
     this.departure = departure;
-    this.departure = departure;
+    this.destination = destination;
     this.hasPriority = hasPriority;
     this.warrantedAmount = warrantedAmount;
     this.signatureRequired = signatureRequired;
@@ -32,14 +32,14 @@ public class Quotation {
     this.price = -1;
   }
 
-  public Quotation(int id, int clientId, Parcel parcel, Departure departure, Location departure,
+  public Quotation(int id, int clientId, Parcel parcel, Departure departure, Location destination,
       Boolean hasPriority,
       double warrantedAmount, Boolean signatureRequired) {
     this.id = id;
     this.clientId = clientId;
     this.parcel = parcel;
     this.departure = departure;
-    this.departure = departure;
+    this.destination = destination;
     this.hasPriority = hasPriority;
     this.warrantedAmount = warrantedAmount;
     this.signatureRequired = signatureRequired;
@@ -49,7 +49,7 @@ public class Quotation {
 
   public void processQuote() {
     Pair<Integer, Integer> durationDistance = mapsService.getDurationDistance(this.departure.getLocation().toString(),
-        this.departure.toString());
+        this.destination.toString());
     int duration = durationDistance.getFirst();
     int distance = durationDistance.getSecond();
     // to give a price you must account for add ons
@@ -87,8 +87,8 @@ public class Quotation {
     return this.parcel.getId();
   }
 
-  public int getdepartureId() {
-    return this.departure.getId();
+  public int getDestinationLocationId() {
+    return this.destination.getId();
   }
 
   public int getClientId() {
@@ -107,8 +107,8 @@ public class Quotation {
     return this.departure;
   }
 
-  public Location getdeparture() {
-    return this.departure;
+  public Location getDestinationLocation() {
+    return this.destination;
   }
 
   public Duration getInitialExpectedDelay() {

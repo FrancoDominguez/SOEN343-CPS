@@ -1,0 +1,11 @@
+CREATE TABLE departures (quotation_id INT, location_id INT, pickupTime DATETIME, scheduled BOOLEAN DEFAULT FALSE, PRIMARY KEY (quotation_id, location_id), FOREIGN KEY (quotation_id) REFERENCES deliveries(quotation_id), FOREIGN KEY (location_id) REFERENCES locations(location_id));
+
+CREATE TABLE deliveries (quotation_id INT PRIMARY KEY AUTO_INCREMENT, initial_expected_delay INT NOT NULL, price DECIMAL(10, 2) NOT NULL, has_priority BOOLEAN DEFAULT FALSE NOT NULL, warranted_amount DECIMAL(10, 2) DEFAULT 0 NOT NULL, signature_required BOOLEAN DEFAULT FALSE NOT NULL, is_completed BOOLEAN DEFAULT FALSE NOT NULL, shipping_status_id INT NOT NULL, parcel_id INT NOT NULL, destination_id INT NOT NULL, FOREIGN KEY (shipping_status_id) REFERENCES shipping_statuses(shipping_status_id), FOREIGN KEY (parcel_id) REFERENCES parcels(parcel_id), FOREIGN KEY (destination_id) REFERENCES locations(location_id));
+
+
+
+
+
+
+
+

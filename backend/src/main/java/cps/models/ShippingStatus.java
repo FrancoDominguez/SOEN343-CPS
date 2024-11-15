@@ -10,6 +10,9 @@ public class ShippingStatus {
   private ArrayList<Location> travelPath;
   private int currentLocationIndex;
 
+  public ShippingStatus() {
+  }
+
   public ShippingStatus(int deliveryId, LocalDateTime eta, ArrayList<Location> travelPath) {
     this.id = -1;
     this.deliveryId = deliveryId;
@@ -41,6 +44,10 @@ public class ShippingStatus {
 
   public ArrayList<Location> getTravelPath() {
     return this.travelPath;
+  }
+
+  public void goNext() {
+    this.currentLocationIndex++;
   }
 
   public Location getCurrentLocation() {
