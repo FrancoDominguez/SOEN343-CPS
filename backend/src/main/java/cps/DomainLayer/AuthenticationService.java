@@ -1,9 +1,10 @@
-package cps.utils;
+package cps.DomainLayer;
 
+import cps.FoundationLayer.ClientDAO;
 import cps.exceptions.UnauthorizedException;
-import cps.models.User;
+import cps.models.Client;
+import cps.models.RequestBodies.SignupRequestbody;
 
-import java.sql.ResultSet;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 // import com.auth0.jwt.interfaces.DecodedJWT;
@@ -11,6 +12,7 @@ import io.github.cdimascio.dotenv.Dotenv;
 
 public final class AuthenticationService {
   private static String secretKey;
+  private static ClientDAO userDAO = new ClientDAO();
 
   static {
     Dotenv dotenv = Dotenv.load();
@@ -23,33 +25,17 @@ public final class AuthenticationService {
 
   // example of how to use the mysql connector
   public static String login(String email, String password) throws Exception {
-    // establish connection
-    Mysqlcon mysqlConnection = new Mysqlcon();
-    mysqlConnection.connect();
+    Client user = userDAO.getUserByEmail(email);
 
-    // this will execute the query and fetch the result
-    String queryString = String.format("SELECT * FROM clients WHERE email='%s'", email);
-    mysqlConnection.executeQuery(queryString);
-    ResultSet rs = mysqlConnection.getResultSet();
-
-    User user;
-    // confirm that the user was found
-    if (rs.next()) {
-      // create the user object with the information
-      int userId = rs.getInt("user_id");
-      String userFirstname = rs.getString("firstname");
-      String userLastname = rs.getString("lastname");
-      String userEmail = rs.getString("email");
-      String userPassword = rs.getString("password");
-      user = new User(userId, userFirstname, userLastname, userEmail, userPassword);
-    } else {
-      throw new Exception(String.format("User with email '%s' not found", email));
+    if(user == null){
+      throw new Exception("Email is incorrect");
     }
-    if (!user.validatePassword(password)) {
+
+    if(!user.validatePassword(password)){
       throw new Exception("The entered password was incorrect");
     }
+
     String token = generateToken(user);
-    mysqlConnection.close();
     return token;
   }
 
@@ -61,7 +47,22 @@ public final class AuthenticationService {
     // fetch and save the user's information somewhere
   }
 
-  private static String generateToken(User user) {
+  public static void createUser(SignupRequestbody data) throws Exception{
+    String firstname = data.getFirstname();
+    String lastname = data.getLastname();
+    String email = data.getEmail();
+    String password = data.getPassword();
+
+    Client newUser = new Client(firstname, lastname, email, password);
+    boolean success = userDAO.createUser(newUser);
+
+    if(!success){
+      throw new Exception("Error Signing up, please try again");
+    }
+
+  }
+
+  private static String generateToken(Client user) {
     Algorithm algorithm = Algorithm.HMAC256(secretKey);
     String token = JWT.create()
         .withIssuer("auth0")

@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import cps.utils.Pair;
 
 public class Quotation {
-  private User user;
+  private Client user;
   private Address origin;
   private Address destination;
   private Package packageUnit;
@@ -15,7 +15,7 @@ public class Quotation {
   private int eta;
   private BigDecimal price;
 
-  public Quotation(User user, Address origin, Address destination, Package packageUnit) {
+  public Quotation(Client user, Address origin, Address destination, Package packageUnit) {
     this.user = user;
     this.origin = origin;
     this.destination = destination;

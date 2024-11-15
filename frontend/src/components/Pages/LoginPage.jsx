@@ -52,20 +52,12 @@ function LoginPage() {
       });
 
       handleSwitch();
-    } catch (error) {}
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
   };
 
   const handleSwitch = () => setIsLogin(!isLogin);
-
-  useEffect(() => {
-    reset({
-      firstname: "",
-      lastname: "",
-      email: "",
-      password: "",
-      rePassword: "",
-    });
-  }, [isLogin, reset]);
 
   return (
     <Container className="h-[100%] w-[100%] flex items-center justify-center">

@@ -1,6 +1,6 @@
 //PaymentController.java
 
-package cps.controllers;
+package cps.ApplicationLayer;
 
 import java.util.ArrayList;
 import java.util.HashMap;

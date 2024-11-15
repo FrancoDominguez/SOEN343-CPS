@@ -9,8 +9,7 @@ import org.springframework.context.ApplicationContext;
 
 import com.stripe.exception.StripeException;
 
-import cps.controllers.PaymentController;
-
+import cps.ApplicationLayer.PaymentController;
 import cps.utils.MapsService;
 import cps.utils.Pair;
 
