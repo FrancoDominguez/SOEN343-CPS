@@ -30,31 +30,31 @@ public class PaymentController {
         if (data == null || !data.containsKey("amount") || data.get("amount") == null) {
             throw new IllegalArgumentException("Missing or invalid 'amount' field");
         }
-    
+
         long amount;
         try {
             amount = ((Number) data.get("amount")).longValue();
         } catch (ClassCastException | NullPointerException e) {
             throw new IllegalArgumentException("Invalid 'amount' value. Must be a numeric value in cents.", e);
         }
-    
+
         String currency = "cad";
-    
+
         PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
                 .setAmount(amount)
                 .setCurrency(currency)
                 .addPaymentMethodType("card")
                 .build();
-    
+
         PaymentIntent intent = PaymentIntent.create(params);
-    
+
         Payment payment = new Payment(intent.getId(), amount, currency, intent.getStatus());
         paymentStore.add(payment);
-    
+
         Map<String, String> responseData = new HashMap<>();
         responseData.put("clientSecret", intent.getClientSecret());
         return responseData;
     }
-    
+    // temp comment
 
 }
