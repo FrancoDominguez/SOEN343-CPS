@@ -3,7 +3,7 @@ package cps.DomainLayer;
 import cps.FoundationLayer.ClientDAO;
 import cps.exceptions.UnauthorizedException;
 import cps.models.Client;
-import cps.models.RequestBodies.SignupRequestbody;
+import cps.DTO.RequestBodies.SignupRequestbody;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

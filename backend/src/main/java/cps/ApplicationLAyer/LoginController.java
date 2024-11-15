@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import cps.DomainLayer.AuthenticationService;
-import cps.models.RequestBodies.LoginRequestBody;
-import cps.models.ResponseBodies.BasicResponse;
-import cps.models.ResponseBodies.LoginResponseBody;
+import cps.DTO.RequestBodies.LoginRequestBody;
+import cps.DTO.ResponseBodies.BasicResponse;
+import cps.DTO.ResponseBodies.LoginResponseBody;
 
 @RestController
 public class LoginController {

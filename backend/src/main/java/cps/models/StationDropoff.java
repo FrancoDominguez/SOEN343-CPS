@@ -1,6 +1,6 @@
 package cps.models;
 
-public class StationDropoff extends Origin {
+public class StationDropoff extends Departure {
   public StationDropoff(Location station, int quotationId) {
     super(station, quotationId);
   }

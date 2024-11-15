@@ -1,13 +1,13 @@
-package cps.models.ResponseBodies;
+package cps.DTO.ResponseBodies;
 
 public class BasicResponse {
     protected String message;
 
-    public BasicResponse(){
+    public BasicResponse() {
         this.message = "there was an error";
     }
-    
-    public BasicResponse(String message){
+
+    public BasicResponse(String message) {
         this.message = message;
     }
 

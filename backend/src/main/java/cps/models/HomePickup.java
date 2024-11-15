@@ -1,6 +1,6 @@
 package cps.models;
 
-public class HomePickup extends Origin {
+public class HomePickup extends Departure {
   public HomePickup(Location station, int quotationId) {
     super(station, quotationId);
   }

@@ -4,7 +4,7 @@ import static cps.utils.MapsService.getDurationDistance;
 
 import java.time.Duration;
 
-import cps.services.MapsService;
+import cps.utils.MapsService;
 import cps.utils.Pair;
 
 public class Quotation {
@@ -61,17 +61,17 @@ public class Quotation {
     return (this.initialExpectedDelay == null || this.price == -1);
   }
 
-  public String getDeliveryType() {
-    if (departure instanceof StationDropoff) {
-      return "station dropoff";
-    } else if (departure instanceof ScheduledHomePickup) {
-      return "scheduled home pickup";
-    } else if (departure instanceof HomePickup) {
-      return "regular home pickup";
-    } else {
-      return "unknown delivery type";
-    }
-  }
+  // public String getDeliveryType() {
+  // if (departure instanceof StationDropoff) {
+  // return "station dropoff";
+  // } else if (departure instanceof ScheduledHomePickup) {
+  // return "scheduled home pickup";
+  // } else if (departure instanceof HomePickup) {
+  // return "regular home pickup";
+  // } else {
+  // return "unknown delivery type";
+  // }
+  // }
 
   public void changeDeliveryType(Departure departure) {
     this.departure = departure;
