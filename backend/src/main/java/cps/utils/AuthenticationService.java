@@ -36,7 +36,7 @@ public final class AuthenticationService {
     // confirm that the user was found
     if (rs.next()) {
       // create the user object with the information
-      int userId = rs.getInt("id");
+      int userId = rs.getInt("user_id");
       String userFirstname = rs.getString("firstname");
       String userLastname = rs.getString("lastname");
       String userEmail = rs.getString("email");
