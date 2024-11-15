@@ -4,6 +4,7 @@ import { EnvContext } from "./components/EnvProvider";
 import DashboardPage from "./components/Pages/DashboardPage";
 import DeliverPage from "./components/Pages/DeliverPage";
 import ReceivingPage from "./components/Pages/ReceivingPage";
+import PaymentPage from "./components/Pages/PaymentPage"; 
 import TopNavBar from "./components/TopNavbar";
 import LoginPage from "./components/Pages/LoginPage";
 import TrackingInfo from "./components/Pages/TrackingInfo";
@@ -13,6 +14,8 @@ const navigation = [
   { name: "Home", href: "/", current: true },
   { name: "Dashboard", href: "/dashboard", current: false },
   { name: "Deliver", href: "/deliver", current: false },
+  { name: "Payment", href: "/payment", current: false },
+
 ];
 
 function App() {
@@ -47,6 +50,7 @@ function App() {
               <Route path="/deliver" element={<DeliverPage />} />
               <Route path="/tracking/:trackingNumber" element={<TrackingInfo />} />
               <Route path="/login" element={<LoginPage />} />
+              <Route path="/payment" element={<PaymentPage />} />
             </Routes>
           </div>
         </div>
