@@ -13,7 +13,8 @@ class Client {
   + login() : void
   + createQuotation() : void
   + placeDelivery(cardInfo) : void
-  + updatePickupTime(Quotation quotation) : void
+  + changePickupTime(Quotation quotation, Datetime pickupTime) : void
+  + changeDropoffStation(Quotation quotation, Location location) : void
 }
 
 abstract class Payment {

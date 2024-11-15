@@ -15,10 +15,11 @@ public class Quotation {
   private double price;
   private Boolean hasPriority;
   private double warrantedAmount;
+  private Boolean signatureRequired;
   private static MapsService mapsService;
 
   public Quotation(int clientId, Parcel parcel, Origin origin, Location destination, Boolean hasPriority,
-      double warrantedAmount) {
+      double warrantedAmount, Boolean signatureRequired) {
     this.id = -1;
     this.clientId = clientId;
     this.parcel = parcel;
@@ -26,12 +27,13 @@ public class Quotation {
     this.destination = destination;
     this.hasPriority = hasPriority;
     this.warrantedAmount = warrantedAmount;
+    this.signatureRequired = signatureRequired;
     this.initialExpectedDelay = null;
     this.price = -1;
   }
 
   public Quotation(int id, int clientId, Parcel parcel, Origin origin, Location destination, Boolean hasPriority,
-      double warrantedAmount) {
+      double warrantedAmount, Boolean signatureRequired) {
     this.id = id;
     this.clientId = clientId;
     this.parcel = parcel;
@@ -39,6 +41,7 @@ public class Quotation {
     this.destination = destination;
     this.hasPriority = hasPriority;
     this.warrantedAmount = warrantedAmount;
+    this.signatureRequired = signatureRequired;
     this.initialExpectedDelay = null;
     this.price = -1;
   }
