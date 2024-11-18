@@ -1,8 +1,8 @@
 package cps.DomainLayer;
 
-import cps.FoundationLayer.ClientDAO;
 import cps.exceptions.UnauthorizedException;
-import cps.models.Client;
+import cps.models.ClientModel;
+import cps.DAO.ClientDAO;
 import cps.DTO.RequestBodies.SignupRequestbody;
 
 import com.auth0.jwt.JWT;
@@ -25,7 +25,7 @@ public final class AuthenticationService {
 
   // example of how to use the mysql connector
   public static String login(String email, String password) throws Exception {
-    Client user = userDAO.getUserByEmail(email);
+    ClientModel user = userDAO.getUserByEmail(email);
 
     if (user == null) {
       throw new Exception("Email is incorrect");
@@ -53,7 +53,7 @@ public final class AuthenticationService {
     String email = data.getEmail();
     String password = data.getPassword();
 
-    Client newUser = new Client(firstname, lastname, email, password);
+    ClientModel newUser = new ClientModel(firstname, lastname, email, password);
     boolean success = userDAO.createUser(newUser);
 
     if (!success) {
@@ -62,7 +62,7 @@ public final class AuthenticationService {
 
   }
 
-  private static String generateToken(Client user) {
+  private static String generateToken(ClientModel user) {
     Algorithm algorithm = Algorithm.HMAC256(secretKey);
     String token = JWT.create()
         .withIssuer("auth0")

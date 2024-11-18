@@ -1,13 +1,13 @@
-package cps.FoundationLayer;
+package cps.DAO;
 
-import cps.models.Client;
+import cps.models.ClientModel;
 import cps.utils.Mysqlcon;
 import java.sql.*;
 
 public class ClientDAO {
 
   // Get a user by email
-  public Client getUserByEmail(String email) throws Exception {
+  public ClientModel getUserByEmail(String email) throws Exception {
     // Create a query string
     String query = "SELECT * FROM clients WHERE email = ?";
     
@@ -20,7 +20,7 @@ public class ClientDAO {
     statement.setString(1, email);
     ResultSet resultSet = statement.executeQuery();
 
-    Client user = null;
+    ClientModel user = null;
     // If a user is found, create a User object
     if (resultSet.next()) {
       int userId = resultSet.getInt("client_id");
@@ -28,7 +28,7 @@ public class ClientDAO {
       String lastname = resultSet.getString("lastname");
       String password = resultSet.getString("password");
 
-      user = new Client(userId, firstname, lastname, email, password);
+      user = new ClientModel(userId, firstname, lastname, email, password);
     }
 
     mysqlConnection.close(); // Close the connection
@@ -36,7 +36,7 @@ public class ClientDAO {
   }
 
   // Create a new user in the database
-  public boolean createUser(Client user) throws Exception {
+  public boolean createUser(ClientModel user) throws Exception {
     // Create a query string for inserting a new user
     String query = "INSERT INTO clients (firstname, lastname, email, password) VALUES (?, ?, ?, ?)";
 
@@ -59,7 +59,7 @@ public class ClientDAO {
   }
 
   // Update an existing user
-  public boolean updateUser(Client user) throws Exception {
+  public boolean updateUser(ClientModel user) throws Exception {
     // Create a query string for updating a user
     String query = "UPDATE clients SET firstname = ?, lastname = ?, email = ?, password = ? WHERE client_id = ?";
 

@@ -1,7 +1,8 @@
 package cps.models;
 
 public class Parcel {
-  private static double maxLength;
+  private static double maxDimension;
+  private static double maxWeight;
   private int id;
   private double length;
   private double width;
@@ -10,7 +11,8 @@ public class Parcel {
   private Boolean isFragile;
 
   static {
-    maxLength = 48;
+    maxDimension = 48;
+    maxWeight = 60;
   }
 
   public Parcel(double length, double width, double height, double weight, Boolean isFragile) {
@@ -51,11 +53,19 @@ public class Parcel {
     return this.weight;
   }
 
-  public Boolean getIsFragile() {
+  public Boolean isFragile() {
     return this.isFragile;
   }
 
+  public static void setMaxLength(double newMaxLength) {
+    maxDimension = newMaxLength;
+  }
+
   public Boolean isOversized() {
-    return (this.length > maxLength || this.width > maxLength || this.height > maxLength);
+    return (this.length > maxDimension || this.width > maxDimension || this.height > maxDimension);
+  }
+
+  public Boolean isOverweight() {
+    return (this.weight > maxWeight);
   }
 }

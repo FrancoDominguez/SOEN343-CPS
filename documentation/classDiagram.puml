@@ -1,111 +1,135 @@
 @startuml classDiagram
-skinparam linetype ortho
+skinparam Linetype ortho
 
-class Guest {
-  + trackOrder() : ShippingStatus
+interface OrderTracker{
+  + trackOrder(int orderId) : void
 }
-
+OrderTracker <|-[dashed]- Client
+OrderTracker <|-[dashed]- Guest
+OrderTracker "1" -- "*" ShippingStatus : can track
+class Guest {
+  + login() : JWT
+  + signup() : void
+}
+Guest "1" -- "1" Client : creates
 class Client {
+  + email : String
   + firstname : String
   + lastname : String
-  + email : String
   + password : String
-  + login() : void
-  + createQuotation() : void
-  + placeDelivery(cardInfo) : void
-  + changePickupTime(Quotation quotation, Datetime pickupTime) : void
-  + changeDropoffStation(Quotation quotation, Location location) : void
+  + CRUDcontract(Contract)
+  + createDelivery(Contract) : void
+  + viewActiveDeliveries() : Delivery[]
+}
+Client "1" --> "1" Location : home address
+
+Client "1" *-- "*" Contract : CRUD
+Client "1" -- "*" Delivery : creates & reads
+
+abstract class Contract{
+  + price : Number
+  + eta : Duration
+  + signatureRequired : Boolean
+  + priorityShipping : Boolean
+  + warrantedAmount : Number
+  {abstract} + processQuote() : void <<abstract>>
+  # calculatePrice() : Number
+  # calculateETA() : Number
+}
+Contract "1" -- "1" Parcel : has
+Contract <|-- StationDropoff
+Contract <|-- HomePickup
+class StationDropoff{
+  + changeStation(DropoffStation) : void
+}
+StationDropoff "1" -- "1" DropoffStation : origin
+class HomePickup {
+  + pickupTime : Time
+  + isFlexible : Boolean
+  + changeLocation(Location) : void
+  + changePickupTime(Time) : void
+}
+HomePickup "1" --> "1" Location : origin
+
+Contract "1" <-right- "1" Delivery : based on
+
+class Delivery{
+  + start() : void
+  + markAsDelivered() : void
+  + transfer(Node node) : void
+  - updateStatus() : void
+}
+Delivery <|-- FlexibleDelivery
+class FlexibleDelivery {
+  + canBeUpdated : Boolean
+  + changeLocation(Location) : void
+  + changeTime(Time) : void
 }
 
-abstract class Payment {
-  + amount
-  + validatePayment() : Boolean
-  + performPayment() : void
+Delivery "1" -right-> "1" ShippingStatus : updates
+class ShippingStatus{
+  + currentLocationIndex : Number
+  + goNext() : void
+  + getStatus() : String
+  + getETA() : Time
+
+}
+ShippingStatus "1" -up- "*" Node : has path of
+
+Tracking .. (Delivery, ShippingStatus) 
+
+class Tracking {
+  + trackingId : Number
+  + printLabel() : PDF
+}
+class Payment{
+  + amount : Number
+  + paymentInfo : String
+}
+Payment "1" -- "1" Tracking
+
+class Parcel{
+  + {static} maxDimension : Number
+  + {static} maxWeight : Number
+  + height : Number
+  + width : Number
+  + length : Number
+  + weight : Number
+  + isFragile : Boolean
+  + isOversized() : Boolean
+  + isOverweight(): Boolean
 }
 
-class PayPal extends Payment {
-  - String paypalId : String
-}
-
-class CreditCard extends Payment{
-  - cardNumber
-  - expirationDate
-  - cvv
-}
-
-class Location {
-  + streetAddress : String
+Contract "1" -left-> "1" Location : destination
+class Location{
+  + address : String
   + postalCode : String
   + city : String
   + country : String
+  + getDistanceDuration(Location) : Pair
+}
+Location <|-- DropoffStation
+class DropoffStation{
+  + name : String
+}
+class Node <<mocked>> {
+  + name : String
 }
 
-class DropoffStation {
-  + name
+Delivery "1" -- "1" DeliveryStarter : puts in transit
+interface DeliveryStarter <<mocked>>{
+  + start(Delivery) : void
 }
-
-abstract class Departure {
-  + getOriginAddress()
+DeliveryStarter <|-[dashed]- Clerk
+DeliveryStarter <|-[dashed]- Driver
+class Clerk <<mocked>>{}
+Clerk "1" -- "1" DropoffStation : works at
+class Driver <<mocked>> {
+  + pickup(Delivery) : void
+  + drop(Delivery) : void
 }
+Driver "1" -- "*" Delivery : delivers
 
-class HomePickup{}
-class ScheduledHomePickup{
-  + pickupTime : DateTime
-  + changePickupTime(DateTime time) : void
-}
 
-class StationDropoff{
-  + station : Location
-  + changeStation(Location location) : void
-}
-
-class Quotation {
-  + expectedDelay : Number
-  + price : Number
-  + hasPriority : Boolean
-  + warantedAmount : Number
-  + signatureRequired : Boolean
-  + getDeliveryType() : String
-}
-
-class Delivery {
-  + isCompleted : Boolean
-  + deliver() : void
-}
-
-class ShippingStatus {
-  + eta : DateTime
-  + travelPath : Location[]
-  - currentLocation : number
-  + getCurrentLocation() : Location
-  + getTravelPath() : Location[]
-  + getEta() : DateTime
-  + isDelivered() : Boolean
-  + getStatus() : String
-}
-
-class Parcel {
-  + weight : number
-  + height : number
-  + width : number
-  + length : number
-  + isFragile() : Boolean
-  + isOversized() : Boolean
-}
-
-Guest <|-- Client
-Quotation <|-- Delivery
-StationDropoff --|> Departure
-HomePickup --|> Departure
-ScheduledHomePickup --|> HomePickup
-DropoffStation -down-|> Location
-
-Client "1" -left- "*" Quotation : CRUD
-Parcel "1" -- "1" Quotation
-Location "1" - "1" Quotation : destination
-Location "1" - "1" Quotation
-(Client, Delivery) .. Payment
-Departure .. (Quotation, Location)
-Delivery "1" -left- "1" ShippingStatus
 
 @enduml

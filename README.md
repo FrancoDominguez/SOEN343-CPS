@@ -34,3 +34,50 @@ note: if you are on wsl, you can alias `alias runjava='mvn clean package && java
 ### Make direct changes to the db
 
 To connect to the mysql server and make direct changes run the following `mysql -h franco-db.czes8i20a6iw.us-east-1.rds.amazonaws.com -P 3306 -u admin -p`. To exit type `\q` and press enter.
+
+ALTER TABLE contracts ADD CONSTRAINT chk_origin_exclusivity CHECK ((origin_location_id IS NOT NULL AND origin_station_id IS NULL AND pickupTime IS NOT NULL AND isFlexible IS NOT NULL) OR (origin_location_id IS NULL AND origin_station_id IS NOT NULL AND pickupTime IS NULL AND isFlexible IS NULL));
+
+// CONTRACTS
+contract_id: number PK autoincrement
+client_id: number FK -> clients
+price: Number
+eta: Duration
+signature_required: Bool
+priority_shipping: Bool
+warranted_amount: Number
+parcel_id: Number FK -> parcels
+destination_id: FK number -> locations
+origin_station_id: FK number -> stations default null optional
+origin_location_id: FK number -> locations default null optional
+pickupTime: DateTime default null optional
+isFlexible: Boolean default null optional
+
+// PARCEL (DONE)
+parcel_id: int PK autoincrement
+parcel_height: Number
+parcel_length: Number
+parcel_width: Number
+parcel_weight: Number
+parcel_isFragile: Bool
+
+// LOCATION (DONE)
+location_id: int PK autoincrement
+address: String
+postal_code: String
+city: String
+country: String
+
+// STATION (DONE)
+station_id: int PK autoincrement
+name: String
+address: String
+postal_code: String
+city: String
+country: String
+
+// clients (DONE)
+email: String
+firstname: String
+lastname: String
+password: String
+home_address: FK int -> locations optional default null

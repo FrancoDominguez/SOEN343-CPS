@@ -1,26 +1,15 @@
 package cps.models;
 
-public class Delivery extends Quotation {
+public class Delivery {
+  private int id;
+  private int ClientId;
+  private int trackingId;
+  private Parcel parcel;
+  private Location Destination;
+  private Boolean signatureRequired;
+  private Boolean hasPriority;
   private ShippingStatus shippingStatus;
 
-  public Delivery(int clientId, Parcel parcel, Departure departure, Location destination, Boolean hasPriority,
-      double warrantedAmount, Boolean signatureRequired) {
-    super(clientId, parcel, departure, destination, hasPriority, warrantedAmount, signatureRequired);
-    this.shippingStatus = new ShippingStatus();
-  }
-
-  public Delivery(int id, int clientId, Parcel parcel, Departure departure, Location destination,
-      Boolean hasPriority,
-      double warrantedAmount, Boolean signatureRequired) {
-    super(id, clientId, parcel, departure, destination, hasPriority, warrantedAmount, signatureRequired);
-    this.shippingStatus = new ShippingStatus();
-  }
-
-  public void deliver() {
-    // modify shipping status
-  }
-
-  public Boolean isCompleted() {
-    return this.shippingStatus.isDelivered();
+  public Delivery(Contract contract) {
   }
 }
