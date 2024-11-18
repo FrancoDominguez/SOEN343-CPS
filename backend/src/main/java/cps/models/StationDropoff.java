@@ -33,7 +33,11 @@ public class StationDropoff extends Contract {
     if (this.id == -1) {
       cDAO.insert(this);
     } else {
-      cDAO.insert(this);
+      try {
+        cDAO.update(this);
+      } catch (Exception e) {
+        System.out.println(e.getMessage());
+      }
     }
   }
 
