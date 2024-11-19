@@ -4,7 +4,6 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 
 import cps.models.Contract;
@@ -50,10 +49,8 @@ public class ContractDAO {
               "LEFT JOIN locations l ON c.origin_location_id = l.location_id " +
               "WHERE c.contract_id = %d;",
           contractId);
-      System.out.println(queryString);
       con.executeQuery(queryString);
       ResultSet rs = con.getResultSet();
-      System.out.println(rs);
 
       if (rs.next()) {
         // Contract fields
@@ -165,10 +162,8 @@ public class ContractDAO {
               "LEFT JOIN locations l ON c.origin_location_id = l.location_id " +
               "WHERE c.client_id = %d;",
           clientId);
-      System.out.println(queryString);
       con.executeQuery(queryString);
       ResultSet rs = con.getResultSet();
-      System.out.println(rs);
 
       while (rs.next()) {
         // Contract fields
@@ -251,7 +246,7 @@ public class ContractDAO {
     return contracts;
   }
 
-  public void insert(StationDropoff contract) {
+  public int insert(StationDropoff contract) {
     Location destination = contract.getDestination();
     Parcel parcel = contract.getParcel();
     try {
@@ -261,32 +256,48 @@ public class ContractDAO {
 
       queryString.append("START TRANSACTION;");
 
-      // insert into destinations
+      // Insert into destinations
       queryString.append("INSERT INTO destinations (street_address, postal_code, city, country) VALUES");
-      queryString.append(String.format(" ('%s', '%s', '%s', '%s');", destination.getStreetAddress(),
-          destination.getPostalCode(), destination.getCity(), destination.getCountry()));
+      queryString.append(String.format(" ('%s', '%s', '%s', '%s');",
+          destination.getStreetAddress(), destination.getPostalCode(),
+          destination.getCity(), destination.getCountry()));
       queryString.append("SET @destinationId = LAST_INSERT_ID();");
 
-      // insert into parcels
+      // Insert into parcels
       queryString.append("INSERT INTO parcels (height, width, length, weight, is_fragile) VALUES");
-      queryString.append(String.format(" (%f, %f, %f, %f, %b);", parcel.getHeight(), parcel.getWidth(),
+      queryString.append(String.format(" (%f, %f, %f, %f, %b);",
+          parcel.getHeight(), parcel.getWidth(),
           parcel.getLength(), parcel.getWeight(), parcel.isFragile()));
       queryString.append("SET @parcelId = LAST_INSERT_ID();");
 
-      // insert into contracts
+      // Insert into contracts
       queryString.append("INSERT INTO contracts");
       queryString.append(
           " (client_id, price, eta, signature_required, priority_shipping, warranted_amount, parcel_id, destination_id, origin_station_id) VALUES");
       queryString.append(String.format(
           " (%d, %f, '%s', %b, %b, %d, @parcelId, @destinationId, %d);",
-          contract.getClientId(), contract.getPrice(), contract.getEta(), contract.signatureRequired(),
-          contract.hasPriority(), contract.getWarrantedAmount(), contract.getStation().getId()));
+          contract.getClientId(), contract.getPrice(), contract.getEta(),
+          contract.signatureRequired(), contract.hasPriority(),
+          contract.getWarrantedAmount(), contract.getStation().getId()));
+      queryString.append("SET @contractId = LAST_INSERT_ID();");
+
+      // Retrieve the contract_id
+      queryString.append("SELECT @contractId AS contract_id;");
       queryString.append("COMMIT;");
-      con.executeUpdate(queryString.toString());
+
+      // Execute the query
+      con.executeQuery(queryString.toString());
+      ResultSet rs = con.getResultSet();
+      if (rs.next()) {
+        int contractId = rs.getInt("contract_id");
+        System.out.println("Inserted contract ID: " + contractId);
+        return contractId;
+      }
       con.close();
     } catch (Exception e) {
       System.out.println(e.getMessage());
     }
+    return -1;
   }
 
   public void update(StationDropoff contract) throws Exception {
@@ -326,7 +337,7 @@ public class ContractDAO {
     con.close();
   }
 
-  public void insert(HomePickup contract) {
+  public int insert(HomePickup contract) {
     Location destination = contract.getDestination();
     Location origin = contract.getOrigin();
     Parcel parcel = contract.getParcel();
@@ -335,52 +346,59 @@ public class ContractDAO {
       Mysqlcon con = Mysqlcon.getInstance();
       con.connect();
 
-      // Start transaction
-      con.executeUpdate("START TRANSACTION;");
+      StringBuilder queryString = new StringBuilder();
+
+      queryString.append("START TRANSACTION;");
 
       // Insert destination
-      String destinationInsert = String.format(
+      queryString.append(String.format(
           "INSERT INTO locations (street_address, postal_code, city, country) VALUES ('%s', '%s', '%s', '%s');",
-          destination.getStreetAddress(), destination.getPostalCode(), destination.getCity(), destination.getCountry());
-      con.executeUpdate(destinationInsert);
-
-      // Set destination ID
-      con.executeUpdate("SET @destinationId = LAST_INSERT_ID();");
+          destination.getStreetAddress(), destination.getPostalCode(),
+          destination.getCity(), destination.getCountry()));
+      queryString.append("SET @destinationId = LAST_INSERT_ID();");
 
       // Insert origin
-      String originInsert = String.format(
+      queryString.append(String.format(
           "INSERT INTO locations (street_address, postal_code, city, country) VALUES ('%s', '%s', '%s', '%s');",
-          origin.getStreetAddress(), origin.getPostalCode(), origin.getCity(), origin.getCountry());
-      con.executeUpdate(originInsert);
-
-      // Set origin ID
-      con.executeUpdate("SET @originId = LAST_INSERT_ID();");
+          origin.getStreetAddress(), origin.getPostalCode(),
+          origin.getCity(), origin.getCountry()));
+      queryString.append("SET @originId = LAST_INSERT_ID();");
 
       // Insert parcel
-      String parcelInsert = String.format(
+      queryString.append(String.format(
           "INSERT INTO parcels (height, width, length, weight, is_fragile) VALUES (%f, %f, %f, %f, %b);",
-          parcel.getHeight(), parcel.getWidth(), parcel.getLength(), parcel.getWeight(), parcel.isFragile());
-      con.executeUpdate(parcelInsert);
-
-      // Set parcel ID
-      con.executeUpdate("SET @parcelId = LAST_INSERT_ID();");
+          parcel.getHeight(), parcel.getWidth(),
+          parcel.getLength(), parcel.getWeight(), parcel.isFragile()));
+      queryString.append("SET @parcelId = LAST_INSERT_ID();");
 
       // Insert contract
-      String contractInsert = String.format(
+      queryString.append(String.format(
           "INSERT INTO contracts (client_id, price, eta, signature_required, priority_shipping, warranted_amount, "
-              + "parcel_id, destination_id, origin_location_id, pickup_time, is_flexible)"
-              + "VALUES (%d, %f, '%s', %b, %b, %f, @parcelId, @destinationId, @originId, '%s', %b);",
-          contract.getClientId(), contract.getPrice(), contract.getEta(), contract.signatureRequired(),
-          contract.hasPriority(), contract.getWarrantedAmount(),
-          Timestamp.valueOf(contract.getPickupTime()).toString(), contract.isFlexible());
-      con.executeUpdate(contractInsert);
+              + "parcel_id, destination_id, origin_location_id, pickup_time, is_flexible) VALUES "
+              + "(%d, %f, '%s', %b, %b, %f, @parcelId, @destinationId, @originId, '%s', %b);",
+          contract.getClientId(), contract.getPrice(), contract.getEta(),
+          contract.signatureRequired(), contract.hasPriority(),
+          contract.getWarrantedAmount(),
+          Timestamp.valueOf(contract.getPickupTime()).toString(), contract.isFlexible()));
+      queryString.append("SET @contractId = LAST_INSERT_ID();");
 
-      // Commit transaction
-      con.executeUpdate("COMMIT;");
+      // Retrieve the contract_id
+      queryString.append("SELECT @contractId AS contract_id;");
+      queryString.append("COMMIT;");
+
+      // Execute the query and fetch contract_id
+      con.executeQuery(queryString.toString());
+      ResultSet rs = con.getResultSet();
+      if (rs.next()) {
+        int contractId = rs.getInt("contract_id");
+        System.out.println("Inserted contract ID: " + contractId);
+        return contractId;
+      }
       con.close();
     } catch (Exception e) {
       System.out.println(e.getMessage());
     }
+    return -1;
   }
 
   public void update(HomePickup contract) throws Exception {

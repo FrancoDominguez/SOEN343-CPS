@@ -31,7 +31,7 @@ public class StationDropoff extends Contract {
   public void save() {
     ContractDAO contractDAO = new ContractDAO();
     if (this.id == -1) {
-      contractDAO.insert(this);
+      this.id = contractDAO.insert(this);
     } else {
       try {
         contractDAO.update(this);
