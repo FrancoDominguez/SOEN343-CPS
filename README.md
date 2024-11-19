@@ -29,13 +29,13 @@ note: vite works better on cmd than wsl.
 3. run `mvn clean package` to compile and install dependencies
 4. run `java -jar target/CPS-backend-1.0-SNAPSHOT.jar` to run the code
 
-note: if you are on wsl, you can alias `alias runjava='mvn clean package && java -jar target/CPS-backend-1.0-SNAPSHOT.jar'`, then simply run `runjava` to compile and run the entire thing (still from the backend directory).
+note: if you are on wsl, you can alias `alias runjava='mvn package && java -jar target/CPS-backend-1.0-SNAPSHOT.jar'`, then simply run `runjava` to compile and run the entire thing (still from the backend directory).
 
 ### Make direct changes to the db
 
 To connect to the mysql server and make direct changes run the following `mysql -h franco-db.czes8i20a6iw.us-east-1.rds.amazonaws.com -P 3306 -u admin -p`. To exit type `\q` and press enter.
 
-ALTER TABLE contracts ADD CONSTRAINT chk_origin_exclusivity CHECK ((origin_location_id IS NOT NULL AND origin_station_id IS NULL AND pickupTime IS NOT NULL AND isFlexible IS NOT NULL) OR (origin_location_id IS NULL AND origin_station_id IS NOT NULL AND pickupTime IS NULL AND isFlexible IS NULL));
+ALTER TABLE contracts ADD CONSTRAINT chk_origin_exclusivity CHECK ((origin_location_id IS NOT NULL AND origin_station_id IS NULL AND pickup_time IS NOT NULL AND is_flexible IS NOT NULL) OR (origin_location_id IS NULL AND origin_station_id IS NOT NULL AND pickup_time IS NULL AND is_flexible IS NULL));
 
 // CONTRACTS
 contract_id: number PK autoincrement

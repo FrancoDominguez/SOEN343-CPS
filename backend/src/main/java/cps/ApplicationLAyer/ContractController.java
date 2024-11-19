@@ -9,8 +9,8 @@ import cps.DTO.RequestBodies.QuotationRequestBody;
 @RestController
 public class ContractController {
 
-  @PostMapping("/quotation")
-  public void generateQuotation(@RequestBody QuotationRequestBody quotationInfo) {
-    
+  @PostMapping("/contract")
+  public void generateContract(@RequestBody  contract) {
+
   }
 }

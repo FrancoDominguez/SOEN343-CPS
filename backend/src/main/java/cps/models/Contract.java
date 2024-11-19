@@ -105,4 +105,19 @@ public abstract class Contract {
   protected abstract double calculatePrice();
 
   protected abstract LocalDateTime calculateEta();
+
+  @Override
+  public String toString() {
+    return "Contract{\n" +
+        "  id=" + id + ",\n" +
+        "  clientId=" + clientId + ",\n" +
+        "  parcel=" + parcel + ",\n" +
+        "  destination=" + destination + ",\n" +
+        "  signatureRequired=" + signatureRequired + ",\n" +
+        "  hasPriority=" + hasPriority + ",\n" +
+        "  warrantedAmount=" + warrantedAmount + ",\n" +
+        "  price=" + price + ",\n" +
+        "  eta=" + eta + "\n" +
+        '}';
+  }
 }

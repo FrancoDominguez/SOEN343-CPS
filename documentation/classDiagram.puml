@@ -22,7 +22,6 @@ class Client {
   + viewActiveDeliveries() : Delivery[]
 }
 Client "1" --> "1" Location : home address
-
 Client "1" *-- "*" Contract : CRUD
 Client "1" -- "*" Delivery : creates & reads
 
@@ -56,7 +55,7 @@ Contract "1" <-right- "1" Delivery : based on
 class Delivery{
   + start() : void
   + markAsDelivered() : void
-  + transfer(Node node) : void
+  + transfer(Node, Node) : void
   - updateStatus() : void
 }
 Delivery <|-- FlexibleDelivery

@@ -29,12 +29,12 @@ public class StationDropoff extends Contract {
   }
 
   public void save() {
-    ContractDAO cDAO = new ContractDAO();
+    ContractDAO contractDAO = new ContractDAO();
     if (this.id == -1) {
-      cDAO.insert(this);
+      contractDAO.insert(this);
     } else {
       try {
-        cDAO.update(this);
+        contractDAO.update(this);
       } catch (Exception e) {
         System.out.println(e.getMessage());
       }

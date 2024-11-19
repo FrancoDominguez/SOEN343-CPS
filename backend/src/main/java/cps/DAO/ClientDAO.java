@@ -6,101 +6,55 @@ import java.sql.*;
 
 public class ClientDAO {
 
-  // Get a user by email
-  public ClientModel getUserByEmail(String email) throws Exception {
-    // Create a query string
+  public ClientModel fetchByEmail(String email) throws Exception {
     String query = "SELECT * FROM clients WHERE email = ?";
-    
-    // Get the singleton Mysqlcon instance
-    Mysqlcon mysqlConnection = Mysqlcon.getInstance();
-    mysqlConnection.connect();
 
-    // Prepare the statement and execute the query
-    PreparedStatement statement = mysqlConnection.getConnection().prepareStatement(query);
+    Mysqlcon con = Mysqlcon.getInstance();
+    con.connect();
+
+    PreparedStatement statement = con.getConnection().prepareStatement(query);
     statement.setString(1, email);
-    ResultSet resultSet = statement.executeQuery();
+    ResultSet rs = statement.executeQuery();
 
-    ClientModel user = null;
-    // If a user is found, create a User object
-    if (resultSet.next()) {
-      int userId = resultSet.getInt("client_id");
-      String firstname = resultSet.getString("firstname");
-      String lastname = resultSet.getString("lastname");
-      String password = resultSet.getString("password");
-
-      user = new ClientModel(userId, firstname, lastname, email, password);
+    ClientModel clientObj = null;
+    if (rs.next()) {
+      int clientId = rs.getInt("client_id");
+      String firstname = rs.getString("firstname");
+      String lastname = rs.getString("lastname");
+      String password = rs.getString("password");
+      clientObj = new ClientModel(clientId, firstname, lastname, email, password);
     }
 
-    mysqlConnection.close(); // Close the connection
-    return user; // Return the user (or null if not found)
+    con.close();
+    return clientObj;
   }
 
-  // Create a new user in the database
-  public boolean createUser(ClientModel user) throws Exception {
-    // Create a query string for inserting a new user
-    String query = "INSERT INTO clients (firstname, lastname, email, password) VALUES (?, ?, ?, ?)";
-
-    // Get the singleton Mysqlcon instance
-    Mysqlcon mysqlConnection = Mysqlcon.getInstance();
-    mysqlConnection.connect();
-
-    // Prepare the statement and execute the update
-    PreparedStatement statement = mysqlConnection.getConnection().prepareStatement(query);
-    statement.setString(1, user.getFirstname());
-    statement.setString(2, user.getLastname());
-    statement.setString(3, user.getEmail());
-    statement.setString(4, user.getPassword());
-
-    int rowsAffected = statement.executeUpdate();
-
-    mysqlConnection.close(); // Close the connection
-
-    return rowsAffected > 0; // Return true if the user was created
+  public void insert(ClientModel clientObj) throws Exception {
+    Mysqlcon con = Mysqlcon.getInstance();
+    con.connect();
+    String queryString = String.format(
+        "INSERT INTO clients (firstname, lastname, email, password) VALUES ('%s', '%s', '%s', '%s')",
+        clientObj.getFirstname(), clientObj.getLastname(), clientObj.getEmail(), clientObj.getPassword());
+    con.executeUpdate(queryString);
+    con.close();
   }
 
-  // Update an existing user
-  public boolean updateUser(ClientModel user) throws Exception {
-    // Create a query string for updating a user
-    String query = "UPDATE clients SET firstname = ?, lastname = ?, email = ?, password = ? WHERE client_id = ?";
-
-    // Get the singleton Mysqlcon instance
-    Mysqlcon mysqlConnection = Mysqlcon.getInstance();
-    mysqlConnection.connect();
-
-    // Prepare the statement and execute the update
-    PreparedStatement statement = mysqlConnection.getConnection().prepareStatement(query);
-    statement.setString(1, user.getFirstname());
-    statement.setString(2, user.getLastname());
-    statement.setString(3, user.getEmail());
-    statement.setString(4, user.getPassword());
-    statement.setInt(5, user.getId());
-
-    int rowsAffected = statement.executeUpdate();
-
-    mysqlConnection.close(); // Close the connection
-
-    return rowsAffected > 0; // Return true if the user was updated
+  public void update(ClientModel clientObj) throws Exception {
+    Mysqlcon con = Mysqlcon.getInstance();
+    con.connect();
+    String queryString = String.format(
+        "UPDATE clients SET firstname = '%s', lastname = '%s', email = '%s', password = '%s' WHERE client_id = '%d",
+        clientObj.getFirstname(), clientObj.getLastname(), clientObj.getEmail(), clientObj.getPassword(),
+        clientObj.getId());
+    con.executeUpdate(queryString);
+    con.close();
   }
 
-  // Delete a user by ID
-  public boolean deleteUser(int userId) throws Exception {
-    // Create a query string for deleting a user
-    String query = "DELETE FROM clients WHERE client_id = ?";
-
-    // Get the singleton Mysqlcon instance
-    Mysqlcon mysqlConnection = Mysqlcon.getInstance();
-    mysqlConnection.connect();
-
-    // Prepare the statement and execute the delete
-    PreparedStatement statement = mysqlConnection.getConnection().prepareStatement(query);
-    statement.setInt(1, userId);
-
-    int rowsAffected = statement.executeUpdate();
-
-    mysqlConnection.close(); // Close the connection
-
-    return rowsAffected > 0; // Return true if the user was deleted
+  public void delete(int clientId) throws Exception {
+    Mysqlcon con = Mysqlcon.getInstance();
+    con.connect();
+    String queryString = String.format("DELETE FROM clients WHERE client_id = ?", clientId);
+    con.executeUpdate(queryString);
+    con.close();
   }
-
-  // Optional: You could also include other helper methods, e.g., for validating email, etc.
 }

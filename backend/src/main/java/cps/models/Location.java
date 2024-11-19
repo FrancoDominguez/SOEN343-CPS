@@ -47,5 +47,4 @@ public class Location {
   public String toString() {
     return String.format("%s, %s, %s, %s", streetAddress, postalCode, city, country);
   }
-
 }

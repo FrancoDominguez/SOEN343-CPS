@@ -1,5 +1,7 @@
 package cps.models;
 
+import cps.DAO.ClientDAO;
+
 public class ClientModel {
   private int id;
   private String firstname;
@@ -75,5 +77,14 @@ public class ClientModel {
 
   public void setHomeAddress(Location location) {
     this.homeAddress = location;
+  }
+
+  public void save() throws Exception {
+    ClientDAO clientDAO = new ClientDAO();
+    if (this.id == -1) {
+      clientDAO.insert(this);
+    } else {
+      clientDAO.update(this);
+    }
   }
 }

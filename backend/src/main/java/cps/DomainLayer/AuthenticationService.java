@@ -25,7 +25,7 @@ public final class AuthenticationService {
 
   // example of how to use the mysql connector
   public static String login(String email, String password) throws Exception {
-    ClientModel user = userDAO.getUserByEmail(email);
+    ClientModel user = userDAO.fetchByEmail(email);
 
     if (user == null) {
       throw new Exception("Email is incorrect");
@@ -47,19 +47,18 @@ public final class AuthenticationService {
     // fetch and save the user's information somewhere
   }
 
-  public static void createUser(SignupRequestbody data) throws Exception {
-    String firstname = data.getFirstname();
-    String lastname = data.getLastname();
-    String email = data.getEmail();
-    String password = data.getPassword();
+  public static void createUser(SignupRequestbody data) {
+    try {
+      String firstname = data.getFirstname();
+      String lastname = data.getLastname();
+      String email = data.getEmail();
+      String password = data.getPassword();
 
-    ClientModel newUser = new ClientModel(firstname, lastname, email, password);
-    boolean success = userDAO.createUser(newUser);
-
-    if (!success) {
-      throw new Exception("Error Signing up, please try again");
+      ClientModel newUser = new ClientModel(firstname, lastname, email, password);
+      userDAO.insert(newUser);
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
     }
-
   }
 
   private static String generateToken(ClientModel user) {

@@ -16,4 +16,10 @@ public class Station extends Location {
   public String getName() {
     return this.name;
   }
+
+  @Override
+  public String toString() {
+    return "Station [Name: " + name +
+        ", Address: " + super.toString() + "]";
+  }
 }

@@ -68,4 +68,12 @@ public class Parcel {
   public Boolean isOverweight() {
     return (this.weight > maxWeight);
   }
+
+  @Override
+  public String toString() {
+    return "[ID: " + id +
+        ", Dimensions: " + length + "x" + width + "x" + height +
+        ", Weight: " + weight +
+        (isFragile ? ", Fragile" : ", Not Fragile") + "]";
+  }
 }

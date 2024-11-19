@@ -52,12 +52,12 @@ public class HomePickup extends Contract {
   }
 
   public void save() {
-    ContractDAO cDAO = new ContractDAO();
+    ContractDAO contractDAO = new ContractDAO();
     if (this.id == -1) {
-      cDAO.insert(this);
+      contractDAO.insert(this);
     } else {
       try {
-        cDAO.update(this);
+        contractDAO.update(this);
       } catch (Exception e) {
         System.out.println(e.getMessage());
       }
@@ -65,6 +65,8 @@ public class HomePickup extends Contract {
   }
 
   public void processQuote() {
+    this.price = 50.00;
+    this.eta = Duration.ofDays(2);
   };
 
   protected double calculatePrice() {
