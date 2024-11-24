@@ -7,21 +7,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import cps.DomainLayer.ClientService;
-import cps.models.DeliveryStatus;
+import cps.models.ShippingStatus;
 
 @RestController
 public class DeliveryController {
 
     @GetMapping("/delivery/status")
-    public ResponseEntity<DeliveryStatus> getDeliveryStatus(@RequestParam int trackingId) {
+    public ResponseEntity<String> getDeliveryStatus(@RequestParam int trackingId) {
         try {
             ClientService clientService = new ClientService();
-            DeliveryStatus status = clientService.trackOrder(trackingId);
-            return new ResponseEntity<>(status, HttpStatus.OK);
+            ShippingStatus shippingStatus = clientService.trackOrder(trackingId);
+
+            // Return the status as a string (e.g., "pending", "in transit", "delivered")
+            return new ResponseEntity<>(shippingStatus.getStatus(), HttpStatus.OK);
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Tracking ID not found", HttpStatus.NOT_FOUND);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("An error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

@@ -11,19 +11,21 @@ import cps.models.Station;
 import cps.models.StationDropoff;
 import cps.models.Interfaces.OrderTracker;
 
-@Override
-    public ShippingStatus trackOrder(int trackingId) {
-        // Use DeliveryDAO to fetch the delivery by trackingId
-        DeliveryDAO deliveryDAO = new DeliveryDAO();
-        Delivery delivery = deliveryDAO.fetchByTrackingId(trackingId);
+public class ClientService implements OrderTracker {
 
-        if (delivery == null) {
-            throw new IllegalArgumentException("Invalid tracking ID: " + trackingId);
-        }
+  @Override
+  public ShippingStatus trackOrder(int trackingId) {
+      // Use DeliveryDAO to fetch the delivery by trackingId
+      DeliveryDAO deliveryDAO = new DeliveryDAO();
+      Delivery delivery = deliveryDAO.fetchByTrackingId(trackingId);
 
-        // Return the ShippingStatus object directly
-        return delivery.getStatus();
-    }
+      if (delivery == null) {
+          throw new IllegalArgumentException("Invalid tracking ID: " + trackingId);
+      }
+
+      // Return the ShippingStatus object from the delivery
+      return delivery.getStatus();
+  }
 
   public Contract addNewContract(ContractRequestBody contractInfo) throws Exception {
     Contract newContract = null;
@@ -57,10 +59,21 @@ import cps.models.Interfaces.OrderTracker;
     saveDelivery(newDelivery); // Persist to DB
 }
 
-private void saveDelivery(Delivery delivery) {
-    DeliveryDAO deliveryDAO = new DeliveryDAO();
-    deliveryDAO.insert(delivery); // Add DB logic here
+public void save() {
+  DeliveryDAO deliveryDAO = new DeliveryDAO();
+  if (this.id == -1) {
+      // Insert new Delivery and assign the generated ID
+      this.id = deliveryDAO.insert(this);
+  } else {
+      try {
+          // Update existing Delivery
+          deliveryDAO.update(this);
+      } catch (Exception e) {
+          System.out.println(e.getMessage());
+      }
+  }
 }
+
 
   public ArrayList<Delivery> viewAllActiveDeliveries() {
     return null;
