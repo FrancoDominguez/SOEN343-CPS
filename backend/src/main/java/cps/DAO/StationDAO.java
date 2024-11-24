@@ -12,14 +12,14 @@ public class StationDAO {
       Mysqlcon con = Mysqlcon.getInstance();
       con.connect();
       String queryString = String.format("SELECT * FROM stations WHERE station_id = %d", locationId);
-      con.executeQuery(queryString);
+      con.formerExecuteQuery(queryString);
       ResultSet rs = con.getResultSet();
       if (rs.next()) {
         String name = rs.getString("name");
-        String address = rs.getString("address");
+        String address = rs.getString("street_address");
         String postalCode = rs.getString("postal_code");
         String city = rs.getString("city");
-        String country = rs.getString("address");
+        String country = rs.getString("street_address");
         station = new Station(locationId, name, address, postalCode, city, country);
       }
       con.close();

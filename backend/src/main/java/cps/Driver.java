@@ -18,6 +18,7 @@ import cps.models.Location;
 import cps.models.Parcel;
 import cps.models.Station;
 import cps.models.StationDropoff;
+import cps.utils.Mysqlcon;
 
 @SpringBootApplication
 public class Driver {
@@ -29,6 +30,12 @@ public class Driver {
 
   public static void testDAOs() {
     try {
+      System.out.println("Clearing all tables\n");
+      clearTable("contracts");
+      clearTable("locations");
+      clearTable("parcels");
+      System.out.println("All tables are now clear\n");
+
       // fetching client
       ClientDAO clientDAO = new ClientDAO();
       ClientModel clientObj = clientDAO.fetchByEmail("hoboslime@gmail.com");
@@ -36,10 +43,8 @@ public class Driver {
       // delivery info
       StationDAO stationDAO = new StationDAO();
       Station station = stationDAO.fetchLocation(1);
-      Location origin = new Location("13069 Rue Ramsay", "h9b2s3", "Pierrefonds", "Canada");
-      System.out.println(origin.toString());
-      Location destination = new Location("1524 Notre-Dame", "h3c1l1", "Montreal", "Canada");
-      System.out.println(destination.toString());
+      Location origin = new Location("origin", "origin", "origin", "origin");
+      Location destination = new Location("destination", "destination", "destination", "destination");
       Parcel parcel = new Parcel(10.0, 10.0, 10.0, 10.0, true);
 
       // creating contract object
@@ -48,8 +53,24 @@ public class Driver {
       StationDropoff stationContract = new StationDropoff(clientObj.getId(), parcel, destination, true, true, 100.00,
           station);
 
+      System.out.println("\nprocessing and saving station dropoff contract\n");
       stationContract.processQuote();
       stationContract.save();
+      System.out.println("\nprocessing and saving home pickup contract\n");
+      pickupContract.processQuote();
+      pickupContract.save();
+
+      // testing update function
+      System.out.println("\ntesting station dropoff updates\n");
+      stationContract.setHasPriority(false);
+      Parcel changedParcel = new Parcel(7.0, 7.0, 7.0, 7.0, true);
+      stationContract.setParcel(changedParcel);
+      stationContract.processQuote();
+      stationContract.save();
+
+      System.out.println("\ntesting home pickup updates\n");
+      Location newDestination = new Location("testing", "testing", "testing", "testing");
+      pickupContract.setDestination(newDestination);
       pickupContract.processQuote();
       pickupContract.save();
 
@@ -62,4 +83,19 @@ public class Driver {
 
     // Contract newContract = new Contract();
   }
+
+  private static void clearTable(String tableName) {
+    Mysqlcon con = Mysqlcon.getInstance();
+    try {
+      System.out.println("Clearing table " + tableName);
+      con.connect();
+      String queryString = String.format("DELETE FROM %s;", tableName);
+      con.formerExecuteUpdate(queryString);
+      con.close();
+      System.out.println("table " + tableName + " has been cleared");
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
 }

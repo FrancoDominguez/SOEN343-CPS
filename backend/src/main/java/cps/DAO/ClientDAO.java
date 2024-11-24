@@ -35,7 +35,7 @@ public class ClientDAO {
     String queryString = String.format(
         "INSERT INTO clients (firstname, lastname, email, password) VALUES ('%s', '%s', '%s', '%s')",
         clientObj.getFirstname(), clientObj.getLastname(), clientObj.getEmail(), clientObj.getPassword());
-    con.executeUpdate(queryString);
+    con.formerExecuteUpdate(queryString);
     con.close();
   }
 
@@ -46,7 +46,7 @@ public class ClientDAO {
         "UPDATE clients SET firstname = '%s', lastname = '%s', email = '%s', password = '%s' WHERE client_id = '%d",
         clientObj.getFirstname(), clientObj.getLastname(), clientObj.getEmail(), clientObj.getPassword(),
         clientObj.getId());
-    con.executeUpdate(queryString);
+    con.formerExecuteUpdate(queryString);
     con.close();
   }
 
@@ -54,7 +54,7 @@ public class ClientDAO {
     Mysqlcon con = Mysqlcon.getInstance();
     con.connect();
     String queryString = String.format("DELETE FROM clients WHERE client_id = ?", clientId);
-    con.executeUpdate(queryString);
+    con.formerExecuteUpdate(queryString);
     con.close();
   }
 }

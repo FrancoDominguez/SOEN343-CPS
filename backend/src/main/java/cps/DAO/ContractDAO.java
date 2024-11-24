@@ -49,7 +49,7 @@ public class ContractDAO {
               "LEFT JOIN locations l ON c.origin_location_id = l.location_id " +
               "WHERE c.contract_id = %d;",
           contractId);
-      con.executeQuery(queryString);
+      con.formerExecuteQuery(queryString);
       ResultSet rs = con.getResultSet();
 
       if (rs.next()) {
@@ -162,7 +162,7 @@ public class ContractDAO {
               "LEFT JOIN locations l ON c.origin_location_id = l.location_id " +
               "WHERE c.client_id = %d;",
           clientId);
-      con.executeQuery(queryString);
+      con.formerExecuteQuery(queryString);
       ResultSet rs = con.getResultSet();
 
       while (rs.next()) {
@@ -249,94 +249,97 @@ public class ContractDAO {
   public int insert(StationDropoff contract) {
     Location destination = contract.getDestination();
     Parcel parcel = contract.getParcel();
+
     try {
+      Mysqlcon con = Mysqlcon.getInstance();
+      con.connect();
+
+      con.formerExecuteUpdate(String.format(
+          "INSERT INTO locations (street_address, postal_code, city, country) VALUES ('%s', '%s', '%s', '%s');",
+          destination.getStreetAddress(), destination.getPostalCode(),
+          destination.getCity(), destination.getCountry()));
+      con.formerExecuteQuery("SELECT LAST_INSERT_ID() AS id;");
+      ResultSet rs = con.getResultSet();
+      rs.next();
+      int destinationId = rs.getInt("id");
+
+      con.formerExecuteUpdate(String.format(
+          "INSERT INTO parcels (height, width, length, weight, is_fragile) VALUES (%f, %f, %f, %f, %b);",
+          parcel.getHeight(), parcel.getWidth(),
+          parcel.getLength(), parcel.getWeight(), parcel.isFragile()));
+      con.formerExecuteQuery("SELECT LAST_INSERT_ID() AS id;");
+      rs = con.getResultSet();
+      rs.next();
+      int parcelId = rs.getInt("id");
+
+      con.formerExecuteUpdate(String.format(
+          "INSERT INTO contracts (client_id, price, eta, signature_required, priority_shipping, warranted_amount, parcel_id, destination_id, origin_station_id) VALUES "
+              + "(%d, %f, '%s', %b, %b, %f, %d, %d, %d);",
+          contract.getClientId(), contract.getPrice(), contract.getEta(),
+          contract.signatureRequired(), contract.hasPriority(),
+          contract.getWarrantedAmount(), parcelId, destinationId, contract.getStation().getId()));
+
+      con.formerExecuteQuery("SELECT LAST_INSERT_ID() AS contract_id;");
+      rs = con.getResultSet();
+      if (rs.next()) {
+        int contractId = rs.getInt("contract_id");
+        con.close();
+        return contractId;
+      }
+      con.close();
+    } catch (Exception e) {
+      System.out.println("Error inserting station dropoff contract: " + e.getMessage());
+    }
+    return -1;
+  }
+
+  public void update(StationDropoff contract) {
+    try {
+      Location destination = contract.getDestination();
+      Parcel parcel = contract.getParcel();
+
       Mysqlcon con = Mysqlcon.getInstance();
       con.connect();
       StringBuilder queryString = new StringBuilder();
 
       queryString.append("START TRANSACTION;");
 
-      // Insert into destinations
-      queryString.append("INSERT INTO destinations (street_address, postal_code, city, country) VALUES");
-      queryString.append(String.format(" ('%s', '%s', '%s', '%s');",
-          destination.getStreetAddress(), destination.getPostalCode(),
-          destination.getCity(), destination.getCountry()));
-      queryString.append("SET @destinationId = LAST_INSERT_ID();");
-
-      // Insert into parcels
-      queryString.append("INSERT INTO parcels (height, width, length, weight, is_fragile) VALUES");
-      queryString.append(String.format(" (%f, %f, %f, %f, %b);",
-          parcel.getHeight(), parcel.getWidth(),
-          parcel.getLength(), parcel.getWeight(), parcel.isFragile()));
-      queryString.append("SET @parcelId = LAST_INSERT_ID();");
-
-      // Insert into contracts
-      queryString.append("INSERT INTO contracts");
-      queryString.append(
-          " (client_id, price, eta, signature_required, priority_shipping, warranted_amount, parcel_id, destination_id, origin_station_id) VALUES");
+      // Update destinations
+      queryString.append("UPDATE locations SET ");
       queryString.append(String.format(
-          " (%d, %f, '%s', %b, %b, %d, @parcelId, @destinationId, %d);",
-          contract.getClientId(), contract.getPrice(), contract.getEta(),
-          contract.signatureRequired(), contract.hasPriority(),
+          "street_address = '%s', postal_code = '%s', city = '%s', country = '%s' ",
+          escapeSql(destination.getStreetAddress()),
+          escapeSql(destination.getPostalCode()),
+          escapeSql(destination.getCity()),
+          escapeSql(destination.getCountry())));
+      queryString.append(String.format("WHERE location_id = %d;", destination.getId()));
+
+      // Update parcels
+      queryString.append("UPDATE parcels SET ");
+      queryString.append(String.format(
+          "height = %f, width = %f, length = %f, weight = %f, is_fragile = %d ",
+          parcel.getHeight(), parcel.getWidth(), parcel.getLength(), parcel.getWeight(),
+          parcel.isFragile() ? 1 : 0));
+      queryString.append(String.format("WHERE parcel_id = %d;", parcel.getId()));
+
+      // Update contracts
+      queryString.append("UPDATE contracts SET ");
+      queryString.append(String.format(
+          "client_id = %d, price = %f, eta = '%s', signature_required = %d, priority_shipping = %d, warranted_amount = %f, origin_station_id = %d ",
+          contract.getClientId(), contract.getPrice(), escapeSql(contract.getEta().toString()),
+          contract.signatureRequired() ? 1 : 0, contract.hasPriority() ? 1 : 0,
           contract.getWarrantedAmount(), contract.getStation().getId()));
-      queryString.append("SET @contractId = LAST_INSERT_ID();");
+      queryString.append(String.format("WHERE contract_id = %d;", contract.getId()));
 
-      // Retrieve the contract_id
-      queryString.append("SELECT @contractId AS contract_id;");
       queryString.append("COMMIT;");
-
-      // Execute the query
-      con.executeQuery(queryString.toString());
-      ResultSet rs = con.getResultSet();
-      if (rs.next()) {
-        int contractId = rs.getInt("contract_id");
-        System.out.println("Inserted contract ID: " + contractId);
-        return contractId;
-      }
+      con.formerExecuteUpdate(queryString.toString());
       con.close();
     } catch (Exception e) {
-      System.out.println(e.getMessage());
+      System.out.println("Error updating station dropoff contract: " + e.getMessage());
     }
-    return -1;
   }
 
-  public void update(StationDropoff contract) throws Exception {
-    Location destination = contract.getDestination();
-    Parcel parcel = contract.getParcel();
-
-    Mysqlcon con = Mysqlcon.getInstance();
-    con.connect();
-    StringBuilder queryString = new StringBuilder();
-
-    queryString.append("START TRANSACTION;");
-
-    // update destinations
-    queryString.append("UPDATE destinations SET");
-    queryString.append(String.format(" street_address = '%s', postal_code = '%s', city = '%s', country = '%s'",
-        destination.getStreetAddress(), destination.getPostalCode(), destination.getCity(),
-        destination.getCountry()));
-    queryString.append(String.format(" WHERE id = %d;", destination.getId()));
-
-    // update parcels
-    queryString.append("UPDATE parcels SET");
-    queryString.append(String.format(
-        " height = %f, width = %f, length = %f, weight = %f, is_fragile = %b",
-        parcel.getHeight(), parcel.getWidth(), parcel.getLength(), parcel.getWeight(), parcel.isFragile()));
-    queryString.append(String.format(" WHERE id = %d;", parcel.getId()));
-
-    // update contracts
-    queryString.append("UPDATE contracts SET");
-    queryString.append(String.format(
-        " client_id = %d, price = %f, eta = '%s', signature_required = %b, priority_shipping = %b, warranted_amount = %d, origin_station_id = %d",
-        contract.getClientId(), contract.getPrice(), contract.getEta(), contract.signatureRequired(),
-        contract.hasPriority(), contract.getWarrantedAmount(), contract.getStation().getId()));
-    queryString.append(String.format(" WHERE id = %d;", contract.getId()));
-
-    queryString.append("COMMIT;");
-    con.executeUpdate(queryString.toString());
-    con.close();
-  }
-
+  // Utility method to escape single quotes in SQL strings
   public int insert(HomePickup contract) {
     Location destination = contract.getDestination();
     Location origin = contract.getOrigin();
@@ -346,104 +349,110 @@ public class ContractDAO {
       Mysqlcon con = Mysqlcon.getInstance();
       con.connect();
 
-      StringBuilder queryString = new StringBuilder();
-
-      queryString.append("START TRANSACTION;");
-
       // Insert destination
-      queryString.append(String.format(
+      con.formerExecuteUpdate(String.format(
           "INSERT INTO locations (street_address, postal_code, city, country) VALUES ('%s', '%s', '%s', '%s');",
           destination.getStreetAddress(), destination.getPostalCode(),
           destination.getCity(), destination.getCountry()));
-      queryString.append("SET @destinationId = LAST_INSERT_ID();");
+      con.formerExecuteQuery("SELECT LAST_INSERT_ID() AS id;");
+      ResultSet rs = con.getResultSet();
+      rs.next();
+      int destinationId = rs.getInt("id");
 
       // Insert origin
-      queryString.append(String.format(
+      con.formerExecuteUpdate(String.format(
           "INSERT INTO locations (street_address, postal_code, city, country) VALUES ('%s', '%s', '%s', '%s');",
           origin.getStreetAddress(), origin.getPostalCode(),
           origin.getCity(), origin.getCountry()));
-      queryString.append("SET @originId = LAST_INSERT_ID();");
+      con.formerExecuteQuery("SELECT LAST_INSERT_ID() AS id;");
+      rs = con.getResultSet();
+      rs.next();
+      int originId = rs.getInt("id");
 
       // Insert parcel
-      queryString.append(String.format(
+      con.formerExecuteUpdate(String.format(
           "INSERT INTO parcels (height, width, length, weight, is_fragile) VALUES (%f, %f, %f, %f, %b);",
           parcel.getHeight(), parcel.getWidth(),
           parcel.getLength(), parcel.getWeight(), parcel.isFragile()));
-      queryString.append("SET @parcelId = LAST_INSERT_ID();");
+      con.formerExecuteQuery("SELECT LAST_INSERT_ID() AS id;");
+      rs = con.getResultSet();
+      rs.next();
+      int parcelId = rs.getInt("id");
 
       // Insert contract
-      queryString.append(String.format(
+      con.formerExecuteUpdate(String.format(
           "INSERT INTO contracts (client_id, price, eta, signature_required, priority_shipping, warranted_amount, "
               + "parcel_id, destination_id, origin_location_id, pickup_time, is_flexible) VALUES "
-              + "(%d, %f, '%s', %b, %b, %f, @parcelId, @destinationId, @originId, '%s', %b);",
+              + "(%d, %f, '%s', %b, %b, %f, %d, %d, %d, '%s', %b);",
           contract.getClientId(), contract.getPrice(), contract.getEta(),
           contract.signatureRequired(), contract.hasPriority(),
-          contract.getWarrantedAmount(),
+          contract.getWarrantedAmount(), parcelId, destinationId, originId,
           Timestamp.valueOf(contract.getPickupTime()).toString(), contract.isFlexible()));
-      queryString.append("SET @contractId = LAST_INSERT_ID();");
-
-      // Retrieve the contract_id
-      queryString.append("SELECT @contractId AS contract_id;");
-      queryString.append("COMMIT;");
-
-      // Execute the query and fetch contract_id
-      con.executeQuery(queryString.toString());
-      ResultSet rs = con.getResultSet();
+      con.formerExecuteQuery("SELECT LAST_INSERT_ID() AS contract_id;");
+      rs = con.getResultSet();
       if (rs.next()) {
         int contractId = rs.getInt("contract_id");
-        System.out.println("Inserted contract ID: " + contractId);
+        con.close();
         return contractId;
       }
       con.close();
     } catch (Exception e) {
-      System.out.println(e.getMessage());
+      System.out.println("Error inserting home pickup contract: " + e.getMessage());
     }
     return -1;
   }
 
-  public void update(HomePickup contract) throws Exception {
-    Location destination = contract.getDestination();
-    Location origin = contract.getOrigin();
-    Parcel parcel = contract.getParcel();
+  public void update(HomePickup contract) {
+    try {
+      Location destination = contract.getDestination();
+      Location origin = contract.getOrigin();
+      Parcel parcel = contract.getParcel();
 
-    Mysqlcon con = Mysqlcon.getInstance();
-    con.connect();
-    StringBuilder queryString = new StringBuilder();
+      Mysqlcon con = Mysqlcon.getInstance();
+      con.connect();
+      StringBuilder queryString = new StringBuilder();
 
-    queryString.append("START TRANSACTION;");
+      queryString.append("START TRANSACTION;");
 
-    // update destination in origins
-    queryString.append("UPDATE origins SET");
-    queryString.append(String.format(" street_address = '%s', postal_code = '%s', city = '%s', country = '%s'",
-        destination.getStreetAddress(), destination.getPostalCode(), destination.getCity(),
-        destination.getCountry()));
-    queryString.append(String.format(" WHERE id = %d;", destination.getId()));
+      // update destination in origins
+      queryString.append("UPDATE origins SET");
+      queryString.append(String.format(" street_address = '%s', postal_code = '%s', city = '%s', country = '%s'",
+          destination.getStreetAddress(), destination.getPostalCode(), destination.getCity(),
+          destination.getCountry()));
+      queryString.append(String.format(" WHERE id = %d;", destination.getId()));
 
-    // update origin in locations
-    queryString.append("UPDATE locations SET");
-    queryString.append(String.format(" street_address = '%s', postal_code = '%s', city = '%s', country = '%s'",
-        origin.getStreetAddress(), origin.getPostalCode(), origin.getCity(), origin.getCountry()));
-    queryString.append(String.format(" WHERE id = %d;", origin.getId()));
+      // update origin in locations
+      queryString.append("UPDATE locations SET");
+      queryString.append(String.format(" street_address = '%s', postal_code = '%s', city = '%s', country = '%s'",
+          origin.getStreetAddress(), origin.getPostalCode(), origin.getCity(), origin.getCountry()));
+      queryString.append(String.format(" WHERE id = %d;", origin.getId()));
 
-    // update parcel in parcels
-    queryString.append("UPDATE parcels SET");
-    queryString.append(String.format(
-        " height = %f, width = %f, length = %f, weight = %f, is_fragile = %b",
-        parcel.getHeight(), parcel.getWidth(), parcel.getLength(), parcel.getWeight(), parcel.isFragile()));
-    queryString.append(String.format(" WHERE id = %d;", parcel.getId()));
+      // update parcel in parcels
+      queryString.append("UPDATE parcels SET");
+      queryString.append(String.format(
+          " height = %f, width = %f, length = %f, weight = %f, is_fragile = %b",
+          parcel.getHeight(), parcel.getWidth(), parcel.getLength(), parcel.getWeight(), parcel.isFragile()));
+      queryString.append(String.format(" WHERE id = %d;", parcel.getId()));
 
-    // update contract in contracts
-    queryString.append("UPDATE contracts SET");
-    queryString.append(String.format(
-        " client_id = %d, price = %f, eta = '%s', signature_required = %b, priority_shipping = %b, warranted_amount = %d, "
-            + "parcel_id = %d, destination_id = %d, origin_location_id = %d, pickup_time = '%s', is_flexible = %b",
-        contract.getClientId(), contract.getPrice(), contract.getEta(), contract.signatureRequired(),
-        contract.hasPriority(), contract.getWarrantedAmount(), parcel.getId(), destination.getId(), origin.getId(),
-        Timestamp.valueOf(contract.getPickupTime()).toString(), contract.isFlexible()));
-    queryString.append(String.format(" WHERE id = %d;", contract.getId()));
+      // update contract in contracts
+      queryString.append("UPDATE contracts SET");
+      queryString.append(String.format(
+          " client_id = %d, price = %f, eta = '%s', signature_required = %b, priority_shipping = %b, warranted_amount = %f, "
+              + "parcel_id = %d, destination_id = %d, origin_location_id = %d, pickup_time = '%s', is_flexible = %b",
+          contract.getClientId(), contract.getPrice(), contract.getEta(), contract.signatureRequired(),
+          contract.hasPriority(), contract.getWarrantedAmount(), parcel.getId(), destination.getId(), origin.getId(),
+          Timestamp.valueOf(contract.getPickupTime()).toString(), contract.isFlexible()));
+      queryString.append(String.format(" WHERE id = %d;", contract.getId()));
 
-    queryString.append("COMMIT;");
-    con.executeUpdate(queryString.toString());
-    con.close();
+      queryString.append("COMMIT;");
+      con.formerExecuteUpdate(queryString.toString());
+      con.close();
+    } catch (Exception e) {
+      System.out.println("Error updating home pickup contract: " + e.getMessage());
+    }
+  }
+
+  private String escapeSql(String input) {
+    return input.replace("'", "''");
   }
 }

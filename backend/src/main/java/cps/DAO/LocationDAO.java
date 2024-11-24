@@ -12,13 +12,13 @@ public class LocationDAO {
       Mysqlcon con = Mysqlcon.getInstance();
       con.connect();
       String queryString = String.format("SELECT * FROM locations WHERE location_id = %d", locationId);
-      con.executeQuery(queryString);
+      con.formerExecuteQuery(queryString);
       ResultSet rs = con.getResultSet();
       if (rs.next()) {
-        String address = rs.getString("address");
+        String address = rs.getString("street_address");
         String postalCode = rs.getString("postal_code");
         String city = rs.getString("city");
-        String country = rs.getString("address");
+        String country = rs.getString("country");
         location = new Location(locationId, address, postalCode, city, country);
       }
       con.close();

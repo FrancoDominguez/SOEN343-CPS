@@ -50,10 +50,6 @@ public abstract class Contract {
     return this.clientId;
   }
 
-  public void setClientId(int clientId) {
-    this.clientId = clientId;
-  }
-
   public Parcel getParcel() {
     return this.parcel;
   }

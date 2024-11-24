@@ -12,7 +12,7 @@ public class ParcelDAO {
       Mysqlcon con = Mysqlcon.getInstance();
       con.connect();
       String queryString = String.format("SELECT * FROM parcels WHERE parcel_id = %d", parcelId);
-      con.executeQuery(queryString);
+      con.formerExecuteQuery(queryString);
       ResultSet rs = con.getResultSet();
       if (rs.next()) {
         double height = rs.getDouble("height");
@@ -40,7 +40,7 @@ public class ParcelDAO {
               "SELECT @locationId AS locationId;" +
               "COMMIT",
           parcel.getHeight(), parcel.getWidth(), parcel.getLength(), parcel.getWeight(), parcel.isFragile());
-      con.executeUpdate(queryString);
+      con.formerExecuteUpdate(queryString);
       con.close();
     } catch (Exception e) {
       System.out.println(e.getMessage());
