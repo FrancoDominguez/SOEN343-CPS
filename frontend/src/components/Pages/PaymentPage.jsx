@@ -1,3 +1,4 @@
+// PaymentPage.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loadStripe } from "@stripe/stripe-js";
@@ -44,20 +45,17 @@ const CheckoutForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (paymentMethod === "paypal") {
-      // Placeholder logic for PayPal
-      alert(`PayPal payment with:\nUsername: ${paypalCredentials.username}\nPassword: ${paypalCredentials.password}`);
+      alert(`PayPal payment with:\nUsername: ${paypalCredentials.username}\nSuccessfull!`);
+      setPaymentStatus("Payment successful via PayPal!");
+      navigate("/");
       return;
     }
-
     if (!stripe || !elements) {
       setPaymentStatus("Stripe is not loaded yet.");
       return;
     }
-
     setLoading(true);
-
     try {
       const response = await fetch("http://localhost:8080/api/payment/create", {
         method: "POST",
@@ -110,7 +108,6 @@ const CheckoutForm = () => {
           className="w-40 h-auto"
         />
       </div>
-
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label htmlFor="paymentMethod" className="block font-medium text-lg mb-2">

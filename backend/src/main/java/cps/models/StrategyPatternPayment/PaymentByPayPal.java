@@ -18,7 +18,7 @@ public class PaymentByPayPal implements PaymentStrategy {
     @Override
     public void pay(int amount) {
         if (validatePaymentDetails()) {
-            System.out.println("Processing payment of " + amount + " using PayPal...");
+            System.out.println("Processing payment of " + amount + " using PayPal.");
             System.out.println("Payment successful!");
         } else {
             System.out.println("Payment failed: Invalid PayPal details.");
