@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const CheckoutForm = () => {
   const navigate = useNavigate();
+  const { id } = useParams(); // Extract the quotation ID from the route parameters
 
-  const [amount, setAmount] = useState(0); 
+  const [amount, setAmount] = useState(500);
   const [paymentMethod, setPaymentMethod] = useState("creditCard");
   const [loading, setLoading] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState(null);
@@ -20,41 +21,80 @@ const CheckoutForm = () => {
     password: "",
   });
 
-  // Fetch the quotation amount from the backend
+  const [errors, setErrors] = useState({});
+
   useEffect(() => {
     const fetchQuotation = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/payment/quotation/1"); // Replace 1 with the actual quotation ID
+        if (!id || isNaN(Number(id))) { // Validate that the ID is a number
+          console.error("Quotation ID is missing or invalid.");
+          return;
+        }
+  
+        const response = await fetch(`http://localhost:8080/api/payment/quotation/${id}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch quotation.");
+        }
+  
         const data = await response.json();
         setAmount(parseFloat(data.amount) * 100); // Convert dollars to cents
       } catch (err) {
         console.error("Failed to fetch quotation:", err);
       }
     };
-
+  
     fetchQuotation();
-  }, []);
+  }, [id]);
 
-  const handleCardDetailsChange = (e) => {
-    const { name, value } = e.target;
-    setCardDetails((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  const validateForm = () => {
+    const newErrors = {};
 
-  const handlePaypalChange = (e) => {
-    const { name, value } = e.target;
-    setPaypalCredentials((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    if (paymentMethod === "creditCard") {
+      if (!/^\d{16}$/.test(cardDetails.cardNumber)) {
+        newErrors.cardNumber = "Card number must be 16 digits.";
+      }
+
+      if (!/^\d{2}\/\d{2}$/.test(cardDetails.expirationDate)) {
+        newErrors.expirationDate = "Expiration date must be in MM/YY format.";
+      } else {
+        const [month, year] = cardDetails.expirationDate.split("/").map(Number);
+        const now = new Date();
+        const currentMonth = now.getMonth() + 1;
+        const currentYear = now.getFullYear() % 100;
+
+        if (year < currentYear || (year === currentYear && month < currentMonth)) {
+          newErrors.expirationDate = "Expiration date cannot be in the past.";
+        }
+      }
+
+      if (!/^\d{3}$/.test(cardDetails.cvc)) {
+        newErrors.cvc = "CVC must be 3 digits.";
+      }
+    }
+
+    if (paymentMethod === "paypal") {
+      if (
+        !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
+          paypalCredentials.username
+        )
+      ) {
+        newErrors.username = "Please enter a valid email address.";
+      }
+
+      if (!paypalCredentials.password) {
+        newErrors.password = "Password cannot be empty.";
+      }
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    if (!validateForm()) return;
 
+    setLoading(true);
     try {
       const requestBody = { method: paymentMethod, quotationPrice: amount / 100 };
 
@@ -86,18 +126,37 @@ const CheckoutForm = () => {
     }
   };
 
+  const handleCardDetailsChange = (e) => {
+    const { name, value } = e.target;
+    setCardDetails((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handlePaypalChange = (e) => {
+    const { name, value } = e.target;
+    setPaypalCredentials((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   return (
     <div className="max-w-xl mx-auto p-8 bg-gray-100 rounded shadow min-h-[400px]">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold">Make a Payment</h2>
-        <img
-          src={paymentMethod === "creditCard" ? "/StripeLogo4.png" : "/PayPalLogo4.png"}
-          alt={paymentMethod === "creditCard" ? "Credit Card Logo" : "PayPal Logo"}
-          className="w-40 h-auto"
-        />
-      </div>
-
       <form onSubmit={handleSubmit}>
+        {/* Header and Logo Section */}
+        <div className="mb-4 flex items-center justify-between">
+          <h1 className="text-2xl font-bold">Make a Payment</h1>
+          <div className="flex-shrink-0">
+            <img
+              src={paymentMethod === "creditCard" ? "/StripeLogo4.png" : "/PayPalLogo4.png"}
+              alt={paymentMethod === "creditCard" ? "Stripe Logo" : "PayPal Logo"}
+              className="w-80 h-auto"
+            />
+          </div>
+        </div>
+
         <div className="mb-4">
           <label htmlFor="paymentMethod" className="block font-medium text-lg mb-2">
             Select Payment Method:
@@ -133,7 +192,7 @@ const CheckoutForm = () => {
           <input
             id="amount"
             type="text"
-            value={(amount / 100).toFixed(2)} // Display amount in dollars
+            value={(amount / 100).toFixed(2)}
             className="w-full h-10 p-2 border rounded text-lg"
             readOnly
           />
@@ -154,6 +213,9 @@ const CheckoutForm = () => {
                 className="w-full h-10 p-2 border rounded text-lg"
                 placeholder="1234 5678 9012 3456"
               />
+              {errors.cardNumber && (
+                <p className="text-red-600">{errors.cardNumber}</p>
+              )}
             </div>
 
             <div className="mb-4">
@@ -169,6 +231,9 @@ const CheckoutForm = () => {
                 className="w-full h-10 p-2 border rounded text-lg"
                 placeholder="MM/YY"
               />
+              {errors.expirationDate && (
+                <p className="text-red-600">{errors.expirationDate}</p>
+              )}
             </div>
 
             <div className="mb-4">
@@ -184,6 +249,7 @@ const CheckoutForm = () => {
                 className="w-full h-10 p-2 border rounded text-lg"
                 placeholder="123"
               />
+              {errors.cvc && <p className="text-red-600">{errors.cvc}</p>}
             </div>
           </>
         )}
@@ -192,7 +258,7 @@ const CheckoutForm = () => {
           <>
             <div className="mb-4">
               <label htmlFor="username" className="block font-medium text-lg mb-2">
-                PayPal Username:
+                PayPal Email:
               </label>
               <input
                 id="username"
@@ -202,6 +268,9 @@ const CheckoutForm = () => {
                 onChange={handlePaypalChange}
                 className="w-full h-10 p-2 border rounded text-lg"
               />
+              {errors.username && (
+                <p className="text-red-600">{errors.username}</p>
+              )}
             </div>
 
             <div className="mb-4">
@@ -216,6 +285,9 @@ const CheckoutForm = () => {
                 onChange={handlePaypalChange}
                 className="w-full h-10 p-2 border rounded text-lg"
               />
+              {errors.password && (
+                <p className="text-red-600">{errors.password}</p>
+              )}
             </div>
           </>
         )}
@@ -225,7 +297,7 @@ const CheckoutForm = () => {
           className="w-full p-3 bg-blue-500 text-white rounded text-lg"
           disabled={loading}
         >
-          {loading ? "Processing..." : `Pay with ${paymentMethod === "creditCard" ? "Credit Card" : "PayPal"}`}
+          {loading ? "Processing..." : `Pay with ${paymentMethod === "creditCard"? "Credit Card": "PayPal"}`}
         </button>
       </form>
 

@@ -4,6 +4,8 @@ package cps.controllers;
 import cps.models.Quotation;
 import cps.models.StrategyPatternPayment.*;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -13,15 +15,26 @@ import java.util.Map;
 @RequestMapping("/api/payment")
 public class PaymentController {
 
-    @GetMapping("/quotation/{id}")
-    public Map<String, String> getQuotationAmount(@PathVariable("id") Long quotationId) {
-        Quotation quotation = new Quotation(BigDecimal.valueOf(150.75)); 
+@GetMapping("/quotation/{id}")
+public ResponseEntity<Map<String, String>> getQuotationAmount(@PathVariable("id") Long quotationId) {
+    // Simulated fetching from a database
+    Map<Long, Quotation> quotations = Map.of(
+        1L, new Quotation(BigDecimal.valueOf(150.75)),
+        2L, new Quotation(BigDecimal.valueOf(155.75)),
+        3L, new Quotation(BigDecimal.valueOf(140.75))
+    );
 
-        return Map.of(
-            "quotationId", String.valueOf(quotationId),
-            "amount", String.valueOf(quotation.getPrice())
-        );
+    Quotation quotation = quotations.get(quotationId);
+    if (quotation == null) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("error", "Quotation not found for ID: " + quotationId));
     }
+
+    return ResponseEntity.ok(Map.of(
+        "quotationId", String.valueOf(quotationId),
+        "amount", String.valueOf(quotation.getPrice())
+    ));
+}
 
     @PostMapping("/process")
     public Map<String, String> processPayment(@RequestBody Map<String, Object> request) {

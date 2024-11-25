@@ -6,6 +6,8 @@ import static cps.services.MapsService.getDurationDistance;
 import cps.utils.Pair;
 
 public class Quotation {
+  private static long counter = 1;
+  private long id;
   private User user;
   private Address origin;
   private Address destination;
@@ -17,6 +19,7 @@ public class Quotation {
 
   public Quotation(BigDecimal price) {
     this.price = price;
+    this.id = counter++;
 }
 
 
@@ -33,9 +36,13 @@ public class Quotation {
     this.price = determinePrice();
     this.save();
   }
-
+  
   public void save() {
   }
+
+  public long getId() {
+    return id;
+}
 
   private int determineETA() {
     return 0;

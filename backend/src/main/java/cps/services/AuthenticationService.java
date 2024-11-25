@@ -1,11 +1,12 @@
 package cps.services;
 
-import cps.exceptions.UnauthorizedException;
-import cps.models.User;
 import java.sql.ResultSet;
+
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-// import com.auth0.jwt.interfaces.DecodedJWT;
+
+import cps.exceptions.UnauthorizedException;
+import cps.models.User;
 import io.github.cdimascio.dotenv.Dotenv;
 
 public final class AuthenticationService {
