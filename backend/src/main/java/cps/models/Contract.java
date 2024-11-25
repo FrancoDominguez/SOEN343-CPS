@@ -94,7 +94,7 @@ public abstract class Contract {
     return this.warrantedAmount;
   }
 
-  public abstract void save();
+  public abstract int save();
 
   public abstract void processQuote();
 

@@ -1,5 +1,7 @@
 package cps.DAO;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.time.Duration;
@@ -286,6 +288,7 @@ public class ContractDAO {
         con.close();
         return contractId;
       }
+      System.out.println("Successfully saved station dropoff contract");
       con.close();
     } catch (Exception e) {
       System.out.println("Error inserting station dropoff contract: " + e.getMessage());
@@ -395,6 +398,7 @@ public class ContractDAO {
         con.close();
         return contractId;
       }
+      System.out.println("Successfully saved home pickup contract");
       con.close();
     } catch (Exception e) {
       System.out.println("Error inserting home pickup contract: " + e.getMessage());
@@ -404,49 +408,61 @@ public class ContractDAO {
 
   public void update(HomePickup contract) {
     try {
+      Mysqlcon con = Mysqlcon.getInstance();
+      con.connect();
+      Connection sqlcon = con.getConnection();
       Location destination = contract.getDestination();
       Location origin = contract.getOrigin();
       Parcel parcel = contract.getParcel();
 
-      Mysqlcon con = Mysqlcon.getInstance();
-      con.connect();
-      StringBuilder queryString = new StringBuilder();
+      String qs1 = "UPDATE locations SET street_address = ?, postal_code = ?, city = ?, country = ? WHERE location_id = ?;";
+      PreparedStatement pst1 = sqlcon.prepareStatement(qs1);
+      pst1.setString(1, destination.getStreetAddress());
+      pst1.setString(2, destination.getPostalCode());
+      pst1.setString(3, destination.getCity());
+      pst1.setString(4, destination.getCountry());
+      pst1.setInt(5, destination.getId());
 
-      queryString.append("START TRANSACTION;");
+      pst1.executeUpdate();
 
-      // update destination in origins
-      queryString.append("UPDATE origins SET");
-      queryString.append(String.format(" street_address = '%s', postal_code = '%s', city = '%s', country = '%s'",
-          destination.getStreetAddress(), destination.getPostalCode(), destination.getCity(),
-          destination.getCountry()));
-      queryString.append(String.format(" WHERE id = %d;", destination.getId()));
+      String qs2 = "UPDATE locations SET street_address = ?, postal_code = ?, city = ?, country = ? WHERE location_id = ?;";
+      PreparedStatement pst2 = sqlcon.prepareStatement(qs2);
+      pst2.setString(1, origin.getStreetAddress());
+      pst2.setString(2, origin.getPostalCode());
+      pst2.setString(3, origin.getCity());
+      pst2.setString(4, origin.getCountry());
+      pst2.setInt(5, origin.getId());
 
-      // update origin in locations
-      queryString.append("UPDATE locations SET");
-      queryString.append(String.format(" street_address = '%s', postal_code = '%s', city = '%s', country = '%s'",
-          origin.getStreetAddress(), origin.getPostalCode(), origin.getCity(), origin.getCountry()));
-      queryString.append(String.format(" WHERE id = %d;", origin.getId()));
+      pst2.executeUpdate();
 
-      // update parcel in parcels
-      queryString.append("UPDATE parcels SET");
-      queryString.append(String.format(
-          " height = %f, width = %f, length = %f, weight = %f, is_fragile = %b",
-          parcel.getHeight(), parcel.getWidth(), parcel.getLength(), parcel.getWeight(), parcel.isFragile()));
-      queryString.append(String.format(" WHERE id = %d;", parcel.getId()));
+      String qs3 = "UPDATE parcels SET height = ?, width = ?, length = ?, weight = ?, is_fragile = ? WHERE parcel_id = ?;";
+      PreparedStatement pst3 = sqlcon.prepareStatement(qs3);
+      pst3.setDouble(1, parcel.getHeight());
+      pst3.setDouble(2, parcel.getWidth());
+      pst3.setDouble(3, parcel.getLength());
+      pst3.setDouble(4, parcel.getWeight());
+      pst3.setBoolean(5, parcel.isFragile());
+      pst3.setInt(6, parcel.getId());
 
-      // update contract in contracts
-      queryString.append("UPDATE contracts SET");
-      queryString.append(String.format(
-          " client_id = %d, price = %f, eta = '%s', signature_required = %b, priority_shipping = %b, warranted_amount = %f, "
-              + "parcel_id = %d, destination_id = %d, origin_location_id = %d, pickup_time = '%s', is_flexible = %b",
-          contract.getClientId(), contract.getPrice(), contract.getEta(), contract.signatureRequired(),
-          contract.hasPriority(), contract.getWarrantedAmount(), parcel.getId(), destination.getId(), origin.getId(),
-          Timestamp.valueOf(contract.getPickupTime()).toString(), contract.isFlexible()));
-      queryString.append(String.format(" WHERE id = %d;", contract.getId()));
+      pst3.executeUpdate();
 
-      queryString.append("COMMIT;");
-      con.formerExecuteUpdate(queryString.toString());
-      con.close();
+      String qs4 = "UPDATE contracts SET client_id = ?, price = ?, eta = ?, signature_required = ?, priority_shipping = ?, "
+          +
+          "warranted_amount = ?, pickup_time = ?, is_flexible = ? "
+          +
+          "WHERE contract_id = ?;";
+      PreparedStatement pst4 = sqlcon.prepareStatement(qs4);
+      pst4.setInt(1, contract.getClientId());
+      pst4.setDouble(2, contract.getPrice());
+      pst4.setObject(3, contract.getEta());
+      pst4.setBoolean(4, contract.signatureRequired());
+      pst4.setBoolean(5, contract.hasPriority());
+      pst4.setDouble(6, contract.getWarrantedAmount());
+      pst4.setTimestamp(7, Timestamp.valueOf(contract.getPickupTime()));
+      pst4.setBoolean(8, contract.isFlexible());
+      pst4.setInt(9, contract.getId());
+
+      pst4.executeUpdate();
     } catch (Exception e) {
       System.out.println("Error updating home pickup contract: " + e.getMessage());
     }

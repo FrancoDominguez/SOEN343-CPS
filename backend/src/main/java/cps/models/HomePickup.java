@@ -51,7 +51,7 @@ public class HomePickup extends Contract {
     this.isFlexible = bool;
   }
 
-  public void save() {
+  public int save() {
     ContractDAO contractDAO = new ContractDAO();
     if (this.id == -1) {
       this.id = contractDAO.insert(this);
@@ -62,6 +62,7 @@ public class HomePickup extends Contract {
         System.out.println(e.getMessage());
       }
     }
+    return this.id;
   }
 
   public void processQuote() {

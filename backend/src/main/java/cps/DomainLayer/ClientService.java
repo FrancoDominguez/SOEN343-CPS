@@ -33,13 +33,16 @@ public class ClientService implements OrderTracker {
     return newContract;
   }
 
+  // Franco
   public ArrayList<Contract> viewAllActiveContracts() {
     return null;
   }
 
+  // Franco
   public void updateContract(String key, String value) {
   }
 
+  // Franco
   public void deleteContract(int contractId) {
   }
 

@@ -28,7 +28,7 @@ public class StationDropoff extends Contract {
     this.station = station;
   }
 
-  public void save() {
+  public int save() {
     ContractDAO contractDAO = new ContractDAO();
     if (this.id == -1) {
       this.id = contractDAO.insert(this);
@@ -39,9 +39,12 @@ public class StationDropoff extends Contract {
         System.out.println(e.getMessage());
       }
     }
+    return this.id;
   }
 
   public void processQuote() {
+    this.price = 50.00;
+    this.eta = Duration.ofDays(2);
   };
 
   protected double calculatePrice() {
