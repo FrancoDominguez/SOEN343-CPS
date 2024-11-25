@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const CheckoutForm = () => {
   const navigate = useNavigate();
 
-  const [amount] = useState(15075); // Example amount: 150.75 CAD (in cents)
-  const [paymentMethod, setPaymentMethod] = useState("creditCard"); // Default method
+  const [amount, setAmount] = useState(0); 
+  const [paymentMethod, setPaymentMethod] = useState("creditCard");
   const [loading, setLoading] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState(null);
 
@@ -19,6 +19,21 @@ const CheckoutForm = () => {
     username: "",
     password: "",
   });
+
+  // Fetch the quotation amount from the backend
+  useEffect(() => {
+    const fetchQuotation = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/api/payment/quotation/1"); // Replace 1 with the actual quotation ID
+        const data = await response.json();
+        setAmount(parseFloat(data.amount) * 100); // Convert dollars to cents
+      } catch (err) {
+        console.error("Failed to fetch quotation:", err);
+      }
+    };
+
+    fetchQuotation();
+  }, []);
 
   const handleCardDetailsChange = (e) => {
     const { name, value } = e.target;
@@ -48,8 +63,6 @@ const CheckoutForm = () => {
       } else if (paymentMethod === "paypal") {
         requestBody.paypalCredentials = paypalCredentials;
       }
-
-      console.log("Request Payload:", requestBody);
 
       const response = await fetch("http://localhost:8080/api/payment/process", {
         method: "POST",

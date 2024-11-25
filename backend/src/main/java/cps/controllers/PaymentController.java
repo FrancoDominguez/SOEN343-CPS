@@ -3,6 +3,7 @@ package cps.controllers;
 
 import cps.models.Quotation;
 import cps.models.StrategyPatternPayment.*;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -12,21 +13,26 @@ import java.util.Map;
 @RequestMapping("/api/payment")
 public class PaymentController {
 
+    @GetMapping("/quotation/{id}")
+    public Map<String, String> getQuotationAmount(@PathVariable("id") Long quotationId) {
+        Quotation quotation = new Quotation(BigDecimal.valueOf(150.75)); 
+
+        return Map.of(
+            "quotationId", String.valueOf(quotationId),
+            "amount", String.valueOf(quotation.getPrice())
+        );
+    }
+
     @PostMapping("/process")
     public Map<String, String> processPayment(@RequestBody Map<String, Object> request) {
         String method = (String) request.get("method");
         double quotationPrice = (double) request.get("quotationPrice");
 
-        // Log the incoming request for debugging
-        System.out.println("Received request: " + request);
-
-        // Simulate creating a quotation (you can replace this with a DB fetch)
+        // Simulate fetching a quotation
         Quotation quotation = new Quotation(BigDecimal.valueOf(quotationPrice));
 
-        // Initialize the PaymentService with the quotation
         PaymentService paymentService = new PaymentService(quotation);
 
-        // Determine the payment strategy based on the method
         PaymentStrategy strategy;
         if ("creditCard".equalsIgnoreCase(method)) {
             Map<String, String> cardDetails = (Map<String, String>) request.get("cardDetails");
@@ -51,11 +57,9 @@ public class PaymentController {
             throw new IllegalArgumentException("Invalid payment method.");
         }
 
-        // Process the payment
         paymentService.setPaymentStrategy(strategy);
         paymentService.processPayment();
 
-        // Return a success response
         return Map.of(
             "status", "success",
             "method", method,
