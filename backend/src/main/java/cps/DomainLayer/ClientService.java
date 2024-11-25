@@ -12,8 +12,19 @@ import cps.models.StationDropoff;
 import cps.models.Interfaces.OrderTracker;
 
 public class ClientService implements OrderTracker {
+
+  @Override
   public ShippingStatus trackOrder(int trackingId) {
-    return null;
+      // Use DeliveryDAO to fetch the delivery by trackingId
+      DeliveryDAO deliveryDAO = new DeliveryDAO();
+      Delivery delivery = deliveryDAO.fetchByTrackingId(trackingId);
+
+      if (delivery == null) {
+          throw new IllegalArgumentException("Invalid tracking ID: " + trackingId);
+      }
+
+      // Return the ShippingStatus object from the delivery
+      return delivery.getStatus();
   }
 
   public Contract addNewContract(ContractRequestBody contractInfo) throws Exception {
@@ -47,7 +58,12 @@ public class ClientService implements OrderTracker {
   }
 
   public void createDelivery(Contract contract) {
-  }
+    Delivery newDelivery = new Delivery(contract);
+    newDelivery.save(); // Persist to DB
+}
+
+
+
 
   public ArrayList<Delivery> viewAllActiveDeliveries() {
     return null;
