@@ -1,5 +1,6 @@
 package cps;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,6 +11,10 @@ import org.springframework.context.ApplicationContext;
 import com.stripe.exception.StripeException;
 
 import cps.controllers.PaymentController;
+import cps.models.Quotation;
+import cps.models.StrategyPatternPayment.CreditCardPaymentStrategy;
+import cps.models.StrategyPatternPayment.PayPalPaymentStrategy;
+import cps.models.StrategyPatternPayment.*;
 import cps.services.MapsService;
 import cps.utils.Pair;
 
@@ -18,8 +23,6 @@ public class Driver {
   public static void main(String[] args) {
 
     SpringApplication.run(Driver.class, args);
-    
-    
 
     
   }
@@ -30,20 +33,6 @@ public class Driver {
     String destination = "21 Crois Donnacona h9b2s3 Quebec";
     Pair<Integer, Integer> pair = mapService.getDurationDistance(origin, destination);
     System.out.printf("duration in seconds: %s, distance in meters: %s", pair.getFirst(), pair.getSecond());
-  }
-
-  public static void testPaymentApi(ApplicationContext context) {
-    PaymentController paymentController = context.getBean(PaymentController.class);
-    Map<String, Object> requestData = new HashMap<>();
-    requestData.put("amount", 1000L); // 1000 cents = $10.00 CAD
-
-    try {
-      Map<String, String> response = paymentController.createPaymentIntent(requestData);
-      System.out.println("PaymentIntent created successfully!");
-      System.out.println("Client Secret: " + response.get("clientSecret"));
-    } catch (StripeException e) {
-      System.err.println("StripeException occurred: " + e.getMessage());
-    }
   }
 
 }

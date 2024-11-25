@@ -1,32 +1,28 @@
+// PaymentService.java
 package cps.models.StrategyPatternPayment;
 
+import cps.models.Quotation;
+
 public class PaymentService {
-    private int amount;
-    private boolean includeDelivery;
-    private PaymentStrategy strategy;
+    private PaymentStrategy paymentStrategy; // Strategy interface
+    private Quotation quotation;            // Quotation object for amount
 
-    public void setStrategy(PaymentStrategy strategy) {
-        this.strategy = strategy;
+    public PaymentService(Quotation quotation) {
+        this.quotation = quotation;
     }
 
-    public void processOrder() {
-        strategy.collectPaymentDetails();
-        if (strategy.validatePaymentDetails()) {
-            strategy.pay(getTotal());
-        } else {
-            System.out.println("Order failed: Payment details are invalid.");
+    public void setPaymentStrategy(PaymentStrategy paymentStrategy) {
+        this.paymentStrategy = paymentStrategy;
+    }
+
+    public void processPayment() {
+        if (quotation == null || paymentStrategy == null) {
+            System.out.println("Quotation or Payment Strategy is not set.");
+            return;
         }
-    }
 
-    private int getTotal() {
-        return includeDelivery ? amount + 10 : amount;
-    }
-
-    public void setAmount(int amount) {
-        this.amount = amount;
-    }
-
-    public void setIncludeDelivery(boolean includeDelivery) {
-        this.includeDelivery = includeDelivery;
+        double amount = quotation.getPrice().doubleValue(); // Fetch price from Quotation
+        System.out.println("Processing payment for amount: " + amount);
+        paymentStrategy.processPayment(amount);
     }
 }

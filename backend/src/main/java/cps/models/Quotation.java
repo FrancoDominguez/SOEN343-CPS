@@ -1,6 +1,7 @@
 package cps.models;
 
 import java.math.BigDecimal;
+
 import static cps.services.MapsService.getDurationDistance;
 import cps.utils.Pair;
 
@@ -12,6 +13,12 @@ public class Quotation {
   private int distanceInMeters;
   private int eta;
   private BigDecimal price;
+
+
+  public Quotation(BigDecimal price) {
+    this.price = price;
+}
+
 
   public Quotation(User user, Address origin, Address destination, Package packageUnit) {
     this.user = user;
@@ -37,6 +44,13 @@ public class Quotation {
   private BigDecimal determinePrice() {
     return null;
   }
+
+  public BigDecimal getPrice() {
+    return price;
+}
+public void setPrice(BigDecimal price) {
+  this.price = price;
+}
 
   public String toString() {
     return null;

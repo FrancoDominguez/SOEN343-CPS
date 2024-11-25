@@ -1,8 +1,7 @@
+// PaymentStrategy.java
 package cps.models.StrategyPatternPayment;
 
 public interface PaymentStrategy {
-    void collectPaymentDetails();
-    boolean validatePaymentDetails();
-    void pay(int amount);
+    void processPayment(double amount);
 }
 

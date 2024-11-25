@@ -1,60 +1,62 @@
 //PaymentController.java
-
 package cps.controllers;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import cps.models.Quotation;
+import cps.models.StrategyPatternPayment.*;
+import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
 import java.util.Map;
-
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.stripe.exception.StripeException;
-import com.stripe.model.PaymentIntent;
-import com.stripe.param.PaymentIntentCreateParams;
-
-import cps.models.Payment;
 
 @RestController
 @RequestMapping("/api/payment")
 public class PaymentController {
 
-    // In-memory list to store payments
-    private final List<Payment> paymentStore = new ArrayList<>();
+    @PostMapping("/process")
+    public Map<String, String> processPayment(@RequestBody Map<String, Object> request) {
+        String method = (String) request.get("method");
+        double quotationPrice = (double) request.get("quotationPrice");
+        Map<String, String> cardDetails = (Map<String, String>) request.get("cardDetails");
+        Map<String, String> paypalCredentials = (Map<String, String>) request.get("paypalCredentials");
 
-    @PostMapping("/create")
-    public Map<String, String> createPaymentIntent(@RequestBody Map<String, Object> data) throws StripeException {
-        if (data == null || !data.containsKey("amount") || data.get("amount") == null) {
-            throw new IllegalArgumentException("Missing or invalid 'amount' field");
+        // Create Quotation (simulated, replace with DB fetch)
+        Quotation quotation = new Quotation(BigDecimal.valueOf(quotationPrice));
+
+        // Initialize PaymentService
+        PaymentService paymentService = new PaymentService(quotation);
+
+        // Set payment strategy based on method
+        PaymentStrategy strategy;
+        if ("stripe".equalsIgnoreCase(method)) {
+            if (cardDetails == null || cardDetails.get("cardNumber") == null) {
+                throw new IllegalArgumentException("Card details are required for Stripe payments.");
+            }
+            strategy = new CreditCardPaymentStrategy(
+                cardDetails.get("cardNumber"),
+                cardDetails.get("cvv"),
+                cardDetails.get("expirationDate")
+            );
+        } else if ("paypal".equalsIgnoreCase(method)) {
+            if (paypalCredentials == null || paypalCredentials.get("email") == null) {
+                throw new IllegalArgumentException("PayPal credentials are required for PayPal payments.");
+            }
+            strategy = new PayPalPaymentStrategy(
+                paypalCredentials.get("email"),
+                paypalCredentials.get("password")
+            );
+        } else {
+            throw new IllegalArgumentException("Invalid payment method.");
         }
-    
-        long amount;
-        try {
-            amount = ((Number) data.get("amount")).longValue();
-        } catch (ClassCastException | NullPointerException e) {
-            throw new IllegalArgumentException("Invalid 'amount' value. Must be a numeric value in cents.", e);
-        }
-    
-        String currency = "cad";
-    
-        PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
-                .setAmount(amount)
-                .setCurrency(currency)
-                .addPaymentMethodType("card")
-                .build();
-    
-        PaymentIntent intent = PaymentIntent.create(params);
-    
-        Payment payment = new Payment(intent.getId(), amount, currency, intent.getStatus());
-        paymentStore.add(payment);
-    
-        Map<String, String> responseData = new HashMap<>();
-        responseData.put("clientSecret", intent.getClientSecret());
-        return responseData;
+
+        // Process the payment
+        paymentService.setPaymentStrategy(strategy);
+        paymentService.processPayment();
+
+        // Return response
+        return Map.of(
+            "status", "success",
+            "method", method,
+            "amount", String.valueOf(quotation.getPrice())
+        );
     }
-    
-
 }
