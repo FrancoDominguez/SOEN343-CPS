@@ -56,24 +56,10 @@ public class ClientService implements OrderTracker {
 
   public void createDelivery(Contract contract) {
     Delivery newDelivery = new Delivery(contract);
-    saveDelivery(newDelivery); // Persist to DB
+    newDelivery.save(); // Persist to DB
 }
 
-public void save() {
-  DeliveryDAO deliveryDAO = new DeliveryDAO();
-  if (this.id == -1) {
-      //Call the id in the DeliveryID
-      // Insert new Delivery and assign the generated ID
-      this.id = deliveryDAO.insert(this);
-  } else {
-      try {
-          // Update existing Delivery
-          deliveryDAO.update(this);
-      } catch (Exception e) {
-          System.out.println(e.getMessage());
-      }
-  }
-}
+
 
 
   public ArrayList<Delivery> viewAllActiveDeliveries() {

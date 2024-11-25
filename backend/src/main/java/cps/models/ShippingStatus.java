@@ -25,6 +25,10 @@ public class ShippingStatus {
         this.currentLocationIndex = 0; // Start at the beginning
     }
 
+    public Boolean isPending(){
+      return true;
+    }
+
     // Getters
     public int getId() {
         return this.id;
