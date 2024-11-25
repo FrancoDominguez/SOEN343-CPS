@@ -16,32 +16,35 @@ public class PaymentController {
     public Map<String, String> processPayment(@RequestBody Map<String, Object> request) {
         String method = (String) request.get("method");
         double quotationPrice = (double) request.get("quotationPrice");
-        Map<String, String> cardDetails = (Map<String, String>) request.get("cardDetails");
-        Map<String, String> paypalCredentials = (Map<String, String>) request.get("paypalCredentials");
 
-        // Create Quotation (simulated, replace with DB fetch)
+        // Log the incoming request for debugging
+        System.out.println("Received request: " + request);
+
+        // Simulate creating a quotation (you can replace this with a DB fetch)
         Quotation quotation = new Quotation(BigDecimal.valueOf(quotationPrice));
 
-        // Initialize PaymentService
+        // Initialize the PaymentService with the quotation
         PaymentService paymentService = new PaymentService(quotation);
 
-        // Set payment strategy based on method
+        // Determine the payment strategy based on the method
         PaymentStrategy strategy;
-        if ("stripe".equalsIgnoreCase(method)) {
-            if (cardDetails == null || cardDetails.get("cardNumber") == null) {
-                throw new IllegalArgumentException("Card details are required for Stripe payments.");
+        if ("creditCard".equalsIgnoreCase(method)) {
+            Map<String, String> cardDetails = (Map<String, String>) request.get("cardDetails");
+            if (cardDetails == null || cardDetails.get("cardNumber") == null || cardDetails.get("cvc") == null || cardDetails.get("expirationDate") == null) {
+                throw new IllegalArgumentException("Card details are required for credit card payments.");
             }
             strategy = new CreditCardPaymentStrategy(
                 cardDetails.get("cardNumber"),
-                cardDetails.get("cvv"),
+                cardDetails.get("cvc"),
                 cardDetails.get("expirationDate")
             );
         } else if ("paypal".equalsIgnoreCase(method)) {
-            if (paypalCredentials == null || paypalCredentials.get("email") == null) {
+            Map<String, String> paypalCredentials = (Map<String, String>) request.get("paypalCredentials");
+            if (paypalCredentials == null || paypalCredentials.get("username") == null || paypalCredentials.get("password") == null) {
                 throw new IllegalArgumentException("PayPal credentials are required for PayPal payments.");
             }
             strategy = new PayPalPaymentStrategy(
-                paypalCredentials.get("email"),
+                paypalCredentials.get("username"),
                 paypalCredentials.get("password")
             );
         } else {
@@ -52,7 +55,7 @@ public class PaymentController {
         paymentService.setPaymentStrategy(strategy);
         paymentService.processPayment();
 
-        // Return response
+        // Return a success response
         return Map.of(
             "status", "success",
             "method", method,

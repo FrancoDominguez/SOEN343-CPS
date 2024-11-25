@@ -16,6 +16,7 @@ public class CreditCardPaymentStrategy implements PaymentStrategy {
     public void processPayment(double amount) {
         System.out.println("Processing credit card payment:");
         System.out.println("Card Number: " + cardNumber);
+        System.out.println("Card expirationDate: " + expirationDate);
         System.out.println("Amount: " + amount);
         System.out.println("Payment successful using Credit Card!");
     }
