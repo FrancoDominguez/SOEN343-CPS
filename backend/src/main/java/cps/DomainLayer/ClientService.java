@@ -62,6 +62,7 @@ public class ClientService implements OrderTracker {
 public void save() {
   DeliveryDAO deliveryDAO = new DeliveryDAO();
   if (this.id == -1) {
+      //Call the id in the DeliveryID
       // Insert new Delivery and assign the generated ID
       this.id = deliveryDAO.insert(this);
   } else {

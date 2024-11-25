@@ -20,6 +20,10 @@ public class Delivery {
         this.status = new ShippingStatus(); // Initialize with a new ShippingStatus
     }
 
+      //CHange the is flexibile with instanceof for home pickup
+      
+   
+
     // Getters and Setters
     public int getId() {
         return id;
@@ -100,4 +104,3 @@ public class Delivery {
                 '}';
     }
 }
-
