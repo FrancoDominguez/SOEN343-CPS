@@ -56,34 +56,33 @@ public class Driver {
 
       System.out.println("\nprocessing and saving station dropoff contract\n");
       stationContract.processQuote();
-      stationContract.save();
+      int stationContractId = stationContract.save();
+      System.out.println("\nId retrieved from saving: " + stationContractId + "\n");
       System.out.println("\nprocessing and saving home pickup contract\n");
       pickupContract.processQuote();
-      int savedPickupId = pickupContract.save();
-      System.out.println("\nId retrieved from saving: " + savedPickupId + "\n");
+      int pickupContractId = pickupContract.save();
+      System.out.println("\nId retrieved from saving: " + pickupContractId + "\n");
 
       // testing home pickup update
       System.out.println("\ntesting home pickup updates\n");
-      Location newDestination = new Location("new value", "new value", "new value", "new value");
-      Contract savedPickupContract = contractDAO.fetchById(savedPickupId);
-      savedPickupContract.setDestination(newDestination);
-      System.out.println("\nRetrieved contract id: " + savedPickupContract.getId() + "\n");
-      System.out.println("\nretrieved contract: " + savedPickupContract);
-      savedPickupContract.processQuote();
-      savedPickupContract.save();
+      Location newPickupDestination = new Location("new value", "new value", "new value", "new value");
+      Contract retrievedPickupContract = contractDAO.fetchById(pickupContractId);
+      retrievedPickupContract.setDestination(newPickupDestination);
+      System.out.println("\nRetrieved contract id: " + retrievedPickupContract.getId() + "\n");
+      System.out.println("\nretrieved contract: " + retrievedPickupContract);
+      retrievedPickupContract.processQuote();
+      retrievedPickupContract.save();
 
-      // testing station dropoff updates
-      // System.out.println("\ntesting station dropoff updates\n");
-      // stationContract.setHasPriority(false);
-      // Parcel changedParcel = new Parcel(7.0, 7.0, 7.0, 7.0, true);
-      // stationContract.setParcel(changedParcel);
-      // stationContract.processQuote();
-      // stationContract.save();
+      System.out.println("\ntesting station dropoff updates\n");
+      Location newStationDestination = new Location("station", "station", "station", "station");
+      Contract retrievedStationContract = contractDAO.fetchById(stationContractId);
+      retrievedStationContract.setDestination(newStationDestination);
+      System.out.println("\nRetrieved contract id: " + retrievedStationContract.getId() + "\n");
+      System.out.println("\nretrieved contract: " + retrievedStationContract);
+      retrievedStationContract.processQuote();
+      retrievedStationContract.save();
+      
 
-      // ArrayList<Contract> contracts =
-      // contractDAO.fetchAllByClientId(clientObj.getId());
-      // System.out.println("\nprinting contracts:\n");
-      // System.out.println(contracts);
     } catch (Exception e) {
       System.out.println(e.getMessage());
     }

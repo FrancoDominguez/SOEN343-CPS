@@ -13,13 +13,13 @@ import cps.models.ShippingStatus;
 public class DeliveryController {
 
     @GetMapping("/delivery/status")
-    public ResponseEntity<String> getDeliveryStatus(@RequestParam int trackingId) {
+    public ResponseEntity<Object> getDeliveryStatus(@RequestParam int trackingId) {
         try {
             ClientService clientService = new ClientService();
             ShippingStatus shippingStatus = clientService.trackOrder(trackingId);
 
             // Return the status as a string (e.g., "pending", "in transit", "delivered")
-            return new ResponseEntity<>(shippingStatus.getStatus(), HttpStatus.OK);
+            return new ResponseEntity<Object>(shippingStatus, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>("Tracking ID not found", HttpStatus.NOT_FOUND);
         } catch (Exception e) {

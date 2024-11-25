@@ -14,8 +14,6 @@ public class ContractRequestBody extends AuthenticatedRequestBody {
   private Boolean signatureRequired;
   private Boolean hasPriority;
   private double warrantedAmount;
-  private double price;
-  private Duration eta;
   private Location origin;
   private LocalDateTime pickupTime;
   private Boolean isFlexible;
@@ -43,14 +41,6 @@ public class ContractRequestBody extends AuthenticatedRequestBody {
 
   public double getWarrantedAmount() {
     return warrantedAmount;
-  }
-
-  public double getPrice() {
-    return price;
-  }
-
-  public Duration getEta() {
-    return eta;
   }
 
   public Location getOrigin() {

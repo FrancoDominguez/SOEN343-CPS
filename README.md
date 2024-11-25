@@ -81,3 +81,6 @@ firstname: String
 lastname: String
 password: String
 home_address: FK int -> locations optional default null
+
+
+CREATE TABLE shipping_status (tracking_id VARCHAR(50) PRIMARY KEY, status VARCHAR(50) NOT NULL, last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, eta DATETIME NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP); CREATE TABLE Delivery (id INT AUTO_INCREMENT PRIMARY KEY, client_id INT NOT NULL, tracking_id VARCHAR(50) NOT NULL UNIQUE, parcel_id INT NOT NULL, destination_id INT NOT NULL, signature_required BOOLEAN NOT NULL DEFAULT FALSE, has_priority BOOLEAN NOT NULL DEFAULT FALSE, is_flexible BOOLEAN NOT NULL DEFAULT FALSE, pickup_time DATETIME NULL, pickup_location_id INT NULL, FOREIGN KEY (tracking_id) REFERENCES shipping_status(tracking_id) ON DELETE CASCADE, FOREIGN KEY (parcel_id) REFERENCES parcels(parcel_id) ON DELETE CASCADE, FOREIGN KEY (destination_id) REFERENCES locations(location_id) ON DELETE CASCADE, FOREIGN KEY (pickup_location_id) REFERENCES locations(location_id) ON DELETE CASCADE);

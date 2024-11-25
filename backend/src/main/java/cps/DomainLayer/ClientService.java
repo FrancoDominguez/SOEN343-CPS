@@ -2,6 +2,7 @@ package cps.DomainLayer;
 
 import java.util.ArrayList;
 
+import cps.DAO.ContractDAO;
 import cps.DTO.RequestBodies.ContractRequestBody;
 import cps.models.Contract;
 import cps.models.Delivery;
@@ -13,18 +14,22 @@ import cps.models.Interfaces.OrderTracker;
 
 public class ClientService implements OrderTracker {
 
-  @Override
+  // @Override
+  // public ShippingStatus trackOrder(int trackingId) {
+  // // Use DeliveryDAO to fetch the delivery by trackingId
+  // DeliveryDAO deliveryDAO = new DeliveryDAO();
+  // Delivery delivery = deliveryDAO.fetchByTrackingId(trackingId);
+
+  // if (delivery == null) {
+  // throw new IllegalArgumentException("Invalid tracking ID: " + trackingId);
+  // }
+
+  // // Return the ShippingStatus object from the delivery
+  // return delivery.getStatus();
+  // }
+
   public ShippingStatus trackOrder(int trackingId) {
-      // Use DeliveryDAO to fetch the delivery by trackingId
-      DeliveryDAO deliveryDAO = new DeliveryDAO();
-      Delivery delivery = deliveryDAO.fetchByTrackingId(trackingId);
-
-      if (delivery == null) {
-          throw new IllegalArgumentException("Invalid tracking ID: " + trackingId);
-      }
-
-      // Return the ShippingStatus object from the delivery
-      return delivery.getStatus();
+    return null;
   }
 
   public Contract addNewContract(ContractRequestBody contractInfo) throws Exception {
@@ -45,8 +50,10 @@ public class ClientService implements OrderTracker {
   }
 
   // Franco
-  public ArrayList<Contract> viewAllActiveContracts() {
-    return null;
+  public ArrayList<Contract> viewAllActiveContracts(int clientId) {
+    ContractDAO contractDAO = new ContractDAO();
+    ArrayList<Contract> contracts = contractDAO.fetchAllByClientId(clientId);
+    return contracts;
   }
 
   // Franco
@@ -59,11 +66,8 @@ public class ClientService implements OrderTracker {
 
   public void createDelivery(Contract contract) {
     Delivery newDelivery = new Delivery(contract);
-    newDelivery.save(); // Persist to DB
-}
-
-
-
+    newDelivery.save();
+  }
 
   public ArrayList<Delivery> viewAllActiveDeliveries() {
     return null;
