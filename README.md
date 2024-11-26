@@ -8,6 +8,9 @@
 
 - [Sprint 3 Docs](https://docs.google.com/document/d/19A_7qKFYMrg6esX5F3NyFJg9eGfYO34FmZy8TgPjLWU/edit?tab=t.0)
 
+- [Sprint 4 Docs](https://docs.google.com/document/d/1RoCCGSqYTVoNRvgNDRftAo6vvPY6rdROKlTo5lG-PD4/edit?usp=sharing)
+
+- [Presentation Slides](https://docs.google.com/presentation/d/1b4Lhw6yehudaWA30O0aX0U9uFg-J7bRJamZubxW7Jk8/edit#slide=id.p)
 ### Diagrams
 
 - [Context Diagram and Domain Model](https://app.diagrams.net/#G1Jo-fCdNV0BeeOHu39IpNm5gcvtYM7EvU#%7B%22pageId%22%3A%22FhaqLYx5OxTo6mxjSn0A%22%7D)
