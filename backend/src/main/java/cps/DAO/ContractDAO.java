@@ -298,44 +298,61 @@ public class ContractDAO {
 
   public void update(StationDropoff contract) {
     try {
-      Location destination = contract.getDestination();
-      Parcel parcel = contract.getParcel();
-
       Mysqlcon con = Mysqlcon.getInstance();
       con.connect();
-      StringBuilder queryString = new StringBuilder();
+      Connection sqlcon = con.getConnection();
+      Location destination = contract.getDestination();
+      Station station = contract.getStation();
+      Parcel parcel = contract.getParcel();
 
-      queryString.append("START TRANSACTION;");
+      String qs1 = "UPDATE locations SET street_address = ?, postal_code = ?, city = ?, country = ? WHERE location_id = ?;";
+      PreparedStatement pst1 = sqlcon.prepareStatement(qs1);
+      pst1.setString(1, destination.getStreetAddress());
+      pst1.setString(2, destination.getPostalCode());
+      pst1.setString(3, destination.getCity());
+      pst1.setString(4, destination.getCountry());
+      pst1.setInt(5, destination.getId());
 
-      // Update destinations
-      queryString.append("UPDATE locations SET ");
-      queryString.append(String.format(
-          "street_address = '%s', postal_code = '%s', city = '%s', country = '%s' ",
-          escapeSql(destination.getStreetAddress()),
-          escapeSql(destination.getPostalCode()),
-          escapeSql(destination.getCity()),
-          escapeSql(destination.getCountry())));
-      queryString.append(String.format("WHERE location_id = %d;", destination.getId()));
+      pst1.executeUpdate();
 
-      // Update parcels
-      queryString.append("UPDATE parcels SET ");
-      queryString.append(String.format(
-          "height = %f, width = %f, length = %f, weight = %f, is_fragile = %d ",
-          parcel.getHeight(), parcel.getWidth(), parcel.getLength(), parcel.getWeight(),
-          parcel.isFragile() ? 1 : 0));
-      queryString.append(String.format("WHERE parcel_id = %d;", parcel.getId()));
+      String qs3 = "UPDATE parcels SET height = ?, width = ?, length = ?, weight = ?, is_fragile = ? WHERE parcel_id = ?;";
+      PreparedStatement pst3 = sqlcon.prepareStatement(qs3);
+      pst3.setDouble(1, parcel.getHeight());
+      pst3.setDouble(2, parcel.getWidth());
+      pst3.setDouble(3, parcel.getLength());
+      pst3.setDouble(4, parcel.getWeight());
+      pst3.setBoolean(5, parcel.isFragile());
+      pst3.setInt(6, parcel.getId());
 
-      // Update contracts
-      queryString.append("UPDATE contracts SET ");
-      queryString.append(String.format(
-          "client_id = %d, price = %f, eta = '%s', signature_required = %d, priority_shipping = %d, warranted_amount = %f, origin_station_id = %d ",
-          contract.getClientId(), contract.getPrice(), escapeSql(contract.getEta().toString()),
-          contract.signatureRequired() ? 1 : 0, contract.hasPriority() ? 1 : 0,
-          contract.getWarrantedAmount(), contract.getStation().getId()));
-      queryString.append(String.format("WHERE contract_id = %d;", contract.getId()));
+      pst3.executeUpdate();
 
-      queryString.append("COMMIT;");
-      con.formerExecuteUpdate(queryString.toString());
+      String qs2 = "UPDATE stations SET name = ?, street_address = ?, postal_code = ?, city = ?, country = ? WHERE station_id = ?;";
+      PreparedStatement pst2 = sqlcon.prepareStatement(qs2);
+      pst2.setString(1, station.getName());
+      pst2.setString(2, station.getStreetAddress());
+      pst2.setString(3, station.getPostalCode());
+      pst2.setString(4, station.getCity());
+      pst2.setString(5, station.getCountry());
+      pst2.setInt(6, station.getId());
+
+      pst2.executeUpdate();
+
+      String qs4 = "UPDATE contracts SET client_id = ?, price = ?, eta = ?, signature_required = ?, priority_shipping = ?, "
+          +
+          "warranted_amount = ? "
+          +
+          "WHERE contract_id = ?;";
+      PreparedStatement pst4 = sqlcon.prepareStatement(qs4);
+      pst4.setInt(1, contract.getClientId());
+      pst4.setDouble(2, contract.getPrice());
+      pst4.setObject(3, contract.getEta());
+      pst4.setBoolean(4, contract.signatureRequired());
+      pst4.setBoolean(5, contract.hasPriority());
+      pst4.setDouble(6, contract.getWarrantedAmount());
+      pst4.setInt(7, contract.getId());
+
+      pst4.executeUpdate();
+
       con.close();
     } catch (Exception e) {
       System.out.println("Error updating station dropoff contract: " + e.getMessage());
