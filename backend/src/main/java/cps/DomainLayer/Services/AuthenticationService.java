@@ -4,6 +4,8 @@ import cps.exceptions.UnauthorizedException;
 import cps.DomainLayer.models.ClientModel;
 import cps.DTO.RequestBodies.SignupRequestbody;
 import cps.DAO.ClientDAO;
+import com.auth0.jwt.interfaces.DecodedJWT;
+
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -72,4 +74,26 @@ public final class AuthenticationService {
         .sign(algorithm);
     return token;
   }
+
+  public static int parseTokenAndGetUserId(String token) throws UnauthorizedException {
+    try {
+        // Create an Algorithm instance using the secret key
+        Algorithm algorithm = Algorithm.HMAC256(secretKey);
+
+        // Decode and verify the JWT token
+        DecodedJWT decodedJWT = JWT.require(algorithm)
+                .withIssuer("auth0") // Ensure the issuer matches
+                .build()
+                .verify(token);
+
+        // Extract the userId claim as an integer
+        return decodedJWT.getClaim("userId").asInt();
+    } catch (Exception e) {
+        // Throw an UnauthorizedException if the token is invalid or fails verification
+        throw new UnauthorizedException("Invalid or expired token");
+    }
+}
+
+
+  
 }
