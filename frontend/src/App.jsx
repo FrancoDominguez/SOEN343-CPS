@@ -11,8 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 import { EnvContext } from "./components/EnvProvider";
 import DashboardPage from "./components/Pages/DashboardPage";
-import DeliverPage from "./components/Pages/DeliverPage";
-import ReceivingPage from "./components/Pages/ReceivingPage";
+import DeliverPage from "./components/Pages/DeliveryPage";
 import PaymentPage from "./components/Pages/PaymentPage";
 import TopNavBar from "./components/TopNavbar";
 import LoginPage from "./components/Pages/LoginPage";
