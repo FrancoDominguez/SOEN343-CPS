@@ -14,22 +14,6 @@ import cps.utils.Mysqlcon;
 public class DeliveryDAO {
 
   public int insert(int contractId) {
-    ContractDAO contractDAO = new ContractDAO();
-    try {
-      Mysqlcon con = Mysqlcon.getInstance();
-      con.connect();
-      Connection sqlcon = con.getConnection();
-
-      String qs1 = "INSERT INTO deliveries (id, client_id, tracking_id, parcel_id, destination_id," +
-          " signature_required, has_priority, is_flexible, pickup_time, pickup_location)";
-      PreparedStatement pst1 = sqlcon.prepareStatement(qs1);
-      pst1.setInt("");
-
-      con.close();
-    } catch (Exception e) {
-      System.out.println("Error inserting Delivery into database" + e.getMessage());
-    }
-
     return 1;
   }
 
@@ -44,14 +28,13 @@ public class DeliveryDAO {
           " signature_required, has_priority, is_flexible, pickup_time, pickup_location)";
       PreparedStatement pst1 = sqlcon.prepareStatement(qs1);
       pst1.setInt(1, delivery.getId());
-      pst1.setInt(2, delivery.getId());
+      pst1.setInt(2, delivery.getClientId());
       pst1.setInt(3, delivery.getId());
       pst1.setInt(3, delivery.getId());
       pst1.setInt(4, delivery.getId());
       pst1.setInt(5, delivery.getId());
       pst1.setInt(6, delivery.getId());
       pst1.setInt(7, delivery.getId());
-
 
       con.close();
     } catch (Exception e) {

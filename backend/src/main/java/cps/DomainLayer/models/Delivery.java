@@ -1,7 +1,6 @@
 package cps.DomainLayer.models;
 
 import java.time.LocalDateTime;
-
 import cps.DAO.*;
 
 public class Delivery {
@@ -19,6 +18,7 @@ public class Delivery {
 
     // Constructor for HomePickup and StationDropoff contracts
     public Delivery(Contract contract) {
+        this.id = -1;
         this.clientId = contract.getClientId();
         this.parcel = contract.getParcel();
         this.destination = contract.getDestination();
@@ -33,6 +33,36 @@ public class Delivery {
             this.pickupTime = homePickup.getPickupTime();
             this.pickupLocation = homePickup.getOrigin();
         }
+    }
+
+    // Constructor for HomePickup contracts
+    public Delivery(int id, int clientId, Parcel parcel, Location destination, Boolean signatureRequired,
+            Boolean hasPriority, Boolean isFlexible, LocalDateTime pickupTime, Location pickupLocation) {
+        this.id = id; // Default ID for new deliveries
+        this.clientId = clientId;
+        this.parcel = parcel;
+        this.destination = destination;
+        this.signatureRequired = signatureRequired;
+        this.hasPriority = hasPriority;
+        this.status = new ShippingStatus(); // Default to pending
+        this.isFlexible = isFlexible;
+        this.pickupTime = pickupTime;
+        this.pickupLocation = pickupLocation;
+    }
+
+    // Constructor for StationDropoff contracts
+    public Delivery(int id, int clientId, Parcel parcel, Location destination, Boolean signatureRequired,
+            Boolean hasPriority) {
+        this.id = id; // Default ID for new deliveries
+        this.clientId = clientId;
+        this.parcel = parcel;
+        this.destination = destination;
+        this.signatureRequired = signatureRequired;
+        this.hasPriority = hasPriority;
+        this.status = new ShippingStatus(); // Default to pending
+        this.isFlexible = false; // Not flexible by default for StationDropoff
+        this.pickupTime = null; // No pickup time for StationDropoff
+        this.pickupLocation = null; // No pickup location for StationDropoff
     }
 
     // Getters and Setters
