@@ -3,11 +3,15 @@ package cps.DAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
+
+import com.mysql.cj.x.protobuf.MysqlxPrepare.Prepare;
 
 import cps.DomainLayer.models.Contract;
 import cps.DomainLayer.models.Delivery;
 import cps.DomainLayer.models.Location;
 import cps.DomainLayer.models.Parcel;
+import cps.DomainLayer.models.ShippingStatus;
 import cps.DomainLayer.models.Station;
 import cps.utils.Mysqlcon;
 
@@ -24,17 +28,31 @@ public class DeliveryDAO {
       con.connect();
       Connection sqlcon = con.getConnection();
 
-      String qs1 = "INSERT INTO deliveries (id, client_id, tracking_id, parcel_id, destination_id," +
-          " signature_required, has_priority, is_flexible, pickup_time, pickup_location)";
+      ShippingStatus status = delivery.getStatus();
+      String qs1 = "INSERT INTO shippping_status (status, eta), VALUES (?, ?)";
       PreparedStatement pst1 = sqlcon.prepareStatement(qs1);
-      pst1.setInt(1, delivery.getId());
-      pst1.setInt(2, delivery.getClientId());
-      pst1.setInt(3, delivery.getId());
-      pst1.setInt(3, delivery.getId());
-      pst1.setInt(4, delivery.getId());
-      pst1.setInt(5, delivery.getId());
-      pst1.setInt(6, delivery.getId());
-      pst1.setInt(7, delivery.getId());
+      pst1.setInt()
+
+
+      String qs2 = "INSERT INTO deliveries (id, client_id, tracking_id, parcel_id, destination_id," +
+          " signature_required, has_priority, is_flexible, pickup_time, pickup_location) VALUES " +
+          "(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+      PreparedStatement pst2 = sqlcon.prepareStatement(qs2);
+      pst2.setInt(1, delivery.getId());
+      pst2.setInt(2, delivery.getClientId());
+      pst2.setInt(3, delivery.getTrackingId()); // FIXME
+      pst2.setInt(3, delivery.getParcel().getId());
+      pst2.setInt(4, delivery.getDestination().getId());
+      pst2.setBoolean(5, delivery.isSignatureRequired());
+      pst2.setBoolean(6, delivery.hasPriority());
+      pst2.setBoolean(7, delivery.isFlexible());
+      if (delivery.getPickupTime() != null && delivery.getPickupLocation() != null) {
+        pst2.setTimestamp(8, Timestamp.valueOf(delivery.getPickupTime()));
+        pst2.setInt(9, delivery.getPickupLocation().getId());
+      } else {
+        pst2.setNull(8, java.sql.Types.NULL);
+        pst2.setNull(9, java.sql.Types.NULL);
+      }
 
       con.close();
     } catch (Exception e) {
