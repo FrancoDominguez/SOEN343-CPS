@@ -1,11 +1,9 @@
 package cps.DTO.RequestBodies;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 
 import cps.models.Location;
 import cps.models.Parcel;
-import cps.models.Station;
 
 public class ContractRequestBody extends AuthenticatedRequestBody {
   private int clientId;
@@ -17,7 +15,7 @@ public class ContractRequestBody extends AuthenticatedRequestBody {
   private Location origin;
   private LocalDateTime pickupTime;
   private Boolean isFlexible;
-  private Station station;
+  private int stationId;
 
   public int getClientId() {
     return clientId;
@@ -55,11 +53,11 @@ public class ContractRequestBody extends AuthenticatedRequestBody {
     return isFlexible;
   }
 
-  public Station getStation() {
-    return station;
+  public int getStationId() {
+    return stationId;
   }
 
   public Boolean isHomePickup() {
-    return (this.station == null);
+    return (this.origin != null);
   }
 }

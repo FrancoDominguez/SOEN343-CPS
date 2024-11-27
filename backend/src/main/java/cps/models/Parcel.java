@@ -15,6 +15,9 @@ public class Parcel {
     maxWeight = 60;
   }
 
+  public Parcel() {
+  }
+
   public Parcel(double length, double width, double height, double weight, Boolean isFragile) {
     this.id = -1;
     this.length = length;

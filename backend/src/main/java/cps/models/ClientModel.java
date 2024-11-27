@@ -10,6 +10,9 @@ public class ClientModel {
   private String password;
   private Location homeAddress;
 
+  public ClientModel() {
+  }
+
   public ClientModel(String firstname, String lastname, String email, String password, String streetAddress,
       String postalCode, String city, String country) {
     this.id = -1; // -1 indicates a new user

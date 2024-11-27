@@ -15,6 +15,7 @@ public class ContractController {
 
   @PostMapping("/contract")
   public ResponseEntity<Contract> generateContract(@RequestBody ContractRequestBody contractInfo) {
+    System.out.println("\n\nReceived Contract Request\n\n");
     Contract newContract = null;
     ClientService activeClient = new ClientService();
     try {

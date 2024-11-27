@@ -3,6 +3,7 @@ package cps.DomainLayer;
 import java.util.ArrayList;
 
 import cps.DAO.ContractDAO;
+import cps.DAO.StationDAO;
 import cps.DTO.RequestBodies.ContractRequestBody;
 import cps.models.Contract;
 import cps.models.Delivery;
@@ -34,15 +35,18 @@ public class ClientService implements OrderTracker {
 
   public Contract addNewContract(ContractRequestBody contractInfo) throws Exception {
     Contract newContract = null;
+    StationDAO stationDAO = new StationDAO();
     if (contractInfo.isHomePickup()) {
       newContract = new HomePickup(contractInfo.getClientId(), contractInfo.getParcel(),
           contractInfo.getDestination(), contractInfo.getSignatureRequired(), contractInfo.getHasPriority(),
           contractInfo.getWarrantedAmount(), contractInfo.getOrigin(), contractInfo.getPickupTime(),
           contractInfo.getIsFlexible());
     } else {
+      Station station = stationDAO.fetchLocation(contractInfo.getStationId());
+      System.out.println(station);
       newContract = new StationDropoff(contractInfo.getClientId(), contractInfo.getParcel(),
           contractInfo.getDestination(), contractInfo.getSignatureRequired(), contractInfo.getHasPriority(),
-          contractInfo.getWarrantedAmount(), contractInfo.getStation());
+          contractInfo.getWarrantedAmount(), station);
     }
     newContract.processQuote();
     newContract.save();

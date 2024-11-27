@@ -7,6 +7,9 @@ public class Location {
   private String city;
   private String country;
 
+  public Location() {
+  }
+
   public Location(String streetAddress, String postalCode, String city, String country) {
     this.id = -1;
     this.streetAddress = streetAddress;
