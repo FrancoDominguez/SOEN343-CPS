@@ -1,7 +1,7 @@
 package cps.DomainLayer;
 
-import cps.models.ShippingStatus;
-import cps.models.Interfaces.OrderTracker;
+import cps.DomainLayer.models.ShippingStatus;
+import cps.DomainLayer.models.Interfaces.OrderTracker;
 
 public class GuestService implements OrderTracker {
   public ShippingStatus trackOrder(int trackingId) {

@@ -2,7 +2,7 @@ package cps.DAO;
 
 import java.sql.ResultSet;
 
-import cps.models.Station;
+import cps.DomainLayer.models.Station;
 import cps.utils.Mysqlcon;
 
 public class StationDAO {

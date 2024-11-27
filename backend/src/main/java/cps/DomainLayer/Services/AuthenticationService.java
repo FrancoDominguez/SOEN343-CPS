@@ -1,9 +1,9 @@
-package cps.DomainLayer;
+package cps.DomainLayer.Services;
 
 import cps.exceptions.UnauthorizedException;
-import cps.models.ClientModel;
-import cps.DAO.ClientDAO;
+import cps.DomainLayer.models.ClientModel;
 import cps.DTO.RequestBodies.SignupRequestbody;
+import cps.DAO.ClientDAO;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

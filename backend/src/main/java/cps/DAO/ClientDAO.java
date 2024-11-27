@@ -1,6 +1,6 @@
 package cps.DAO;
 
-import cps.models.ClientModel;
+import cps.DomainLayer.models.ClientModel;
 import cps.utils.Mysqlcon;
 import java.sql.*;
 

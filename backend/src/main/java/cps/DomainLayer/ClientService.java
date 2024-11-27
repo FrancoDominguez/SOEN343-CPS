@@ -2,16 +2,16 @@ package cps.DomainLayer;
 
 import java.util.ArrayList;
 
+import cps.DTO.RequestBodies.ContractRequestBody;
 import cps.DAO.ContractDAO;
 import cps.DAO.StationDAO;
-import cps.DTO.RequestBodies.ContractRequestBody;
-import cps.models.Contract;
-import cps.models.Delivery;
-import cps.models.HomePickup;
-import cps.models.ShippingStatus;
-import cps.models.Station;
-import cps.models.StationDropoff;
-import cps.models.Interfaces.OrderTracker;
+import cps.DomainLayer.models.Contract;
+import cps.DomainLayer.models.Delivery;
+import cps.DomainLayer.models.HomePickup;
+import cps.DomainLayer.models.ShippingStatus;
+import cps.DomainLayer.models.Station;
+import cps.DomainLayer.models.StationDropoff;
+import cps.DomainLayer.models.Interfaces.OrderTracker;
 
 public class ClientService implements OrderTracker {
 

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cps.DTO.RequestBodies.ContractRequestBody;
 import cps.DomainLayer.ClientService;
-import cps.models.Contract;
+import cps.DomainLayer.models.Contract;
 
 @RestController
 public class ContractController {

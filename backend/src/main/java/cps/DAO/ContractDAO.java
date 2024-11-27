@@ -8,12 +8,12 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import cps.models.Contract;
-import cps.models.HomePickup;
-import cps.models.Location;
-import cps.models.Parcel;
-import cps.models.Station;
-import cps.models.StationDropoff;
+import cps.DomainLayer.models.Contract;
+import cps.DomainLayer.models.HomePickup;
+import cps.DomainLayer.models.Location;
+import cps.DomainLayer.models.Parcel;
+import cps.DomainLayer.models.Station;
+import cps.DomainLayer.models.StationDropoff;
 import cps.utils.Mysqlcon;
 
 public class ContractDAO {
@@ -483,9 +483,5 @@ public class ContractDAO {
     } catch (Exception e) {
       System.out.println("Error updating home pickup contract: " + e.getMessage());
     }
-  }
-
-  private String escapeSql(String input) {
-    return input.replace("'", "''");
   }
 }

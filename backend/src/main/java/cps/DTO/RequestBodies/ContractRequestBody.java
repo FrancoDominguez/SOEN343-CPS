@@ -2,8 +2,8 @@ package cps.DTO.RequestBodies;
 
 import java.time.LocalDateTime;
 
-import cps.models.Location;
-import cps.models.Parcel;
+import cps.DomainLayer.models.Location;
+import cps.DomainLayer.models.Parcel;
 
 public class ContractRequestBody extends AuthenticatedRequestBody {
   private int clientId;

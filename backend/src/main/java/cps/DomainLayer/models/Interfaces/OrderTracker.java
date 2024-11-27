@@ -1,6 +1,6 @@
-package cps.models.Interfaces;
+package cps.DomainLayer.models.Interfaces;
 
-import cps.models.ShippingStatus;
+import cps.DomainLayer.models.ShippingStatus;
 
 public interface OrderTracker {
   public ShippingStatus trackOrder(int trackingId);

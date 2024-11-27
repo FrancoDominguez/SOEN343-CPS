@@ -2,7 +2,7 @@ package cps.DAO;
 
 import java.sql.ResultSet;
 
-import cps.models.Location;
+import cps.DomainLayer.models.Location;
 import cps.utils.Mysqlcon;
 
 public class LocationDAO {

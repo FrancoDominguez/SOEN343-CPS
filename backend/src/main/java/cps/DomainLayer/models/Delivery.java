@@ -1,9 +1,8 @@
 package cps.DomainLayer.models;
 
 import java.time.LocalDateTime;
+
 import cps.DAO.*;
-
-
 
 public class Delivery {
     private int id;
@@ -117,7 +116,8 @@ public class Delivery {
         if (this.isFlexible && this.status.isPending()) {
             this.pickupTime = pickupTime;
         } else {
-            throw new IllegalStateException("Cannot update pickup time. Delivery is not flexible or not in pending status.");
+            throw new IllegalStateException(
+                    "Cannot update pickup time. Delivery is not flexible or not in pending status.");
         }
     }
 
@@ -129,25 +129,25 @@ public class Delivery {
         if (this.isFlexible && this.status.isPending()) {
             this.pickupLocation = pickupLocation;
         } else {
-            throw new IllegalStateException("Cannot update pickup location. Delivery is not flexible or not in pending status.");
+            throw new IllegalStateException(
+                    "Cannot update pickup location. Delivery is not flexible or not in pending status.");
         }
     }
 
-    public void save(){
-      DeliveryDAO deliveryDAO = new DeliveryDAO();
-      if (this.getId() == -1) {
-          // Insert new Delivery and assign the generated ID
-          this.id = deliveryDAO.insert(this); // Update the Delivery object with the generated ID
-      } else {
-          try {
-              // Update existing Delivery
-              deliveryDAO.update(this);
-          } catch (Exception e) {
-              System.out.println("Error updating delivery: " + e.getMessage());
-          }
-      }
-  }
-  
+    public void save() {
+        DeliveryDAO deliveryDAO = new DeliveryDAO();
+        if (this.getId() == -1) {
+            // Insert new Delivery and assign the generated ID
+            this.id = deliveryDAO.insert(this); // Update the Delivery object with the generated ID
+        } else {
+            try {
+                // Update existing Delivery
+                deliveryDAO.update(this);
+            } catch (Exception e) {
+                System.out.println("Error updating delivery: " + e.getMessage());
+            }
+        }
+    }
 
     // Debugging representation
     @Override
@@ -167,4 +167,3 @@ public class Delivery {
                 '}';
     }
 }
-

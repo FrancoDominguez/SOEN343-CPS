@@ -5,13 +5,13 @@ import java.time.LocalDateTime;
 import cps.DAO.ClientDAO;
 import cps.DAO.ContractDAO;
 import cps.DAO.StationDAO;
-import cps.models.ClientModel;
-import cps.models.Contract;
-import cps.models.HomePickup;
-import cps.models.Location;
-import cps.models.Parcel;
-import cps.models.Station;
-import cps.models.StationDropoff;
+import cps.DomainLayer.models.ClientModel;
+import cps.DomainLayer.models.Contract;
+import cps.DomainLayer.models.HomePickup;
+import cps.DomainLayer.models.Location;
+import cps.DomainLayer.models.Parcel;
+import cps.DomainLayer.models.Station;
+import cps.DomainLayer.models.StationDropoff;
 import cps.utils.Mysqlcon;
 
 public class Tests {

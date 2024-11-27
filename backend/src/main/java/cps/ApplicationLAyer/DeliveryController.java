@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import cps.DomainLayer.ClientService;
-import cps.models.ShippingStatus;
+import cps.DomainLayer.models.ShippingStatus;
 
 @RestController
 public class DeliveryController {

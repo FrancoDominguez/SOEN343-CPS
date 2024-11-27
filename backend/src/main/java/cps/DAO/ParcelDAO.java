@@ -2,7 +2,7 @@ package cps.DAO;
 
 import java.sql.ResultSet;
 
-import cps.models.Parcel;
+import cps.DomainLayer.models.Parcel;
 import cps.utils.Mysqlcon;
 
 public class ParcelDAO {

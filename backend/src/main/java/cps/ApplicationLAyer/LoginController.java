@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import cps.DomainLayer.AuthenticationService;
+import cps.DomainLayer.Services.AuthenticationService;
 import cps.DTO.RequestBodies.LoginRequestBody;
 import cps.DTO.ResponseBodies.BasicResponse;
 import cps.DTO.ResponseBodies.LoginResponseBody;
