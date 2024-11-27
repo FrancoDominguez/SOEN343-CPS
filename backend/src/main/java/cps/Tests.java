@@ -70,6 +70,8 @@ public class Tests {
       System.out.println("\nretrieved contract: " + retrievedStationContract);
       retrievedStationContract.processQuote();
       retrievedStationContract.save();
+      contractDAO.fetchAllByClientId(clientObj.getId());
+
 
     } catch (Exception e) {
       System.out.println(e.getMessage());

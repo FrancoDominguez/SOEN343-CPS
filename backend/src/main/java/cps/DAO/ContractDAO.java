@@ -159,6 +159,8 @@ public class ContractDAO {
               "FROM contracts c " +
               "LEFT JOIN clients cl ON c.client_id = cl.client_id " +
               "LEFT JOIN parcels p ON c.parcel_id = p.parcel_id " +
+
+    
               "LEFT JOIN locations dl ON c.destination_id = dl.location_id " +
               "LEFT JOIN stations s ON c.origin_station_id = s.station_id " +
               "LEFT JOIN locations l ON c.origin_location_id = l.location_id " +
