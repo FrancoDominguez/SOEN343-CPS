@@ -1,4 +1,24 @@
 {
+  "deliveryType": {
+    "title": "Deliver Type",
+    "pickup": {
+      "textFields": [
+        { "id": "originCountry", "label": "Country" },
+        { "id": "originProvince", "label": "Province" },
+        { "id": "originCity", "label": "City" },
+        {
+          "id": "originPostalCode",
+          "label": "Postal Code"
+        },
+        {
+          "id": "originStreetAddress",
+          "label": "Street Address"
+        }
+      ],
+      "dateSelector": { "id": "pickUpTime", "label": "Pick Up Time" }
+    },
+    "dropoff": {}
+  },
   "destinationAddress": {
     "title": "Destination Address",
     "textFields": [
@@ -22,6 +42,18 @@
       { "id": "weight", "label": "Weight(pounds)", "name": "weight" }
     ]
   },
-  "addOns": { "title": "Add Ons" },
-  "review": { "title": "Review Details" }
+  "addOns": {
+    "title": "Add Ons",
+    "fields": [
+      { "id": "isFragile", "label": "Fragile" },
+      { "id": "priorityShipping", "label": "Priority Shipping" },
+      { "id": "signatureRequired", "label": "Signature Required" },
+      {
+        "id": "isFlexible",
+        "label": "Flexible Pick Up Time",
+        "homePickup": true
+      }
+    ],
+    "warranty": { "id": "warrantyAmount", "label": "Warranty Amount" }
+  }
 }

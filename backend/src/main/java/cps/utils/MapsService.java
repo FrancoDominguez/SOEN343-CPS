@@ -25,6 +25,7 @@ public class MapsService {
       String encodedDestination = URLEncoder.encode(destination, StandardCharsets.UTF_8);
       String requestString = String.format("%s?destinations=%s&origins=%s&units=%s&key=%s",
           url, encodedDestination, encodedOrigin, units, apiKey);
+      
       JSONObject response = makeGetRequestJSON(requestString);
       int durationValue = response
           .getJSONArray("rows")

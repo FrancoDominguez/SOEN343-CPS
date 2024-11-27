@@ -1,3 +1,4 @@
+
 package cps.DomainLayer.models.ResponseBodies;
 
 public class LoginResponseBody extends BasicResponse {

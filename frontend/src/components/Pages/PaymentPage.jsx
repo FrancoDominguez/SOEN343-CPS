@@ -68,7 +68,9 @@ const CheckoutForm = ({ onPaymentSuccess }) => {
     }
 
     // Simulated PayPal payment success
-    alert(`PayPal payment processed with username: ${paypalCredentials.username}`);
+    alert(
+      `PayPal payment processed with username: ${paypalCredentials.username}`
+    );
     if (onPaymentSuccess) {
       onPaymentSuccess(); // Notify parent component
     }
@@ -100,11 +102,14 @@ const CheckoutForm = ({ onPaymentSuccess }) => {
       const { clientSecret } = await response.json();
       console.log("Client Secret:", clientSecret);
 
-      const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card: elements.getElement(CardNumberElement),
-        },
-      });
+      const { error, paymentIntent } = await stripe.confirmCardPayment(
+        clientSecret,
+        {
+          payment_method: {
+            card: elements.getElement(CardNumberElement),
+          },
+        }
+      );
 
       if (error) {
         console.error("Stripe Payment Error:", error.message);
@@ -133,14 +138,19 @@ const CheckoutForm = ({ onPaymentSuccess }) => {
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold">Make a Payment</h2>
         <img
-          src={paymentMethod === "stripe" ? "/StripeLogo4.png" : "/PayPalLogo4.png"}
+          src={
+            paymentMethod === "stripe" ? "/StripeLogo4.png" : "/PayPalLogo4.png"
+          }
           alt={paymentMethod === "stripe" ? "Stripe Logo" : "PayPal Logo"}
           className="w-40 h-auto"
         />
       </div>
 
       <div className="mb-4">
-        <label htmlFor="paymentMethod" className="block font-medium text-lg mb-2">
+        <label
+          htmlFor="paymentMethod"
+          className="block font-medium text-lg mb-2"
+        >
           Select Payment Method:
         </label>
         <div className="flex items-center space-x-4">
@@ -170,13 +180,17 @@ const CheckoutForm = ({ onPaymentSuccess }) => {
       {paymentMethod === "stripe" && (
         <form onSubmit={handleStripeSubmit}>
           <div className="mb-4">
-            <label className="block font-medium text-lg mb-2">Card Number:</label>
+            <label className="block font-medium text-lg mb-2">
+              Card Number:
+            </label>
             <div
               className={`p-2 border rounded h-10 ${
                 cardErrors.number ? "border-red-500" : ""
               }`}
             >
-              <CardNumberElement onChange={(e) => handleCardChange(e, "number")} />
+              <CardNumberElement
+                onChange={(e) => handleCardChange(e, "number")}
+              />
             </div>
             {cardErrors.number && (
               <p className="text-red-500 text-sm">{cardErrors.number}</p>
@@ -184,13 +198,17 @@ const CheckoutForm = ({ onPaymentSuccess }) => {
           </div>
 
           <div className="mb-4">
-            <label className="block font-medium text-lg mb-2">Expiration Date:</label>
+            <label className="block font-medium text-lg mb-2">
+              Expiration Date:
+            </label>
             <div
               className={`p-2 border rounded h-10 ${
                 cardErrors.expiry ? "border-red-500" : ""
               }`}
             >
-              <CardExpiryElement onChange={(e) => handleCardChange(e, "expiry")} />
+              <CardExpiryElement
+                onChange={(e) => handleCardChange(e, "expiry")}
+              />
             </div>
             {cardErrors.expiry && (
               <p className="text-red-500 text-sm">{cardErrors.expiry}</p>
@@ -224,7 +242,10 @@ const CheckoutForm = ({ onPaymentSuccess }) => {
       {paymentMethod === "paypal" && (
         <form onSubmit={handlePaypalSubmit}>
           <div className="mb-4">
-            <label htmlFor="username" className="block font-medium text-lg mb-2">
+            <label
+              htmlFor="username"
+              className="block font-medium text-lg mb-2"
+            >
               PayPal Username (Email):
             </label>
             <input
@@ -243,7 +264,10 @@ const CheckoutForm = ({ onPaymentSuccess }) => {
           </div>
 
           <div className="mb-4">
-            <label htmlFor="password" className="block font-medium text-lg mb-2">
+            <label
+              htmlFor="password"
+              className="block font-medium text-lg mb-2"
+            >
               PayPal Password:
             </label>
             <input

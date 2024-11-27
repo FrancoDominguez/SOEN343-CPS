@@ -61,20 +61,16 @@ public class Mysqlcon {
   }
 
   // Method to execute a query and store the result in the resultSet
-  public void executeQuery(String statementString) throws Exception {
+  public void formerExecuteQuery(String statementString) throws Exception {
     Statement statement = this.connection.createStatement();
     this.resultSet = statement.executeQuery(statementString);
   }
 
   // Method to execute an update (INSERT, UPDATE, DELETE)
-  public String executeUpdate(String statementString) throws Exception {
+  public boolean formerExecuteUpdate(String statementString) throws Exception {
     Statement statement = this.connection.createStatement();
     int rowsAffected = statement.executeUpdate(statementString);
-    if (rowsAffected > 0) {
-      return "Update successful. Rows affected: " + rowsAffected;
-    } else {
-      return "Update failed.";
-    }
+    return rowsAffected > 0;
   }
 
   // Getter for resultSet (for reading data after query execution)

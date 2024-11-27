@@ -1,61 +1,134 @@
 @startuml classDiagram
-skinparam linetype ortho
+skinparam Linetype ortho
 
-
-
-abstract class User {
-  trackOrder()
-
+interface OrderTracker{
+  + trackOrder(int orderId) : void
 }
-class Address{}
-class RegisteredUser extends User {
+OrderTracker <|-[dashed]- Client
+OrderTracker <|-[dashed]- Guest
+OrderTracker "1" -- "*" ShippingStatus : can track
+class Guest {
+  + login() : JWT
+  + signup() : void
+}
+Guest "1" -- "1" Client : creates
+class Client {
+  + email : String
   + firstname : String
   + lastname : String
-  + email : String
   + password : String
+  + CRUDcontract(Contract)
+  + createDelivery(Contract) : void
+  + viewActiveDeliveries() : Delivery[]
+}
+Client "1" --> "1" Location : home address
+Client "1" *-- "*" Contract : CRUD
+Client "1" -- "*" Delivery : creates & reads
+
+abstract class Contract{
+  + price : Number
+  + eta : Duration
+  + signatureRequired : Boolean
+  + priorityShipping : Boolean
+  + warrantedAmount : Number
+  {abstract} + processQuote() : void <<abstract>>
+  # calculatePrice() : Number
+  # calculateETA() : Number
+}
+Contract "1" -- "1" Parcel : has
+Contract <|-- StationDropoff
+Contract <|-- HomePickup
+class StationDropoff{
+  + changeStation(DropoffStation) : void
+}
+StationDropoff "1" -- "1" DropoffStation : origin
+class HomePickup {
+  + pickupTime : Time
+  + isFlexible : Boolean
+  + changeLocation(Location) : void
+  + changePickupTime(Time) : void
+}
+HomePickup "1" --> "1" Location : origin
+
+Contract "1" <-right- "1" Delivery : based on
+
+class Delivery{
+  + start() : void
+  + markAsDelivered() : void
+  + transfer(Node, Node) : void
+  - updateStatus() : void
+}
+Delivery <|-- FlexibleDelivery
+class FlexibleDelivery {
+  + canBeUpdated : Boolean
+  + changeLocation(Location) : void
+  + changeTime(Time) : void
 }
 
+Delivery "1" -right-> "1" ShippingStatus : updates
+class ShippingStatus{
+  + currentLocationIndex : Number
+  + goNext() : void
+  + getStatus() : String
+  + getETA() : Time
+
+}
+ShippingStatus "1" -up- "*" Node : has path of
+
+Tracking .. (Delivery, ShippingStatus) 
+
+class Tracking {
+  + trackingId : Number
+  + printLabel() : PDF
+}
 class Payment{
   + amount : Number
-  + collectDetails()
-  + validatePayment() : boolean
-  + process()
+  + paymentInfo : String
+}
+Payment "1" -- "1" Tracking
+
+class Parcel{
+  + {static} maxDimension : Number
+  + {static} maxWeight : Number
+  + height : Number
+  + width : Number
+  + length : Number
+  + weight : Number
+  + isFragile : Boolean
+  + isOversized() : Boolean
+  + isOverweight(): Boolean
 }
 
-
-class Package{
-  + packageHeight : int
-  + packageLength : int
-  + packageWidth : int
-  + packageWeight : int
+Contract "1" -left-> "1" Location : destination
+class Location{
+  + address : String
+  + postalCode : String
+  + city : String
+  + country : String
+  + getDistanceDuration(Location) : Pair
+}
+Location <|-- DropoffStation
+class DropoffStation{
+  + name : String
+}
+class Node <<mocked>> {
+  + name : String
 }
 
-class Quotation{}
+Delivery "1" -- "1" DeliveryStarter : puts in transit
+interface DeliveryStarter <<mocked>>{
+  + start(Delivery) : void
+}
+DeliveryStarter <|-[dashed]- Clerk
+DeliveryStarter <|-[dashed]- Driver
+class Clerk <<mocked>>{}
+Clerk "1" -- "1" DropoffStation : works at
+class Driver <<mocked>> {
+  + pickup(Delivery) : void
+  + drop(Delivery) : void
+}
+Driver "1" -- "*" Delivery : delivers
 
-class Delivery extends Quotation{
-  + trackingId
-  deliver() : void
-}
-class StationDropoff extends Delivery{
 
-}
-class DropoffLocation {
-  
-}
-class ScheduledPickup extends Delivery{
-
-}
-class ShipmentStatus{
-  + trackingId
-  trackOrder(trackingId)
-}
-
-StationDropoff "1" --> "1" DropoffLocation : assigned
-Delivery "1" --> "1" Package
-ShipmentStatus "1" -- "1" Delivery
-(Delivery, RegisteredUser) .. Payment
-DropoffLocation -- Address
-RegisteredUser -- Address
-User --> ShipmentStatus: trackOrder
 
 @enduml

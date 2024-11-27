@@ -8,36 +8,32 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import cps.DomainLayer.Services.AuthenticationService;
-import cps.DomainLayer.models.RequestBodies.LoginRequestBody;
-import cps.DomainLayer.models.ResponseBodies.BasicResponse;
-import cps.DomainLayer.models.ResponseBodies.LoginResponseBody;
+import cps.DTO.RequestBodies.LoginRequestBody;
+import cps.DTO.ResponseBodies.BasicResponse;
+import cps.DTO.ResponseBodies.LoginResponseBody;
 
 @RestController
 public class LoginController {
 
   @CrossOrigin(origins = "http://localhost:5173")
   @PostMapping("/login")
-  public ResponseEntity<BasicResponse> login(@RequestBody LoginRequestBody loginRequest) {
-    // take in the request body in the parameters ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^
-    // each request body needs its own class to match the json format you receive
-    // for this endpoint I made one called LoginRequestBody
+  public ResponseEntity<Object> login(@RequestBody LoginRequestBody loginRequest) {
+    System.out.println("Processing login request...\n");
     try {
       String email = loginRequest.getEmail();
       String password = loginRequest.getPassword();
 
-      // this is the body of the request, it will execute the main functionality
       String token = AuthenticationService.login(email, password);
       String message = "Login successful";
 
-      // I specifically made a class to return the jwt to make this cleaner and easier
       LoginResponseBody loginResponse = new LoginResponseBody(message, token);
 
-      // In this example I return a ResponseEntity so I can include the status code
-      return new ResponseEntity<BasicResponse>(loginResponse, HttpStatus.OK);
+      System.out.println("... Login request completed\n");
+      return new ResponseEntity<Object>(loginResponse, HttpStatus.OK);
     } catch (Exception e) {
       System.out.println(e.getMessage());
       BasicResponse response = new BasicResponse(e.getMessage());
-      return new ResponseEntity<BasicResponse>(response, HttpStatus.UNAUTHORIZED);
+      return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
     }
   }
 }

@@ -1,21 +1,21 @@
 package cps;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
 
-import com.stripe.exception.StripeException;
-
-import cps.ApplicationLayer.PaymentController;
 import cps.utils.MapsService;
 import cps.utils.Pair;
+
+import static cps.Tests.clearTable;
 
 @SpringBootApplication
 public class Driver {
   public static void main(String[] args) {
+    System.out.println("Clearing all tables\n");
+    clearTable("contracts");
+    clearTable("locations");
+    clearTable("parcels");
+    System.out.println("All tables are now clear\n");
 
     SpringApplication.run(Driver.class, args);
     

@@ -11,6 +11,7 @@
 - [Sprint 4 Docs](https://docs.google.com/document/d/1RoCCGSqYTVoNRvgNDRftAo6vvPY6rdROKlTo5lG-PD4/edit?usp=sharing)
 
 - [Presentation Slides](https://docs.google.com/presentation/d/1b4Lhw6yehudaWA30O0aX0U9uFg-J7bRJamZubxW7Jk8/edit#slide=id.p)
+
 ### Diagrams
 
 - [Context Diagram and Domain Model](https://app.diagrams.net/#G1Jo-fCdNV0BeeOHu39IpNm5gcvtYM7EvU#%7B%22pageId%22%3A%22FhaqLYx5OxTo6mxjSn0A%22%7D)
@@ -32,7 +33,7 @@ note: vite works better on cmd than wsl.
 3. run `mvn clean package` to compile and install dependencies
 4. run `java -jar target/CPS-backend-1.0-SNAPSHOT.jar` to run the code
 
-note: if you are on wsl, you can alias `alias runjava='mvn clean package && java -jar target/CPS-backend-1.0-SNAPSHOT.jar'`, then simply run `runjava` to compile and run the entire thing (still from the backend directory).
+note: if you are on wsl, you can alias `alias runjava='mvn package && java -jar target/CPS-backend-1.0-SNAPSHOT.jar'`, then simply run `runjava` to compile and run the entire thing (still from the backend directory).
 
 ### Make direct changes to the db
 

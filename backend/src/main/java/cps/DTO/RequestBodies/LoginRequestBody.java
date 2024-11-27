@@ -1,4 +1,4 @@
-package cps.DomainLayer.models.RequestBodies;
+package cps.DTO.RequestBodies;
 
 public class LoginRequestBody {
   private String email;

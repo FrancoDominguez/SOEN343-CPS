@@ -1,9 +1,9 @@
 package cps.DomainLayer.Services;
 
-import cps.DomainLayer.models.Client;
-import cps.DomainLayer.models.RequestBodies.SignupRequestbody;
-import cps.FoundationLayer.ClientDAO;
 import cps.exceptions.UnauthorizedException;
+import cps.DomainLayer.models.ClientModel;
+import cps.DTO.RequestBodies.SignupRequestbody;
+import cps.DAO.ClientDAO;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -25,13 +25,13 @@ public final class AuthenticationService {
 
   // example of how to use the mysql connector
   public static String login(String email, String password) throws Exception {
-    Client user = userDAO.getUserByEmail(email);
+    ClientModel user = userDAO.fetchByEmail(email);
 
-    if(user == null){
+    if (user == null) {
       throw new Exception("Email is incorrect");
     }
 
-    if(!user.validatePassword(password)){
+    if (!user.validatePassword(password)) {
       throw new Exception("The entered password was incorrect");
     }
 
@@ -47,22 +47,21 @@ public final class AuthenticationService {
     // fetch and save the user's information somewhere
   }
 
-  public static void createUser(SignupRequestbody data) throws Exception{
-    String firstname = data.getFirstname();
-    String lastname = data.getLastname();
-    String email = data.getEmail();
-    String password = data.getPassword();
+  public static void createUser(SignupRequestbody data) {
+    try {
+      String firstname = data.getFirstname();
+      String lastname = data.getLastname();
+      String email = data.getEmail();
+      String password = data.getPassword();
 
-    Client newUser = new Client(firstname, lastname, email, password);
-    boolean success = userDAO.createUser(newUser);
-
-    if(!success){
-      throw new Exception("Error Signing up, please try again");
+      ClientModel newUser = new ClientModel(firstname, lastname, email, password);
+      userDAO.insert(newUser);
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
     }
-
   }
 
-  private static String generateToken(Client user) {
+  private static String generateToken(ClientModel user) {
     Algorithm algorithm = Algorithm.HMAC256(secretKey);
     String token = JWT.create()
         .withIssuer("auth0")
