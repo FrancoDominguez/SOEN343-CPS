@@ -227,20 +227,6 @@ function DeliverPage() {
           )}
         </React.Fragment>
       )}
-
-      {/* Payment Popup */}
-      <Dialog
-        open={isPaymentPopupOpen}
-        onClose={handleClosePaymentPopup}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>Complete Your Payment</DialogTitle>
-        <DialogContent>
-          <PaymentPage onPaymentSuccess={handlePaymentSuccess} />{" "}
-          {/* Pass the callback */}
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
