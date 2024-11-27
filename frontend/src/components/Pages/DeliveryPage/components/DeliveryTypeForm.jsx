@@ -11,6 +11,7 @@ import {
 import formDataJSON from "../../../../assets/DeliveryFormInputFields.json";
 import TextInput from "../../../TextInput";
 import { MockStations } from "../settings";
+import FormDateTimePicker from "../../../FormDateTimePicker";
 
 const DeliveryTypeForm = ({
   deliveryType,
@@ -41,11 +42,23 @@ const DeliveryTypeForm = ({
                 control={control}
                 name={formDataJSON.deliveryType.pickup.textFields[0].id}
                 label={formDataJSON.deliveryType.pickup.textFields[0].label}
+                rules={{
+                  required: {
+                    value: true,
+                    message: "This field is required",
+                  },
+                }}
               />
               <TextInput
                 control={control}
                 name={formDataJSON.deliveryType.pickup.textFields[1].id}
                 label={formDataJSON.deliveryType.pickup.textFields[1].label}
+                rules={{
+                  required: {
+                    value: true,
+                    message: "This field is required",
+                  },
+                }}
               />
             </div>
 
@@ -54,17 +67,40 @@ const DeliveryTypeForm = ({
                 control={control}
                 name={formDataJSON.deliveryType.pickup.textFields[2].id}
                 label={formDataJSON.deliveryType.pickup.textFields[2].label}
+                rules={{
+                  required: {
+                    value: true,
+                    message: "This field is required",
+                  },
+                }}
               />
               <TextInput
                 control={control}
                 name={formDataJSON.deliveryType.pickup.textFields[3].id}
                 label={formDataJSON.deliveryType.pickup.textFields[3].label}
+                rules={{
+                  required: {
+                    value: true,
+                    message: "This field is required",
+                  },
+                }}
               />
             </div>
             <TextInput
               control={control}
               name={formDataJSON.deliveryType.pickup.textFields[4].id}
               label={formDataJSON.deliveryType.pickup.textFields[4].label}
+              rules={{
+                required: {
+                  value: true,
+                  message: "This field is required",
+                },
+              }}
+            />
+            <FormDateTimePicker
+              control={control}
+              name={formDataJSON.deliveryType.pickup.dateSelector.id}
+              label={formDataJSON.deliveryType.pickup.dateSelector.label}
             />
           </div>
         ) : (

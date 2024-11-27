@@ -51,6 +51,7 @@ function DeliverPage() {
           deliveryType,
           station
         );
+        console.log(structuredJson);
       }
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
