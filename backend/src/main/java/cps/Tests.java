@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import cps.DAO.ClientDAO;
 import cps.DAO.ContractDAO;
 import cps.DAO.StationDAO;
+import cps.DomainLayer.ClientService;
 import cps.DomainLayer.models.ClientModel;
 import cps.DomainLayer.models.Contract;
 import cps.DomainLayer.models.HomePickup;

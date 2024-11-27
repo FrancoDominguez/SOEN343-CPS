@@ -53,6 +53,12 @@ public class ClientService implements OrderTracker {
     return newContract;
   }
 
+  public ArrayList<Station> getAllStations(){
+    StationDAO stationDAO = new StationDAO();
+    ArrayList<Station> stations = stationDAO.fetchAllStations();
+    return stations;
+  }
+
   // Franco
   public ArrayList<Contract> viewAllActiveContracts(int clientId) {
     ContractDAO contractDAO = new ContractDAO();

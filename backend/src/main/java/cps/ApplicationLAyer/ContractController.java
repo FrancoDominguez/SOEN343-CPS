@@ -15,11 +15,12 @@ public class ContractController {
 
   @PostMapping("/contract")
   public ResponseEntity<Contract> generateContract(@RequestBody ContractRequestBody contractInfo) {
-    System.out.println("\n\nReceived Contract Request\n\n");
+    System.out.println("Processing contract request...\n");
     Contract newContract = null;
     ClientService activeClient = new ClientService();
     try {
       newContract = activeClient.addNewContract(contractInfo);
+      System.out.println("Contract request completed");
       return new ResponseEntity<Contract>(newContract, HttpStatus.OK);
     } catch (Exception e) {
       return new ResponseEntity<Contract>(newContract, HttpStatus.BAD_REQUEST);

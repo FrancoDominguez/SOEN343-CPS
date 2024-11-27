@@ -16,10 +16,12 @@ public class SignupController {
   @CrossOrigin(origins = "http://localhost:5173")
   @PostMapping("/signup")
   public ResponseEntity<String> signup(@RequestBody SignupRequestbody signupRequest) {
+    System.out.println("Processing signup request...\n");
     try {
       AuthenticationService.createUser(signupRequest);
 
       // Return a success message
+      System.out.println("Signup request completed\n");
       return new ResponseEntity<>("User registered successfully", HttpStatus.CREATED);
     } catch (Exception e) {
       e.printStackTrace();
