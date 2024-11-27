@@ -75,6 +75,7 @@ function DeliverPage() {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
   };
+
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
@@ -99,20 +100,19 @@ function DeliverPage() {
     <div className="mt-20 w-4/5 mx-80%">
       <Typography variant="h4">Deliver with CPS</Typography>
       <Stepper activeStep={activeStep}>
-        {steps.map((label, index) => {
-          const stepProps = {};
-          const labelProps = {};
-          if (isStepOptional(index)) {
-            labelProps.optional = (
-              <Typography variant="caption">Optional</Typography>
-            );
-          }
-          return (
-            <Step key={label} {...stepProps}>
-              <StepLabel {...labelProps}>{label}</StepLabel>
-            </Step>
-          );
-        })}
+        {steps.map((label, index) => (
+          <Step key={label}>
+            <StepLabel
+              optional={
+                isStepOptional(index) && (
+                  <Typography variant="caption">Optional</Typography>
+                )
+              }
+            >
+              {label}
+            </StepLabel>
+          </Step>
+        ))}
       </Stepper>
       {activeStep === steps.length ? (
         <React.Fragment>
@@ -227,6 +227,20 @@ function DeliverPage() {
           )}
         </React.Fragment>
       )}
+
+      {/* Payment Popup */}
+      <Dialog
+        open={isPaymentPopupOpen}
+        onClose={handleClosePaymentPopup}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Complete Your Payment</DialogTitle>
+        <DialogContent>
+          <PaymentPage onPaymentSuccess={handlePaymentSuccess} />{" "}
+          {/* Pass the callback */}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
