@@ -1,4 +1,4 @@
-package cps.models;
+package cps.DomainLayer.models;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -13,11 +13,13 @@ public class ShippingStatus {
         IN_TRANSIT,
         DELIVERED
     }
+
     public ShippingStatus() {
-      this.id = -1; // Default ID
-      this.travelPath = new ArrayList<>(); // Empty travel path
-      this.currentLocationIndex = 0; // Start at the beginning
-  }
+        this.id = -1; // Default ID
+        this.travelPath = new ArrayList<>(); // Empty travel path
+        this.currentLocationIndex = 0; // Start at the beginning
+    }
+
     // Constructor
     public ShippingStatus(int id, ArrayList<Location> travelPath) {
         this.id = id;
@@ -25,8 +27,8 @@ public class ShippingStatus {
         this.currentLocationIndex = 0; // Start at the beginning
     }
 
-    public Boolean isPending(){
-      return true;
+    public Boolean isPending() {
+        return true;
     }
 
     // Getters
@@ -76,8 +78,8 @@ public class ShippingStatus {
     }
 
     public boolean isAtLocation(Location location) {
-        return travelPath != null && !travelPath.isEmpty() && 
-               travelPath.get(currentLocationIndex).equals(location);
+        return travelPath != null && !travelPath.isEmpty() &&
+                travelPath.get(currentLocationIndex).equals(location);
     }
 
     public void reset() {

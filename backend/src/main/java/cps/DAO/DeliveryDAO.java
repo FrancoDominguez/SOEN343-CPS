@@ -1,6 +1,6 @@
 package cps.DAO;
 
-import cps.models.Delivery;
+import cps.DomainLayer.models.Delivery;
 
 public class DeliveryDAO {
 

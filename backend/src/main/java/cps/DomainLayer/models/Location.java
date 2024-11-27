@@ -1,4 +1,4 @@
-package cps.models;
+package cps.DomainLayer.models;
 
 public class Location {
   private int id;

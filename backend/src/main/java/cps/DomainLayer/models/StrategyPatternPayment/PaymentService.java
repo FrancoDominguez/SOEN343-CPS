@@ -1,4 +1,4 @@
-package cps.models.StrategyPatternPayment;
+package cps.DomainLayer.models.StrategyPatternPayment;
 
 public class PaymentService {
     private int amount;
