@@ -1,5 +1,4 @@
-<<<<<<<< HEAD:backend/src/main/java/cps/DTO/ResponseBodies/BasicResponse.java
-package cps.DTO.ResponseBodies;
+package cps.DomainLayer.DTO.ResponseBodies;
 
 public class BasicResponse {
     protected String message;
@@ -16,7 +15,7 @@ public class BasicResponse {
         return this.message;
     }
 }
-========
+
 package cps.DomainLayer.models.ResponseBodies;
 
 public class BasicResponse {
@@ -34,4 +33,3 @@ public class BasicResponse {
         return this.message;
     }
 }
->>>>>>>> contract:backend/src/main/java/cps/DomainLayer/models/ResponseBodies/BasicResponse.java
