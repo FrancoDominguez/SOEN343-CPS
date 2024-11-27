@@ -45,7 +45,7 @@ public class StationDAO {
         String postalCode = rs.getString("postal_code");
         String city = rs.getString("city");
         String country = rs.getString("street_address");
-        Station station = new Station(stationId, name, address, postalCode, city, country);
+        Station station = new Station(stationId, address , postalCode , city, country , name);
         stations.add(station);
       }
       con.close();

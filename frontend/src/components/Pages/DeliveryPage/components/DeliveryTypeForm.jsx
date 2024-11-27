@@ -3,14 +3,13 @@ import {
   ToggleButtonGroup,
   Box,
   FormControl,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 
 import formDataJSON from "../../../../assets/DeliveryFormInputFields.json";
 import TextInput from "../../../TextInput";
-import { MockStations } from "../settings";
 import FormDateTimePicker from "../../../FormDateTimePicker";
 
 const DeliveryTypeForm = ({
@@ -19,6 +18,7 @@ const DeliveryTypeForm = ({
   station,
   setStation,
   control,
+  stationList,
 }) => {
   const handleStationChange = (event) => {
     setStation(event.target.value);
@@ -43,10 +43,10 @@ const DeliveryTypeForm = ({
                 name={formDataJSON.deliveryType.pickup.textFields[0].id}
                 label={formDataJSON.deliveryType.pickup.textFields[0].label}
                 rules={{
-                  required: {
-                    value: true,
-                    message: "This field is required",
-                  },
+                  required:
+                    deliveryType === "pickup"
+                      ? "This field is required"
+                      : false,
                 }}
               />
               <TextInput
@@ -54,10 +54,10 @@ const DeliveryTypeForm = ({
                 name={formDataJSON.deliveryType.pickup.textFields[1].id}
                 label={formDataJSON.deliveryType.pickup.textFields[1].label}
                 rules={{
-                  required: {
-                    value: true,
-                    message: "This field is required",
-                  },
+                  required:
+                    deliveryType === "pickup"
+                      ? "This field is required"
+                      : false,
                 }}
               />
             </div>
@@ -68,10 +68,10 @@ const DeliveryTypeForm = ({
                 name={formDataJSON.deliveryType.pickup.textFields[2].id}
                 label={formDataJSON.deliveryType.pickup.textFields[2].label}
                 rules={{
-                  required: {
-                    value: true,
-                    message: "This field is required",
-                  },
+                  required:
+                    deliveryType === "pickup"
+                      ? "This field is required"
+                      : false,
                 }}
               />
               <TextInput
@@ -79,10 +79,10 @@ const DeliveryTypeForm = ({
                 name={formDataJSON.deliveryType.pickup.textFields[3].id}
                 label={formDataJSON.deliveryType.pickup.textFields[3].label}
                 rules={{
-                  required: {
-                    value: true,
-                    message: "This field is required",
-                  },
+                  required:
+                    deliveryType === "pickup"
+                      ? "This field is required"
+                      : false,
                 }}
               />
             </div>
@@ -91,30 +91,34 @@ const DeliveryTypeForm = ({
               name={formDataJSON.deliveryType.pickup.textFields[4].id}
               label={formDataJSON.deliveryType.pickup.textFields[4].label}
               rules={{
-                required: {
-                  value: true,
-                  message: "This field is required",
-                },
+                required:
+                  deliveryType === "pickup" ? "This field is required" : false,
               }}
             />
             <FormDateTimePicker
               control={control}
               name={formDataJSON.deliveryType.pickup.dateSelector.id}
               label={formDataJSON.deliveryType.pickup.dateSelector.label}
+              rules={{
+                required:
+                  deliveryType === "pickup" ? "This field is required" : false,
+              }}
             />
           </div>
         ) : (
           <FormControl>
-            <RadioGroup value={station} onChange={handleStationChange}>
-              {MockStations.map((station) => (
-                <FormControlLabel
-                  key={station.id}
-                  value={station.id}
-                  control={<Radio />}
-                  label={station.name + " -- " + station.address}
-                />
+            <InputLabel>Station</InputLabel>
+            <Select
+              value={station}
+              label="Station"
+              onChange={handleStationChange}
+            >
+              {stationList.map((station) => (
+                <MenuItem key={station.id} value={station.id}>
+                  {station.name + " -- " + station.streetAddress}
+                </MenuItem>
               ))}
-            </RadioGroup>
+            </Select>
           </FormControl>
         )}
       </form>

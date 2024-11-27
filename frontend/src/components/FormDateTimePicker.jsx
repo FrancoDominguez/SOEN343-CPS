@@ -4,15 +4,13 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/L
 import { TextField } from "@mui/material";
 import { Controller } from "react-hook-form";
 
-const FormDateTimePicker = ({ control, name, label }) => {
+const FormDateTimePicker = ({ control, name, label, rules }) => {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Controller
         control={control}
         name={name}
-        rules={{
-          required: { value: true, message: "Please enter a date and time" },
-        }}
+        rules={rules}
         render={({ field, fieldState }) => (
           <DateTimePicker
             label={label}

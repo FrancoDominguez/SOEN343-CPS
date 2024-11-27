@@ -138,7 +138,7 @@ public class Delivery {
         DeliveryDAO deliveryDAO = new DeliveryDAO();
         if (this.getId() == -1) {
             // Insert new Delivery and assign the generated ID
-            this.id = deliveryDAO.insert(this); // Update the Delivery object with the generated ID
+            this.id = deliveryDAO.insert(5); // Update the Delivery object with the generated ID
         } else {
             try {
                 // Update existing Delivery

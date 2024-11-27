@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Stepper,
   Step,
@@ -9,11 +9,13 @@ import {
   FormGroup,
 } from "@mui/material";
 import { useForm } from "react-hook-form";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 import TextInput from "../../TextInput";
 import formDataJSON from "../../../assets/DeliveryFormInputFields.json";
 import CheckBoxInput from "../../CheckBoxInput";
-import { contractDefaultValues, MockStations, transformData } from "./settings";
+import { contractDefaultValues, transformData } from "./settings";
 import DeliveryTypeForm from "./components/DeliveryTypeForm";
 import { useAuth } from "../../../../hooks/useAuth";
 
@@ -22,14 +24,12 @@ const steps = Object.values(formDataJSON).map((step) => step.title);
 function DeliverPage() {
   const [activeStep, setActiveStep] = useState(0);
   const [deliveryType, setDeliveryType] = useState("pickup");
-  const [station, setStation] = useState(MockStations[0].id);
-  const {
-    control,
-    handleSubmit,
-    formState: { isValid },
-    getValues,
-    reset,
-  } = useForm({ mode: "onChange", defaultValues: contractDefaultValues });
+  const [station, setStation] = useState(1);
+  const [stationList, setStationList] = useState();
+  const { control, handleSubmit, trigger, reset } = useForm({
+    mode: "onChange",
+    defaultValues: contractDefaultValues,
+  });
   const { user } = useAuth();
 
   const handleTypeChange = () => {
@@ -41,10 +41,24 @@ function DeliverPage() {
   const isStepOptional = (step) => {
     return step === 3;
   };
-  const handleNext = (values) => {
+
+  useEffect(() => {
+    getStationList();
+  }, []);
+
+  const getStationList = async () => {
+    try {
+      const stations = (await axios.get("http://localhost:8080/stations")).data;
+      setStationList(stations);
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+
+  const handleNext = async (values) => {
+    const isValid = trigger();
     if (isValid) {
-      console.log(station);
-      if (activeStep === 4) {
+      if (activeStep === 3) {
         const structuredJson = transformData(
           values,
           user,
@@ -52,6 +66,11 @@ function DeliverPage() {
           station
         );
         console.log(structuredJson);
+        try {
+          await createContract(structuredJson);
+        } catch (error) {
+          toast.error("Failed to create contract: please try again.");
+        }
       }
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
@@ -62,6 +81,18 @@ function DeliverPage() {
   const handleReset = () => {
     reset();
     setActiveStep(0);
+  };
+
+  const createContract = async (values) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/contract",
+        values
+      );
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
   };
 
   return (
@@ -117,6 +148,7 @@ function DeliverPage() {
               deliveryType={deliveryType}
               handleTypeChange={handleTypeChange}
               station={station}
+              stationList={stationList}
               setStation={setStation}
               control={control}
             />
@@ -193,7 +225,6 @@ function DeliverPage() {
               />
             </form>
           )}
-          {activeStep === 4 && <></>}
         </React.Fragment>
       )}
     </div>
