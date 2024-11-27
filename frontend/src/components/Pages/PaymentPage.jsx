@@ -25,6 +25,7 @@ const CheckoutForm = ({ onPaymentSuccess }) => {
     username: "",
     password: "",
   });
+  const [paypalErrors, setPaypalErrors] = useState({});
 
   const handleCardChange = (event, field) => {
     setCardErrors((prev) => ({
@@ -39,6 +40,38 @@ const CheckoutForm = ({ onPaymentSuccess }) => {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const validatePaypal = () => {
+    const errors = {};
+    if (
+      !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
+        paypalCredentials.username
+      )
+    ) {
+      errors.username = "Please enter a valid email address.";
+    }
+
+    if (!paypalCredentials.password) {
+      errors.password = "Password cannot be empty.";
+    }
+
+    setPaypalErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handlePaypalSubmit = (e) => {
+    e.preventDefault();
+
+    if (!validatePaypal()) {
+      return; // Stop if validation fails
+    }
+
+    // Simulated PayPal payment success
+    alert(`PayPal payment processed with username: ${paypalCredentials.username}`);
+    if (onPaymentSuccess) {
+      onPaymentSuccess(); // Notify parent component
+    }
   };
 
   const handleStripeSubmit = async (e) => {
@@ -92,22 +125,6 @@ const CheckoutForm = ({ onPaymentSuccess }) => {
       setPaymentStatus(`Error: ${err.message}`);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handlePaypalSubmit = (e) => {
-    e.preventDefault();
-
-    // Placeholder logic for PayPal
-    const { username, password } = paypalCredentials;
-
-    if (username && password) {
-      alert(`PayPal payment processed with username: ${username}`);
-      if (onPaymentSuccess) {
-        onPaymentSuccess(); // Notify parent component
-      }
-    } else {
-      alert("Please provide PayPal credentials.");
     }
   };
 
@@ -208,7 +225,7 @@ const CheckoutForm = ({ onPaymentSuccess }) => {
         <form onSubmit={handlePaypalSubmit}>
           <div className="mb-4">
             <label htmlFor="username" className="block font-medium text-lg mb-2">
-              PayPal Username:
+              PayPal Username (Email):
             </label>
             <input
               id="username"
@@ -216,8 +233,13 @@ const CheckoutForm = ({ onPaymentSuccess }) => {
               type="text"
               value={paypalCredentials.username}
               onChange={handlePaypalChange}
-              className="w-full h-10 p-2 border rounded text-lg"
+              className={`w-full h-10 p-2 border rounded text-lg ${
+                paypalErrors.username ? "border-red-500" : ""
+              }`}
             />
+            {paypalErrors.username && (
+              <p className="text-red-500 text-sm">{paypalErrors.username}</p>
+            )}
           </div>
 
           <div className="mb-4">
@@ -230,8 +252,13 @@ const CheckoutForm = ({ onPaymentSuccess }) => {
               type="password"
               value={paypalCredentials.password}
               onChange={handlePaypalChange}
-              className="w-full h-10 p-2 border rounded text-lg"
+              className={`w-full h-10 p-2 border rounded text-lg ${
+                paypalErrors.password ? "border-red-500" : ""
+              }`}
             />
+            {paypalErrors.password && (
+              <p className="text-red-500 text-sm">{paypalErrors.password}</p>
+            )}
           </div>
 
           <button
