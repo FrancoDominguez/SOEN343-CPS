@@ -2,6 +2,7 @@ package cps.DomainLayer.models;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import static cps.utils.MapsService.getDurationDistance;
 
 import cps.DAO.ContractDAO;
 
@@ -43,15 +44,59 @@ public class StationDropoff extends Contract {
   }
 
   public void processQuote() {
-    this.price = 50.00;
-    this.eta = Duration.ofDays(2);
+    calculatePrice();
+    calculateEta();
+    
   };
 
-  protected double calculatePrice() {
-    return 0;
-  };
+  @Override
+    protected double calculatePrice() {
+        double price = 0.0;
 
-  protected LocalDateTime calculateEta() {
-    return null;
-  };
+        // Distance calculation logic (in meters)
+        Location stationAdress = (Location) this.station;
+        int distance = getDurationDistance(stationAdress.toString(), this.destination.toString());
+
+        // Base price based on distance
+        if (distance <= 5000) { // Up to 5 km
+            price += 10;
+        } else if (distance <= 20000) { // 5 to 20 km
+            price += 20;
+        } else if (distance <= 50000) { // 20 to 50 km
+            price += 35;
+        } else { // Above 50 km
+            price += 50;
+        }
+
+        // Add $5 for each condition met
+        if (this.signatureRequired()) {
+            price += 5;
+        }
+        if (this.hasPriority()) {
+            price += 5;
+        }
+        if (this.warrantedAmount > 1000) {
+            price += 5;
+        }
+
+       
+
+        return price;
+    }
+
+    @Override
+    protected LocalDateTime calculateEta() {
+        // Base delivery time is 3 days
+        int daysToAdd = 3;
+
+        // If priority shipping is selected, reduce by 1 day
+        if (this.hasPriority()) {
+            daysToAdd = 2;
+        }
+
+        return LocalDateTime.now().plusDays(daysToAdd);
+    }
+
+    
 }
+
