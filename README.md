@@ -29,7 +29,7 @@ note: vite works better on cmd than wsl.
 3. run `mvn clean package` to compile and install dependencies
 4. run `java -jar target/CPS-backend-1.0-SNAPSHOT.jar` to run the code
 
-note: if you are on wsl, you can alias `alias runjava='mvn clean package && java -jar target/CPS-backend-1.0-SNAPSHOT.jar'`, then simply run `runjava` to compile and run the entire thing (still from the backend directory).
+note: if you are on wsl, you can alias `alias runjava='mvn package && java -jar target/CPS-backend-1.0-SNAPSHOT.jar'`, then simply run `runjava` to compile and run the entire thing (still from the backend directory).
 
 ### Make direct changes to the db
 

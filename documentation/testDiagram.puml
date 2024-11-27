@@ -1,0 +1,125 @@
+@startuml classDiagram
+skinparam Linetype ortho
+
+interface OrderTracker {
+  + trackOrder(int OrderId)
+}
+OrderTracker <|-[dashed] Client
+OrderTracker <|-[dashed]- Guest
+OrderTracker -- ShippingStatus
+class Guest {
+  + login()
+  + signup()
+}
+Guest -- Client
+class Client {
+  + email
+  + firstname
+  + lastname
+  + password
+  + CRUDcontract(Contract contract)
+  + createDelivery(Contract contract)
+  + viewActiveDeliveries()
+}
+Client "1" -- "1" Location : home address
+
+Client "1" *-- "*" Contract : CRUD
+Client -- "*" Delivery
+
+abstract class Contract {
+  + price
+  + signatureRequired
+  + priorityShipping
+  + warrantedAmount
+  # calculatePrice()
+}
+Contract -- Parcel : has
+Contract <|-- StationDropoff
+Contract <|-- Pickup
+class StationDropoff {
+  + changeStation()
+}
+StationDropoff -- DropoffStation : origin
+class Pickup {
+  + pickupTime
+  + isFlexible
+  + changeLocation(Location location)
+  + changePickupTime(Time time)
+}
+Pickup -- Location : origin
+
+Contract -- Delivery : based on
+
+class Delivery {
+  + start()
+  + markAsDelivered()
+  + transfer(Node node)
+  - updateStatus()
+}
+Delivery <|-- FlexibleDelivery
+class FlexibleDelivery {
+  + canBeUpdated
+  + changeLocation(Location location)
+  + changeTime(Time time)
+}
+
+Delivery -- ShippingStatus : updates
+class ShippingStatus {
+  + currentLocation
+  + goNext()
+  + getStatus()
+  + getETA()
+}
+ShippingStatus -- Node : has path of
+
+ShippingLabel .. (Delivery, ShippingStatus)
+
+class ShippingLabel {
+  + trackingId
+  + printLabel()
+}
+class Payment {
+  + amount
+  + paymentInfo
+}
+Payment -- ShippingLabel
+
+class Parcel {
+  + height
+  + width
+  + length
+  + weight
+  + isFragile
+  + isOversized()
+}
+
+Contract -- Location : destination
+class Location {
+  + address
+  + city
+  + country
+  + getDistanceDuration(Location location)
+}
+Location <|-- DropoffStation
+class DropoffStation {
+  + name
+}
+class Node {
+  + name
+}
+
+Delivery -- DeliveryStarter
+interface DeliveryStarter {
+  + startDelivery()
+}
+DeliveryStarter <|-[dashed]- Clerk
+DeliveryStarter <|-[dashed]- Driver
+class Clerk {}
+Clerk -- DropoffStation : works at
+class Driver {
+  + pickup(Delivery)
+  + drop(Delivery)
+}
+Driver -- Delivery : delivers
+
+@enduml

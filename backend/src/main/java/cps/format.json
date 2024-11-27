@@ -1,0 +1,28 @@
+{
+  "clientId": "int",
+  "parcel": {
+    "length": "double",
+    "width": "double",
+    "height": "double",
+    "weight": "double",
+    "isFragile": "Boolean"
+  },
+  "destination": {
+    "streetAddress": "String",
+    "postalCode": "String",
+    "city": "String",
+    "country": "String"
+  },
+  "signatureRequired": "Boolean",
+  "hasPriority": "Boolean",
+  "warrantedAmount": "double",
+  "origin": {
+    "streetAddress": "String",
+    "postalCode": "String",
+    "city": "String",
+    "country": "String"
+  },
+  "pickupTime": "LocalDateTime",
+  "isFlexible": "Boolean",
+  "station": "int (id)"
+}
