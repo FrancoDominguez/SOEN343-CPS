@@ -32,18 +32,4 @@ public class Driver {
     System.out.printf("duration in seconds: %s, distance in meters: %s", pair.getFirst(), pair.getSecond());
   }
 
-  public static void testPaymentApi(ApplicationContext context) {
-    PaymentController paymentController = context.getBean(PaymentController.class);
-    Map<String, Object> requestData = new HashMap<>();
-    requestData.put("amount", 1000L); // 1000 cents = $10.00 CAD
-
-    try {
-      Map<String, String> response = paymentController.createPaymentIntent(requestData);
-      System.out.println("PaymentIntent created successfully!");
-      System.out.println("Client Secret: " + response.get("clientSecret"));
-    } catch (StripeException e) {
-      System.err.println("StripeException occurred: " + e.getMessage());
-    }
-  }
-
 }

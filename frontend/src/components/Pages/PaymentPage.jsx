@@ -12,10 +12,9 @@ import {
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
-const CheckoutForm = () => {
+const CheckoutForm = ({ onPaymentSuccess }) => {
   const stripe = useStripe();
   const elements = useElements();
-  const navigate = useNavigate();
 
   const [amount, setAmount] = useState(3000); // Default amount: 30 CAD (in cents)
   const [paymentMethod, setPaymentMethod] = useState("stripe"); // Default method: Stripe
@@ -42,14 +41,8 @@ const CheckoutForm = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleStripeSubmit = async (e) => {
     e.preventDefault();
-
-    if (paymentMethod === "paypal") {
-      // Placeholder logic for PayPal
-      alert(`PayPal payment with:\nUsername: ${paypalCredentials.username}\nPassword: ${paypalCredentials.password}`);
-      return;
-    }
 
     if (!stripe || !elements) {
       setPaymentStatus("Stripe is not loaded yet.");
@@ -88,8 +81,10 @@ const CheckoutForm = () => {
         setPaymentStatus(`Payment successful: ${paymentIntent.status}`);
 
         if (paymentIntent.status === "succeeded") {
-          alert("Payment Successful");
-          navigate("/");
+          alert("Stripe Payment Successful");
+          if (onPaymentSuccess) {
+            onPaymentSuccess(); // Notify parent component
+          }
         }
       }
     } catch (err) {
@@ -97,6 +92,22 @@ const CheckoutForm = () => {
       setPaymentStatus(`Error: ${err.message}`);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handlePaypalSubmit = (e) => {
+    e.preventDefault();
+
+    // Placeholder logic for PayPal
+    const { username, password } = paypalCredentials;
+
+    if (username && password) {
+      alert(`PayPal payment processed with username: ${username}`);
+      if (onPaymentSuccess) {
+        onPaymentSuccess(); // Notify parent component
+      }
+    } else {
+      alert("Please provide PayPal credentials.");
     }
   };
 
@@ -111,134 +122,126 @@ const CheckoutForm = () => {
         />
       </div>
 
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label htmlFor="paymentMethod" className="block font-medium text-lg mb-2">
-            Select Payment Method:
+      <div className="mb-4">
+        <label htmlFor="paymentMethod" className="block font-medium text-lg mb-2">
+          Select Payment Method:
+        </label>
+        <div className="flex items-center space-x-4">
+          <label>
+            <input
+              type="radio"
+              name="paymentMethod"
+              value="stripe"
+              checked={paymentMethod === "stripe"}
+              onChange={() => setPaymentMethod("stripe")}
+            />{" "}
+            Stripe
           </label>
-          <div className="flex items-center space-x-4">
-            <label>
-              <input
-                type="radio"
-                name="paymentMethod"
-                value="stripe"
-                checked={paymentMethod === "stripe"}
-                onChange={() => setPaymentMethod("stripe")}
-              />{" "}
-              Stripe
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="paymentMethod"
-                value="paypal"
-                checked={paymentMethod === "paypal"}
-                onChange={() => setPaymentMethod("paypal")}
-              />{" "}
-              PayPal
-            </label>
+          <label>
+            <input
+              type="radio"
+              name="paymentMethod"
+              value="paypal"
+              checked={paymentMethod === "paypal"}
+              onChange={() => setPaymentMethod("paypal")}
+            />{" "}
+            PayPal
+          </label>
+        </div>
+      </div>
+
+      {paymentMethod === "stripe" && (
+        <form onSubmit={handleStripeSubmit}>
+          <div className="mb-4">
+            <label className="block font-medium text-lg mb-2">Card Number:</label>
+            <div
+              className={`p-2 border rounded h-10 ${
+                cardErrors.number ? "border-red-500" : ""
+              }`}
+            >
+              <CardNumberElement onChange={(e) => handleCardChange(e, "number")} />
+            </div>
+            {cardErrors.number && (
+              <p className="text-red-500 text-sm">{cardErrors.number}</p>
+            )}
           </div>
-        </div>
 
-        <div className="mb-4">
-          <label htmlFor="amount" className="block font-medium text-lg mb-2">
-            Amount (CAD):
-          </label>
-          <input
-            id="amount"
-            type="text"
-            value={(amount / 100).toFixed(2)} // Display amount in dollars
-            className="w-full h-10 p-2 border rounded text-lg"
-            readOnly
-          />
-        </div>
-
-        {paymentMethod === "stripe" && (
-          <>
-            <div className="mb-4">
-              <label className="block font-medium text-lg mb-2">Card Number:</label>
-              <div
-                className={`p-2 border rounded h-10 ${
-                  cardErrors.number ? "border-red-500" : ""
-                }`}
-              >
-                <CardNumberElement onChange={(e) => handleCardChange(e, "number")} />
-              </div>
-              {cardErrors.number && (
-                <p className="text-red-500 text-sm">{cardErrors.number}</p>
-              )}
+          <div className="mb-4">
+            <label className="block font-medium text-lg mb-2">Expiration Date:</label>
+            <div
+              className={`p-2 border rounded h-10 ${
+                cardErrors.expiry ? "border-red-500" : ""
+              }`}
+            >
+              <CardExpiryElement onChange={(e) => handleCardChange(e, "expiry")} />
             </div>
+            {cardErrors.expiry && (
+              <p className="text-red-500 text-sm">{cardErrors.expiry}</p>
+            )}
+          </div>
 
-            <div className="mb-4">
-              <label className="block font-medium text-lg mb-2">Expiration Date:</label>
-              <div
-                className={`p-2 border rounded h-10 ${
-                  cardErrors.expiry ? "border-red-500" : ""
-                }`}
-              >
-                <CardExpiryElement onChange={(e) => handleCardChange(e, "expiry")} />
-              </div>
-              {cardErrors.expiry && (
-                <p className="text-red-500 text-sm">{cardErrors.expiry}</p>
-              )}
+          <div className="mb-4">
+            <label className="block font-medium text-lg mb-2">CVC:</label>
+            <div
+              className={`p-2 border rounded h-10 ${
+                cardErrors.cvc ? "border-red-500" : ""
+              }`}
+            >
+              <CardCvcElement onChange={(e) => handleCardChange(e, "cvc")} />
             </div>
+            {cardErrors.cvc && (
+              <p className="text-red-500 text-sm">{cardErrors.cvc}</p>
+            )}
+          </div>
 
-            <div className="mb-4">
-              <label className="block font-medium text-lg mb-2">CVC:</label>
-              <div
-                className={`p-2 border rounded h-10 ${
-                  cardErrors.cvc ? "border-red-500" : ""
-                }`}
-              >
-                <CardCvcElement onChange={(e) => handleCardChange(e, "cvc")} />
-              </div>
-              {cardErrors.cvc && (
-                <p className="text-red-500 text-sm">{cardErrors.cvc}</p>
-              )}
-            </div>
-          </>
-        )}
+          <button
+            type="submit"
+            className="w-full p-3 bg-blue-500 text-white rounded text-lg"
+            disabled={loading}
+          >
+            {loading ? "Processing..." : "Pay with Stripe"}
+          </button>
+        </form>
+      )}
 
-        {paymentMethod === "paypal" && (
-          <>
-            <div className="mb-4">
-              <label htmlFor="username" className="block font-medium text-lg mb-2">
-                PayPal Username:
-              </label>
-              <input
-                id="username"
-                name="username"
-                type="text"
-                value={paypalCredentials.username}
-                onChange={handlePaypalChange}
-                className="w-full h-10 p-2 border rounded text-lg"
-              />
-            </div>
+      {paymentMethod === "paypal" && (
+        <form onSubmit={handlePaypalSubmit}>
+          <div className="mb-4">
+            <label htmlFor="username" className="block font-medium text-lg mb-2">
+              PayPal Username:
+            </label>
+            <input
+              id="username"
+              name="username"
+              type="text"
+              value={paypalCredentials.username}
+              onChange={handlePaypalChange}
+              className="w-full h-10 p-2 border rounded text-lg"
+            />
+          </div>
 
-            <div className="mb-4">
-              <label htmlFor="password" className="block font-medium text-lg mb-2">
-                PayPal Password:
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                value={paypalCredentials.password}
-                onChange={handlePaypalChange}
-                className="w-full h-10 p-2 border rounded text-lg"
-              />
-            </div>
-          </>
-        )}
+          <div className="mb-4">
+            <label htmlFor="password" className="block font-medium text-lg mb-2">
+              PayPal Password:
+            </label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              value={paypalCredentials.password}
+              onChange={handlePaypalChange}
+              className="w-full h-10 p-2 border rounded text-lg"
+            />
+          </div>
 
-        <button
-          type="submit"
-          className="w-full p-3 bg-blue-500 text-white rounded text-lg"
-          disabled={loading}
-        >
-          {loading ? "Processing..." : `Pay with ${paymentMethod === "stripe" ? "Stripe" : "PayPal"}`}
-        </button>
-      </form>
+          <button
+            type="submit"
+            className="w-full p-3 bg-yellow-500 text-white rounded text-lg"
+          >
+            Pay with PayPal
+          </button>
+        </form>
+      )}
 
       {paymentStatus && (
         <div className="mt-4 p-3 bg-gray-200 rounded text-lg">
@@ -249,9 +252,9 @@ const CheckoutForm = () => {
   );
 };
 
-const PaymentPage = () => (
+const PaymentPage = ({ onPaymentSuccess }) => (
   <Elements stripe={stripePromise}>
-    <CheckoutForm />
+    <CheckoutForm onPaymentSuccess={onPaymentSuccess} />
   </Elements>
 );
 

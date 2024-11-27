@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 import formDataJSON from "../../assets/DeliveryFormInputFields.json";
 import {
   Stepper,
@@ -9,14 +9,33 @@ import {
   FormGroup,
   FormControlLabel,
   Checkbox,
+  Dialog,
+  DialogTitle,
+  DialogContent,
 } from "@mui/material";
 import TextInput from "../TextInput";
 import { useForm } from "react-hook-form";
+import PaymentPage from "./PaymentPage"; // Import PaymentPage component
 
 const steps = Object.values(formDataJSON).map((step) => step.title);
 
 function DeliverPage() {
-  const [activeStep, setActiveStep] = React.useState(0);
+  const [activeStep, setActiveStep] = useState(0);
+  const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);
+
+  const handleOpenPaymentPopup = () => {
+    setIsPaymentPopupOpen(true); // Open Payment Popup
+  };
+
+  const handleClosePaymentPopup = () => {
+    setIsPaymentPopupOpen(false); // Close Payment Popup
+  };
+
+  const handlePaymentSuccess = () => {
+    setIsPaymentPopupOpen(false); // Close Payment Popup
+    setActiveStep(steps.length); // Move to "All steps completed"
+  };
+
   const {
     control,
     handleSubmit,
@@ -24,42 +43,43 @@ function DeliverPage() {
     getValues,
   } = useForm({ mode: "onChange" });
 
-  const isStepOptional = (step) => {
-    return step === 2;
-  };
+  const isStepOptional = (step) => step === 2;
+
   const handleNext = () => {
-    if (isValid) {
+    if (activeStep === steps.length - 1) {
+      // On the last step, open the payment popup
+      handleOpenPaymentPopup();
+    } else if (isValid) {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     } else {
       console.log("Form is invalid");
     }
   };
+
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
+
   const handleDone = () => {
     console.log(getValues());
-    setActiveStep(0);
+    setActiveStep(0); // Reset the stepper
   };
 
   return (
     <div className="mt-20 w-4/5 mx-80%">
       <Typography variant="h4">Deliver with CPS</Typography>
       <Stepper activeStep={activeStep}>
-        {steps.map((label, index) => {
-          const stepProps = {};
-          const labelProps = {};
-          if (isStepOptional(index)) {
-            labelProps.optional = (
-              <Typography variant="caption">Optional</Typography>
-            );
-          }
-          return (
-            <Step key={label} {...stepProps}>
-              <StepLabel {...labelProps}>{label}</StepLabel>
-            </Step>
-          );
-        })}
+        {steps.map((label, index) => (
+          <Step key={label}>
+            <StepLabel
+              optional={
+                isStepOptional(index) && <Typography variant="caption">Optional</Typography>
+              }
+            >
+              {label}
+            </StepLabel>
+          </Step>
+        ))}
       </Stepper>
       {activeStep === steps.length ? (
         <React.Fragment>
@@ -145,27 +165,36 @@ function DeliverPage() {
           {activeStep === 2 && (
             <form>
               <FormGroup>
-                <FormControlLabel
-                  control={<Checkbox />}
-                  label="100$ - Priority Shipping"
-                />
-                <FormControlLabel
-                  control={<Checkbox />}
-                  label="50$ - Damage Warranty"
-                />
-                <FormControlLabel
-                  control={<Checkbox />}
-                  label="20$ - Signature required"
-                />
+                <FormControlLabel control={<Checkbox />} label="100$ - Priority Shipping" />
+                <FormControlLabel control={<Checkbox />} label="50$ - Damage Warranty" />
+                <FormControlLabel control={<Checkbox />} label="20$ - Signature required" />
               </FormGroup>
             </form>
           )}
-          {activeStep === 3 &&
-            Object.entries(getValues()).map((key, value) => (
-              <Typography>{key + value}</Typography>
-            ))}
+          {activeStep === 3 && (
+            <React.Fragment>
+              {Object.entries(getValues()).map(([key, value]) => (
+                <Typography key={key}>
+                  {key}: {value}
+                </Typography>
+              ))}
+            </React.Fragment>
+          )}
         </React.Fragment>
       )}
+
+      {/* Payment Popup */}
+      <Dialog
+        open={isPaymentPopupOpen}
+        onClose={handleClosePaymentPopup}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Complete Your Payment</DialogTitle>
+        <DialogContent>
+          <PaymentPage onPaymentSuccess={handlePaymentSuccess} /> {/* Pass the callback */}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

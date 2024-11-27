@@ -25,7 +25,6 @@ const navigation = [
   { name: "Home", href: "/", current: true },
   { name: "Dashboard", href: "/dashboard", current: false },
   { name: "Deliver", href: "/deliver", current: false },
-  { name: "Payment", href: "/payment", current: false },
 
 ];
 
@@ -89,7 +88,6 @@ function App() {
                 element={<TrackingInfo />}
               />
               <Route path="/login" element={<LoginPage />} />
-              <Route path="/payment" element={<PaymentPage />} />
             </Routes>
           </div>
         </div>
