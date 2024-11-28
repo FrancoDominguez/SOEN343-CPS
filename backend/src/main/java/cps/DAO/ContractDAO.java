@@ -151,7 +151,7 @@ public class ContractDAO {
               "dl.city AS destination_city, dl.postal_code AS destination_postal_code, dl.country AS destination_country, "
               +
               "s.name AS origin_station_name, s.street_address AS origin_station_street_address, " +
-              "s.city AS origin_station_city, s.postal_code AS origin_station_postal_code, s.country AS origin_station_country, "
+              "s.city AS origin_station_city, s.postal_code AS origin_station_postal_code, s.province AS origin_station_province, "
               +
               "l.street_address AS origin_location_street_address, " +
               "l.city AS origin_location_city, l.postal_code AS origin_location_postal_code, l.country AS origin_location_country "
@@ -198,7 +198,7 @@ public class ContractDAO {
           String originStationStreetAddress = rs.getString("origin_station_street_address");
           String originStationCity = rs.getString("origin_station_city");
           String originStationPostalCode = rs.getString("origin_station_postal_code");
-          String originStationCountry = rs.getString("origin_station_country");
+          String originStationCountry = rs.getString("origin_station_province");
           originStation = new Station(originStationId, originStationName, originStationStreetAddress,
               originStationPostalCode, originStationCity, originStationCountry);
         } else {
@@ -231,7 +231,6 @@ public class ContractDAO {
         if (originStation == null) {
           newContract = new HomePickup(contractId, clientId, parcel, destination, signatureRequired, hasPriority,
               warrantedAmount, price, eta, originLocation, pickupTime, isFlexible);
-          contracts.add(newContract);
         } else {
           newContract = new StationDropoff(contractId, clientId, parcel, destination, signatureRequired, hasPriority,
               warrantedAmount, price, eta, originStation);
