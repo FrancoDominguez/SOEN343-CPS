@@ -10,7 +10,7 @@ import static cps.francoTest.clearTable;
 public class Driver {
   public static void main(String[] args) {
 
-    testDAOs();
+    // testDAOs();
     // System.out.println("Clearing all tables\n");
     // clearTable("contracts");
     // clearTable("locations");

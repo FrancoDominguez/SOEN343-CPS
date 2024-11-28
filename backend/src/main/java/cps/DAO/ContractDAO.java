@@ -484,4 +484,20 @@ public class ContractDAO {
       System.out.println("Error updating home pickup contract: " + e.getMessage());
     }
   }
+
+public void delete(int contractId) {
+	try {
+    Mysqlcon con = Mysqlcon.getInstance();
+    con.connect();
+    Connection sqlCon = con.getConnection();
+
+    PreparedStatement pst1 = sqlCon.prepareStatement("DELETE FROM contracts WHERE contract_id = ?;");
+    
+    pst1.setInt(1, contractId);
+    pst1.executeUpdate();
+
+  }catch(Exception e){
+    System.out.println("Error deleting contract");
+  }
+}
 }

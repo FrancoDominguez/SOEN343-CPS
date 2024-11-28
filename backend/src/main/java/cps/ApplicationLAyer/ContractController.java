@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,4 +43,16 @@ public class ContractController {
     }
     return null;
   }
+
+  @DeleteMapping("/contract")
+  public ResponseEntity<Object> deleteContractById(@RequestParam int contractId){
+    System.out.println("Fetching contracts by userId...\n");
+    try{
+      activeClient.deleteContract(contractId);
+      return new ResponseEntity<Object>(HttpStatus.OK);
+    }catch(Exception e){
+      return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+    }
+  }
+
 }

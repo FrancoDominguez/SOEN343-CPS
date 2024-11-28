@@ -42,7 +42,7 @@ function DashboardPage() {
             Contracts
           </AccordionSummary>
           <AccordionDetails>
-            <Contracts contracts={contracts} />
+            <Contracts contracts={contracts} setContracts={setContracts} />
           </AccordionDetails>
         </Accordion>
         <Accordion>

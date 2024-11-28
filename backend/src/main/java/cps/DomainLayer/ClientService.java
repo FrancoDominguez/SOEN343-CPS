@@ -14,6 +14,8 @@ import cps.DomainLayer.models.StationDropoff;
 import cps.DomainLayer.models.Interfaces.OrderTracker;
 
 public class ClientService implements OrderTracker {
+  ContractDAO contractDAO = new ContractDAO();
+
 
   // @Override
   // public ShippingStatus trackOrder(int trackingId) {
@@ -61,7 +63,6 @@ public class ClientService implements OrderTracker {
 
   // Franco
   public ArrayList<Contract> viewAllActiveContracts(int clientId) {
-    ContractDAO contractDAO = new ContractDAO();
     ArrayList<Contract> contracts = contractDAO.fetchAllByClientId(clientId);
     return contracts;
   }
@@ -70,12 +71,13 @@ public class ClientService implements OrderTracker {
   public void updateContract(String key, String value) {
   }
 
-  // Franco
   public void deleteContract(int contractId) {
+    contractDAO.delete(contractId);
   }
 
   public int createDelivery(Contract contract) {
     Delivery newDelivery = new Delivery(contract);
+    this.deleteContract(contract.getId());
     int contractId = newDelivery.save();
     return contractId;
   }
