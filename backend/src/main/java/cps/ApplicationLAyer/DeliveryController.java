@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import cps.DAO.ContractDAO;
-//import cps.DTO.RequestBodies.CreateDelivReqBody;
+import cps.DTO.RequestBodies.CreateDelivReqBody;
 import cps.DTO.ResponseBodies.BasicResponse;
 import cps.DomainLayer.ClientService;
 import cps.DomainLayer.models.Contract;
