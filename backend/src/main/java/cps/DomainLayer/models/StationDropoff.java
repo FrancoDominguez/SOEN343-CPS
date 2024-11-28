@@ -45,59 +45,57 @@ public class StationDropoff extends Contract {
 
   public void processQuote() {
     double a = calculatePrice();
-    LocalDateTime b = calculateEta();
-    System.out.println("Price "+ a + " and ETA: " + b );
-    
-  };
+    LocalDateTime etaDateTime = calculateEta();
+    Duration b = Duration.between(LocalDateTime.now(), etaDateTime);
+    System.out.println("Price: " + a + " and ETA: " + b.toHours() + " hours");
+    this.price = a;
+    this.eta = b;
+  }
 
   @Override
-    protected double calculatePrice() {
-        double price = 0.0;
+  protected double calculatePrice() {
+    double price = 0.0;
 
-        // Distance calculation logic (in meters)
-        Location stationAdress = (Location) this.station;
-        int distance = getDurationDistance(stationAdress.toString(), this.destination.toString());
+    // Distance calculation logic (in meters)
+    Location stationAdress = (Location) this.station;
+    int distance = getDurationDistance(stationAdress.toString(), this.destination.toString());
 
-        // Base price based on distance
-        if (distance <= 5000) { // Up to 5 km
-            price += 10;
-        } else if (distance <= 20000) { // 5 to 20 km
-            price += 20;
-        } else if (distance <= 50000) { // 20 to 50 km
-            price += 35;
-        } else { // Above 50 km
-            price += 50;
-        }
-
-        // Add $5 for each condition met
-        if (this.signatureRequired()) {
-            price += 5;
-        }
-        if (this.hasPriority()) {
-            price += 5;
-        }
-        if (this.warrantedAmount > 1000) {
-            price += 5;
-        }
-
-       
-
-        return price;
+    // Base price based on distance
+    if (distance <= 5000) { // Up to 5 km
+      price += 10;
+    } else if (distance <= 20000) { // 5 to 20 km
+      price += 20;
+    } else if (distance <= 50000) { // 20 to 50 km
+      price += 35;
+    } else { // Above 50 km
+      price += 50;
     }
 
-    @Override
-    protected LocalDateTime calculateEta() {
-        // Base delivery time is 3 days
-        int daysToAdd = 3;
-
-        // If priority shipping is selected, reduce by 1 day
-        if (this.hasPriority()) {
-            daysToAdd = 2;
-        }
-
-        return LocalDateTime.now().plusDays(daysToAdd);
+    // Add $5 for each condition met
+    if (this.signatureRequired()) {
+      price += 5;
+    }
+    if (this.hasPriority()) {
+      price += 5;
+    }
+    if (this.warrantedAmount > 1000) {
+      price += 5;
     }
 
-    
+    return price;
+  }
+
+  @Override
+  protected LocalDateTime calculateEta() {
+    // Base delivery time is 3 days
+    int daysToAdd = 3;
+
+    // If priority shipping is selected, reduce by 1 day
+    if (this.hasPriority()) {
+      daysToAdd = 2;
+    }
+
+    return LocalDateTime.now().plusDays(daysToAdd);
+  }
+
 }
-
