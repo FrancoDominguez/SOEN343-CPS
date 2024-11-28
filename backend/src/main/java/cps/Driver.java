@@ -11,13 +11,13 @@ import static cps.Tests.clearTable;
 public class Driver {
   public static void main(String[] args) {
 
-     testDAOs();
+     //testDAOs();
     // System.out.println("Clearing all tables\n");
     // clearTable("contracts");
     // clearTable("locations");
     // clearTable("parcels");
     // System.out.println("All tables are now clear\n");
 
-    //SpringApplication.run(Driver.class, args);
+    SpringApplication.run(Driver.class, args);
   }
 }
