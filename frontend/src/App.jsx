@@ -17,6 +17,7 @@ import TopNavBar from "./components/TopNavbar";
 import LoginPage from "./components/Pages/LoginPage";
 import TrackingInfo from "./components/Pages/TrackingInfo";
 import HomePage from "./components/Pages/HomePage";
+import ReviewPage from "./components/Pages/ReviewPage";
 import { AuthProvider } from "../context/AuthContext";
 import { useAuth } from "../hooks/useAuth";
 
@@ -25,6 +26,7 @@ const navigation = [
   { name: "Dashboard", href: "/dashboard", current: false },
   { name: "Deliver", href: "/deliver", current: false },
   { name: "Payment", href: "/payment", current: false },
+  { name: "Review", href: "/review", current: false },
 ];
 
 function App() {
@@ -87,6 +89,7 @@ function App() {
                 element={<TrackingInfo />}
               />
               <Route path="/login" element={<LoginPage />} />
+              <Route path='/review' element={<ReviewPage />} />
               <Route path="/payment" element={<PaymentPage />} />
             </Routes>
           </div>
