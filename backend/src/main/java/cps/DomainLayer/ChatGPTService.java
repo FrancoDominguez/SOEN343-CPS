@@ -3,15 +3,27 @@ package cps.DomainLayer;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
+import io.github.cdimascio.dotenv.Dotenv;
+
 
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+
+
 @Service
 public class ChatGPTService {
     private static final String API_URL = "https://api.openai.com/v1/chat/completions";
-    private static final String API_KEY = System.getenv("OPENAI_API_KEY");
+    private static  String API_KEY;
+
+   
+
+    static {
+        Dotenv dotenv = Dotenv.load();
+        API_KEY = dotenv.get("OPENAI_API_KEY");
+      }
+    
 
     public String getChatGPTResponse(String userInput) {
         try {
