@@ -164,7 +164,7 @@ public class Delivery {
         }
     }
 
-    public void save() {
+    public int save() {
         DeliveryDAO deliveryDAO = new DeliveryDAO();
         if (this.getId() == -1) {
             // Insert new Delivery and assign the generated ID
@@ -177,6 +177,7 @@ public class Delivery {
                 System.out.println("Error updating delivery: " + e.getMessage());
             }
         }
+        return this.id;
     }
 
     // Debugging representation

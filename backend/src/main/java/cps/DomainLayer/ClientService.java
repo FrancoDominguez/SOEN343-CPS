@@ -53,7 +53,7 @@ public class ClientService implements OrderTracker {
     return newContract;
   }
 
-  public ArrayList<Station> getAllStations(){
+  public ArrayList<Station> getAllStations() {
     StationDAO stationDAO = new StationDAO();
     ArrayList<Station> stations = stationDAO.fetchAllStations();
     return stations;
@@ -74,9 +74,10 @@ public class ClientService implements OrderTracker {
   public void deleteContract(int contractId) {
   }
 
-  public void createDelivery(Contract contract) {
+  public int createDelivery(Contract contract) {
     Delivery newDelivery = new Delivery(contract);
-    newDelivery.save();
+    int contractId = newDelivery.save();
+    return contractId;
   }
 
   public ArrayList<Delivery> viewAllActiveDeliveries() {

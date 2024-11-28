@@ -35,7 +35,7 @@ homePickupData = {
     "signatureRequired": False,
     "hasPriority": False,
     "warrantedAmount": 0,
-    "isFlexible": False,
+    "isFlexible": True,
     "origin": {
         "streetAddress": "123",
         "postalCode": "123",
@@ -66,19 +66,18 @@ stationDropoffData = {
     "stationId": 1
 }
 
-
-
 response1 = requests.post(url+"/signup", json=signupData)
 response2 = requests.post(url+"/login", json=loginData)
 response3 = requests.post(url+"/contract", json=homePickupData)
-response4 = requests.post(url+"/contract", json=stationDropoffData)
-response5 = requests.get(url+"/stations")
+homePickupContractId = response3.json()["id"]
+response4 = requests.post(url+"/delivery", json={"contractId":homePickupContractId})
+response5 = requests.post(url+"/contract", json=stationDropoffData)
+response6 = requests.get(url+"/stations")
 
-print(response2.json())
-print(response3.json())
+
+print("printing new delivery result: \n")
 print(response4.json())
-print(response5.json())
-
+print("\nend of new delivery \n")
 
 
 

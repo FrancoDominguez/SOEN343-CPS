@@ -3,7 +3,6 @@ package cps.DomainLayer.models;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import static cps.utils.MapsService.getDurationDistance;
-import static cps.utils.MapsService.getDurationDistance;
 
 import cps.DAO.ContractDAO;
 
@@ -46,10 +45,12 @@ public class StationDropoff extends Contract {
 
   public void processQuote() {
     double a = calculatePrice();
-    LocalDateTime b = calculateEta();
-    System.out.println("Price " + a + " and ETA: " + b);
-
-  };
+    LocalDateTime etaDateTime = calculateEta();
+    Duration b = Duration.between(LocalDateTime.now(), etaDateTime);
+    System.out.println("Price: " + a + " and ETA: " + b.toHours() + " hours");
+    this.price = a;
+    this.eta = b;
+  }
 
   @Override
   protected double calculatePrice() {
