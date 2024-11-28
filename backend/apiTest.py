@@ -27,10 +27,10 @@ homePickupData = {
         "isFragile": False
     },
     "destination": {
-        "streetAddress": "home pickup street",
-        "postalCode": "home pickup postal",
-        "city": "home pickup city",
-        "country": "home country"
+        "streetAddress": "1455 Blvd. De Maisonneuve Ouest, Montreal, Quebec H3G 1M8",
+        "postalCode": "",
+        "city": "",
+        "country": ""
     },
     "signatureRequired": False,
     "hasPriority": False,
@@ -66,13 +66,13 @@ stationDropoffData = {
     "stationId": 1
 }
 
-response1 = requests.post(url+"/signup", json=signupData)
-response2 = requests.post(url+"/login", json=loginData)
+# response1 = requests.post(url+"/signup", json=signupData)
+# response2 = requests.post(url+"/login", json=loginData)
 response3 = requests.post(url+"/contract", json=homePickupData)
 homePickupContractId = response3.json()["id"]
 response4 = requests.post(url+"/delivery", json={"contractId":homePickupContractId})
-response5 = requests.post(url+"/contract", json=stationDropoffData)
-response6 = requests.get(url+"/stations")
+# response5 = requests.post(url+"/contract", json=stationDropoffData)
+# response6 = requests.get(url+"/stations")
 
 
 print("printing new delivery result: \n")

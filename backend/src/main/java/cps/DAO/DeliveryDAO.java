@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 
 import com.mysql.cj.x.protobuf.MysqlxPrepare.Prepare;
 
@@ -42,10 +43,10 @@ public class DeliveryDAO {
         trackingId = rs1.getInt(1);
       }
 
-      String qs2 = "INSERT INTO deliveries (id, client_id, tracking_id, parcel_id, destination_id," +
-          " signature_required, has_priority, is_flexible, pickup_time, pickup_location) VALUES " +
+      String qs3 = "INSERT INTO deliveries (id, client_id, tracking_id, parcel_id, destination_id," +
+          " signature_required, has_priority, is_flexible, pickup_time, pickup_location_id) VALUES " +
           "(?, ?, ?, ?, ?, ?, ?, ?, ?)";
-      PreparedStatement pst2 = sqlcon.prepareStatement(qs2, Statement.RETURN_GENERATED_KEYS);
+      PreparedStatement pst2 = sqlcon.prepareStatement(qs3, Statement.RETURN_GENERATED_KEYS);
       pst2.setInt(1, delivery.getId());
       pst2.setInt(2, delivery.getClientId());
       pst2.setInt(3, trackingId);
@@ -62,6 +63,8 @@ public class DeliveryDAO {
         pst2.setNull(9, java.sql.Types.NULL);
       }
 
+      pst2.executeUpdate();
+
       int deliveryId = -1;
       ResultSet rs2 = pst2.getGeneratedKeys();
       if (rs2.next()) {
@@ -69,6 +72,7 @@ public class DeliveryDAO {
       }
 
       con.close();
+      System.out.println("new delivery has been created");
       return deliveryId;
     } catch (Exception e) {
       System.out.println("Error inserting Delivery into database" + e.getMessage());
@@ -80,9 +84,30 @@ public class DeliveryDAO {
     return;
   }
 
-public Delivery findById(int deliveryId) {
+  public ArrayList<Delivery> fetchAll() {
+    ArrayList<Delivery> deliveries = new ArrayList<>();
+    try {
+      Mysqlcon con = Mysqlcon.getInstance();
+      con.connect();
+      Connection sqlcon = con.getConnection();
+
+      String qs = "SELECT * FROM deliver";
+      PreparedStatement pst = sqlcon.prepareStatement(qs);
+      ResultSet rs = pst.executeQuery();
+      while (rs.next()) {
+
+      }
+
+    } catch (Exception e) {
+      System.out.println("Error fetching all deliveries: " + e.getMessage());
+    }
+
+    return deliveries;
+  }
+
+  public Delivery findById(int deliveryId) {
     return null;
-}
+  }
 }
 
 /*
