@@ -36,6 +36,7 @@ public class antoineTest {
       Location origin = new Location("1081 Caledonia Rd, Mount Royal, QC H3R 2V6", "", "", "t");
       Location destination = new Location("484 Rue des Alismas, Laval, QC H7X 4G9", "", "", "");
       Parcel parcel = new Parcel(10.0, 10.0, 10.0, 10.0, true);
+      
 
       // creating contract object
       HomePickup pickupContract = new HomePickup(clientObj.getId(), parcel, destination, true, true, 100.00, origin,

@@ -44,8 +44,9 @@ public class StationDropoff extends Contract {
   }
 
   public void processQuote() {
-    calculatePrice();
-    calculateEta();
+    double a = calculatePrice();
+    LocalDateTime b = calculateEta();
+    System.out.println("Price "+ a + " and ETA: " + b );
     
   };
 
