@@ -1,9 +1,9 @@
-package cps.DomainLayer.Services;
+package cps.DomainLayer;
 
 import cps.exceptions.UnauthorizedException;
 import cps.DomainLayer.models.ClientModel;
-import cps.DTO.RequestBodies.SignupRequestbody;
 import cps.DAO.ClientDAO;
+import cps.DTO.RequestBodies.SignupRequestbody;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 
@@ -27,7 +27,7 @@ public final class AuthenticationService {
 
   // example of how to use the mysql connector
   public static String login(String email, String password) throws Exception {
-    ClientModel user = userDAO.fetchByEmail(email);
+    cps.DomainLayer.models.ClientModel user = userDAO.fetchByEmail(email);
 
     if (user == null) {
       throw new Exception("Email is incorrect");
@@ -95,5 +95,4 @@ public final class AuthenticationService {
 }
 
 
-  
 }
