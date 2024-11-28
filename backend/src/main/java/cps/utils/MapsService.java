@@ -27,6 +27,7 @@ public class MapsService {
           url, encodedDestination, encodedOrigin, units, apiKey);
 
       JSONObject response = makeGetRequestJSON(requestString);
+
       int distanceValue = response
           .getJSONArray("rows")
           .getJSONObject(0)
