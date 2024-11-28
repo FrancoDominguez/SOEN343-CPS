@@ -5,9 +5,9 @@ import java.time.LocalDateTime;
 import cps.DAO.ClientDAO;
 import cps.DAO.ContractDAO;
 import cps.DAO.StationDAO;
-import cps.DomainLayer.ClientService;
 import cps.DomainLayer.models.ClientModel;
 import cps.DomainLayer.models.Contract;
+import cps.DomainLayer.models.Delivery;
 import cps.DomainLayer.models.HomePickup;
 import cps.DomainLayer.models.Location;
 import cps.DomainLayer.models.Parcel;
@@ -70,6 +70,24 @@ public class Tests {
       System.out.println("\nretrieved contract: " + retrievedStationContract);
       retrievedStationContract.processQuote();
       retrievedStationContract.save();
+
+      // testing delivery DAO
+      
+      // testing creating new Delivery
+
+      // creating objects
+      Delivery newStationDelivery = new Delivery(retrievedStationContract);
+      Delivery newPickupDelivery = new Delivery(retrievedPickupContract);
+      System.out.println("\nPrinting new delivery objects:\n");
+      System.out.println("new station delivery: \n\n" + newStationDelivery);
+      System.out.println("new pickup delivery: \n\n" + newPickupDelivery);
+
+      // inserting objects into DB
+      
+
+
+
+
 
     } catch (Exception e) {
       System.out.println(e.getMessage());

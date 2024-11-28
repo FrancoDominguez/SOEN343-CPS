@@ -2,6 +2,7 @@ package cps.DomainLayer.models;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import static cps.utils.MapsService.getDurationDistance;
 
 import cps.DAO.ContractDAO;
 
@@ -48,6 +49,7 @@ public class StationDropoff extends Contract {
   };
 
   protected double calculatePrice() {
+    int distance = getDurationDistance(this.station.toString(), this.destination.toString());
     return 0;
   };
 

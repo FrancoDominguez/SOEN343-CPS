@@ -3,6 +3,7 @@ package cps.DAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.sql.Timestamp;
 
 import com.mysql.cj.x.protobuf.MysqlxPrepare.Prepare;
@@ -21,26 +22,33 @@ public class DeliveryDAO {
     return 1;
   }
 
-  public void insert(Delivery delivery) {
-    ContractDAO contractDAO = new ContractDAO();
+  public int insert(Delivery delivery) {
     try {
       Mysqlcon con = Mysqlcon.getInstance();
       con.connect();
       Connection sqlcon = con.getConnection();
 
       ShippingStatus status = delivery.getStatus();
-      String qs1 = "INSERT INTO shippping_status (status, eta), VALUES (?, ?)";
-      PreparedStatement pst1 = sqlcon.prepareStatement(qs1);
-      pst1.setInt()
+      String qs1 = "INSERT INTO shipping_status (status, eta) VALUES (?, ?);";
+      PreparedStatement pst1 = sqlcon.prepareStatement(qs1, Statement.RETURN_GENERATED_KEYS);
+      pst1.setString(1, status.getStatus());
+      pst1.setObject(2, java.sql.Date.valueOf(status.getEta()));
 
+      pst1.executeUpdate();
+
+      ResultSet rs1 = pst1.getGeneratedKeys();
+      int trackingId = -1;
+      if (rs1.next()) {
+        trackingId = rs1.getInt(1);
+      }
 
       String qs2 = "INSERT INTO deliveries (id, client_id, tracking_id, parcel_id, destination_id," +
           " signature_required, has_priority, is_flexible, pickup_time, pickup_location) VALUES " +
           "(?, ?, ?, ?, ?, ?, ?, ?, ?)";
-      PreparedStatement pst2 = sqlcon.prepareStatement(qs2);
+      PreparedStatement pst2 = sqlcon.prepareStatement(qs2, Statement.RETURN_GENERATED_KEYS);
       pst2.setInt(1, delivery.getId());
       pst2.setInt(2, delivery.getClientId());
-      pst2.setInt(3, delivery.getTrackingId()); // FIXME
+      pst2.setInt(3, trackingId);
       pst2.setInt(3, delivery.getParcel().getId());
       pst2.setInt(4, delivery.getDestination().getId());
       pst2.setBoolean(5, delivery.isSignatureRequired());
@@ -54,11 +62,18 @@ public class DeliveryDAO {
         pst2.setNull(9, java.sql.Types.NULL);
       }
 
+      int deliveryId = -1;
+      ResultSet rs2 = pst2.getGeneratedKeys();
+      if (rs2.next()) {
+        deliveryId = rs2.getInt("1");
+      }
+
       con.close();
+      return deliveryId;
     } catch (Exception e) {
       System.out.println("Error inserting Delivery into database" + e.getMessage());
     }
-
+    return -1;
   }
 
   public void update(Delivery del) {
