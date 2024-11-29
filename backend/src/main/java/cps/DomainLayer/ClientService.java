@@ -3,6 +3,7 @@ package cps.DomainLayer;
 import java.util.ArrayList;
 
 import cps.DTO.RequestBodies.ContractRequestBody;
+import cps.DTO.RequestBodies.ReviewRequestBody;
 import cps.DAO.ContractDAO;
 import cps.DAO.StationDAO;
 import cps.DomainLayer.models.Contract;
@@ -78,6 +79,20 @@ public class ClientService implements OrderTracker {
     Delivery newDelivery = new Delivery(contract);
     int contractId = newDelivery.save();
     return contractId;
+  }
+
+  public static void createReview(ReviewRequestBody reviewRequest) throws Exception {
+    if (reviewRequest.getRating() < 1 || reviewRequest.getRating() > 5) {
+      throw new Exception("Rating must be between 1 and 5");
+    }
+    if (reviewRequest.getTrackingId() <= 0) {
+      throw new Exception("Tracking ID cannot be null or empty");
+    }
+    //Save to DB logic
+    
+    System.out.println("Saving review to database...");
+    System.out.printf("Tracking ID: %s, Rating: %d, Comment: %s%n",
+    reviewRequest.getTrackingId(), reviewRequest.getRating(), reviewRequest.getComment());
   }
 
   public ArrayList<Delivery> viewAllActiveDeliveries() {

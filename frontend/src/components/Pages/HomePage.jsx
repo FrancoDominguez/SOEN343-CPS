@@ -12,6 +12,18 @@ function HomePage() {
         }
     };
 
+    /*
+            const handleSearch = (e) => {
+        e.preventDefault();
+        if (trackingNumber) {
+            
+        }
+    };
+
+
+
+    */
+
     return (
         <div className="flex items-start justify-start w-full h-full p-5">
             <div className="bg-white bg-opacity-70 p-5 rounded-lg shadow-lg max-w-xs">
