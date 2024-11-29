@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import cps.DTO.RequestBodies.ContractRequestBody;
 import cps.DAO.ContractDAO;
 import cps.DAO.DeliveryDAO;
+import cps.DAO.ShippingStatusDAO;
 import cps.DAO.StationDAO;
 import cps.DomainLayer.models.Contract;
 import cps.DomainLayer.models.Delivery;
@@ -17,23 +18,10 @@ import cps.DomainLayer.models.Interfaces.OrderTracker;
 public class ClientService implements OrderTracker {
   ContractDAO contractDAO = new ContractDAO();
 
-
-  // @Override
-  // public ShippingStatus trackOrder(int trackingId) {
-  // // Use DeliveryDAO to fetch the delivery by trackingId
-  // DeliveryDAO deliveryDAO = new DeliveryDAO();
-  // Delivery delivery = deliveryDAO.fetchByTrackingId(trackingId);
-
-  // if (delivery == null) {
-  // throw new IllegalArgumentException("Invalid tracking ID: " + trackingId);
-  // }
-
-  // // Return the ShippingStatus object from the delivery
-  // return delivery.getStatus();
-  // }
-
-  public ShippingStatus trackOrder(int trackingId) {
-    return null;
+  public Delivery trackOrder(int trackingId) {
+    ShippingStatusDAO statusDAO = new ShippingStatusDAO();
+    Delivery delivery = statusDAO.trackOrder2(trackingId);
+    return delivery;
   }
 
   public Contract addNewContract(ContractRequestBody contractInfo) throws Exception {
