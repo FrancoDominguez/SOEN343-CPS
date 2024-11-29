@@ -208,14 +208,25 @@ function DeliverPage() {
           {activeStep === 3 && (
             <form>
               <FormGroup>
-                {formDataJSON.addOns.fields.map((field) => (
-                  <CheckBoxInput
-                    key={field.id}
-                    control={control}
-                    name={field.id}
-                    label={field.label}
-                  />
-                ))}
+                {formDataJSON.addOns.fields.map((field) => {
+                  return field.id === "isFlexible" ? (
+                    deliveryType === "pickup" && (
+                      <CheckBoxInput
+                        key={field.id}
+                        control={control}
+                        name={field.id}
+                        label={field.label}
+                      />
+                    )
+                  ) : (
+                    <CheckBoxInput
+                      key={field.id}
+                      control={control}
+                      name={field.id}
+                      label={field.label}
+                    />
+                  );
+                })}
               </FormGroup>
               <TextInput
                 control={control}
