@@ -37,7 +37,8 @@ public class Delivery {
 
     // Constructor for HomePickup contracts
     public Delivery(int id, int clientId, Parcel parcel, Location destination, Boolean signatureRequired,
-            Boolean hasPriority, Boolean isFlexible, LocalDateTime pickupTime, Location pickupLocation) {
+            Boolean hasPriority, Boolean isFlexible, LocalDateTime pickupTime, Location pickupLocation,
+            ShippingStatus status) {
         this.id = id; // Default ID for new deliveries
         this.clientId = clientId;
         this.parcel = parcel;
@@ -48,11 +49,12 @@ public class Delivery {
         this.isFlexible = isFlexible;
         this.pickupTime = pickupTime;
         this.pickupLocation = pickupLocation;
+        this.status = status;
     }
 
     // Constructor for StationDropoff contracts
     public Delivery(int id, int clientId, Parcel parcel, Location destination, Boolean signatureRequired,
-            Boolean hasPriority) {
+            Boolean hasPriority, ShippingStatus shippingStatus) {
         this.id = id; // Default ID for new deliveries
         this.clientId = clientId;
         this.parcel = parcel;
@@ -63,6 +65,8 @@ public class Delivery {
         this.isFlexible = false; // Not flexible by default for StationDropoff
         this.pickupTime = null; // No pickup time for StationDropoff
         this.pickupLocation = null; // No pickup location for StationDropoff
+        this.trackingId = shippingStatus.getTrackingId();
+        this.status = shippingStatus;
     }
 
     // Getters and Setters
@@ -191,7 +195,7 @@ public class Delivery {
                 ", destination=" + destination +
                 ", signatureRequired=" + signatureRequired +
                 ", hasPriority=" + hasPriority +
-                ", status=" + status.getStatus() +
+                ", status=" + this.status +
                 ", isFlexible=" + isFlexible +
                 ", pickupTime=" + pickupTime +
                 ", pickupLocation=" + pickupLocation +

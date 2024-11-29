@@ -40,4 +40,13 @@ public class ShippingStatus {
     public LocalDate getEta() {
         return this.eta;
     }
+
+    @Override
+    public String toString() {
+        return "ShippingStatus{" +
+                "trackingId=" + trackingId +
+                ", status='" + status + '\'' +
+                ", eta=" + eta +
+                '}';
+    }
 }
