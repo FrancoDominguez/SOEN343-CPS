@@ -117,7 +117,7 @@ function DeliverPage() {
       {activeStep === steps.length ? (
         <React.Fragment>
           <Typography className="mt-2 mb-1">
-            All steps completed - your delivery is in progress
+            All steps completed - Find your new contract in the Dashboard
           </Typography>
           <div className="flex flex-row pt-2">
             <div className="flex-1" />

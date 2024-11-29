@@ -22,7 +22,7 @@ public class CreditCardPaymentStrategy implements PaymentStrategy {
         try {
             // Create a PaymentIntent
             PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
-                    .setAmount((long) (amount * 100)) // Convert to cents
+                    .setAmount((long) (amount)) // Convert to cents
                     .setCurrency("cad")
                     .addPaymentMethodType("card")
                     .build();
