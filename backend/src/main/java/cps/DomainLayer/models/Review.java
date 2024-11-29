@@ -2,13 +2,13 @@ package cps.DomainLayer.models;
 
 public class Review {
     private int id;
-    private int deliveryId;
+    private int trackingId;
     private int rating; 
     private String comment; 
      
-    public Review(int id, int deliveryId, int rating, String comment) {
+    public Review(int id, int trackingId, int rating, String comment) {
         this.id = id;
-        this.deliveryId = deliveryId;
+        this.trackingId = trackingId;
         this.rating = rating;
         this.comment = comment;
     }
@@ -32,7 +32,7 @@ public class Review {
         this.comment = comment;
     }
 
-    public int getid() {
+    public int getId() {
         return id;
     }
 
@@ -40,8 +40,8 @@ public class Review {
         this.id = id;
     }
 
-    public int getDeliveryId(){
-        return deliveryId;
+    public int getTrackingId(){
+        return trackingId;
     }
 
     @Override
@@ -49,7 +49,7 @@ public class Review {
         return "Review{" +
                 "Rating=" + rating +
                 ", Comment='" + comment + '\'' +
-                ", Delivery ID='" + deliveryId + '\'' +
+                ", Tracking ID='" + trackingId + '\'' +
                 '}';
     }
 }

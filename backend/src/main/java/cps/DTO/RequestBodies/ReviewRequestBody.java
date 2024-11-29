@@ -14,7 +14,7 @@ public class ReviewRequestBody {
         return comment;
     }
 
-    public int getid() {
+    public int getId() {
         return id;
     }
 

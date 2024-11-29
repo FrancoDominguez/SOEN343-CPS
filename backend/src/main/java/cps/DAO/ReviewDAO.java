@@ -20,10 +20,11 @@ public class ReviewDAO {
 
         Review reviewObj = null;
         if (rs.next()) {
-            int deliveryId = rs.getInt("delivery_id");
+            int id = rs.getInt("id");
+            int trackingId = rs.getInt("tracking_id");
             int rating = rs.getInt("rating");
             String comment = rs.getString("comment");
-            reviewObj = new Review(reviewId, deliveryId, rating, comment);
+            reviewObj = new Review(reviewId, trackingId, rating, comment);
         }
 
         con.close();
@@ -35,12 +36,13 @@ public class ReviewDAO {
         Mysqlcon con = Mysqlcon.getInstance();
         con.connect();
 
-        String query = "INSERT INTO reviews (delivery_id, rating, comment) VALUES (?, ?, ?)";
+        String query = "INSERT INTO reviews (id, tracking_id, rating, comment) VALUES (?, ?, ?, ?)";
         PreparedStatement statement = con.getConnection().prepareStatement(query);
 
-        statement.setInt(1, reviewObj.getDeliveryId());
-        statement.setInt(2, reviewObj.getRating());
-        statement.setString(3, reviewObj.getComment());
+        statement.setInt(1, reviewObj.getId());
+        statement.setInt(2, reviewObj.getTrackingId());
+        statement.setInt(3, reviewObj.getRating());
+        statement.setString(4, reviewObj.getComment());
 
         statement.executeUpdate();
         con.close();

@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import cps.DTO.RequestBodies.ContractRequestBody;
 import cps.DTO.RequestBodies.ReviewRequestBody;
 import cps.DAO.ContractDAO;
+import cps.DAO.ReviewDAO;
 import cps.DAO.StationDAO;
 import cps.DomainLayer.models.Contract;
 import cps.DomainLayer.models.Delivery;
 import cps.DomainLayer.models.HomePickup;
+import cps.DomainLayer.models.Review;
 import cps.DomainLayer.models.ShippingStatus;
 import cps.DomainLayer.models.Station;
 import cps.DomainLayer.models.StationDropoff;
@@ -81,19 +83,27 @@ public class ClientService implements OrderTracker {
     return contractId;
   }
 
-  public static void createReview(ReviewRequestBody reviewRequest) throws Exception {
-    if (reviewRequest.getRating() < 1 || reviewRequest.getRating() > 5) {
-      throw new Exception("Rating must be between 1 and 5");
+  public Review createReview(ReviewRequestBody reviewInfo) throws Exception {
+    Review newReview = null;
+    ReviewDAO reviewDAO = new ReviewDAO();
+    if (reviewInfo.getRating() < 1 || reviewInfo.getRating() > 5) {
+        throw new Exception("Rating must be between 1 and 5");
     }
-    if (reviewRequest.getTrackingId() <= 0) {
-      throw new Exception("Tracking ID cannot be null or empty");
+    if (reviewInfo.getTrackingId() <= 0) {
+        throw new Exception("Invalid Tracking ID");
     }
-    //Save to DB logic
-    
-    System.out.println("Saving review to database...");
-    System.out.printf("Tracking ID: %s, Rating: %d, Comment: %s%n",
-    reviewRequest.getTrackingId(), reviewRequest.getRating(), reviewRequest.getComment());
-  }
+    newReview = new Review(
+        reviewInfo.getId(),
+        reviewInfo.getTrackingId(),
+        reviewInfo.getRating(),
+        reviewInfo.getComment()
+    );
+    // Save the review to the database
+    reviewDAO.insert(newReview);
+
+    return newReview;
+}
+
 
   public ArrayList<Delivery> viewAllActiveDeliveries() {
     return null;
