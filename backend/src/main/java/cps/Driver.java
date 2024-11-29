@@ -17,6 +17,6 @@ public class Driver {
     // clearTable("parcels");
     // System.out.println("All tables are now clear\n");
 
-    SpringApplication.run(Driver.class, args);
+    // SpringApplication.run(Driver.class, args);
   }
 }

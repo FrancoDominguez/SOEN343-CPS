@@ -85,7 +85,6 @@ public class ClientService implements OrderTracker {
     DeliveryDAO deliveryDAO = new DeliveryDAO();
     ArrayList<Delivery> deliveries = deliveryDAO.fetchAllByClientId(clientId);
     return deliveries;
-
   }
 
   public ArrayList<Delivery> viewPendingDeliveries() {
