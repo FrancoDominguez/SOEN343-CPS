@@ -50,6 +50,4 @@ public class DeliveryController {
         }
         return null;
     }
-
-    // update delivery
 }

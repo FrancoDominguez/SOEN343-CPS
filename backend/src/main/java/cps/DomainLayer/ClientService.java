@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import cps.DTO.RequestBodies.ContractRequestBody;
 import cps.DAO.ContractDAO;
+import cps.DAO.DeliveryDAO;
 import cps.DAO.StationDAO;
 import cps.DomainLayer.models.Contract;
 import cps.DomainLayer.models.Delivery;
@@ -80,8 +81,11 @@ public class ClientService implements OrderTracker {
     return contractId;
   }
 
-  public ArrayList<Delivery> viewAllActiveDeliveries() {
-    return null;
+  public ArrayList<Delivery> viewAllActiveDeliveries(int clientId) {
+    DeliveryDAO deliveryDAO = new DeliveryDAO();
+    ArrayList<Delivery> deliveries = deliveryDAO.fetchAllByClientId(clientId);
+    return deliveries;
+
   }
 
   public ArrayList<Delivery> viewPendingDeliveries() {
