@@ -87,15 +87,33 @@ public class StationDropoff extends Contract {
 
   @Override
   protected LocalDateTime calculateEta() {
-    // Base delivery time is 3 days
-    int daysToAdd = 3;
+      // Distance calculation logic (in meters)
+      Location stationAddress = (Location) this.station;
+      int distance = getDurationDistance(stationAddress.toString(), this.destination.toString());
 
-    // If priority shipping is selected, reduce by 1 day
-    if (this.hasPriority()) {
-      daysToAdd = 2;
-    }
+      // Initialize base ETA in days
+      int etaInDays;
 
-    return LocalDateTime.now().plusDays(daysToAdd);
+      // ETA based on distance thresholds
+      if (distance <= 5000) { // Up to 5 km
+          etaInDays = 1; // 1 day
+      } else if (distance <= 20000) { // 5 to 20 km
+          etaInDays = 2; // 2 days
+      } else if (distance <= 50000) { // 20 to 50 km
+          etaInDays = 3; // 3 days
+      } else if (distance <= 200000) { // 50 to 200 km
+          etaInDays = 4; // 4 days
+      } else { // Above 200 km
+          etaInDays = 5; // 5 days
+      }
+
+      // If priority shipping is selected, reduce the ETA by 1 day (minimum 1 day)
+      if (this.hasPriority() && etaInDays > 1) {
+          etaInDays -= 1; // Reduce by 1 day, but not below 1 day
+      }
+
+      // Calculate and return the final ETA
+      return LocalDateTime.now().plusDays(etaInDays);
   }
 
 }

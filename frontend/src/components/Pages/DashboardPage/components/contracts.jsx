@@ -23,11 +23,10 @@ const Contracts = ({ contracts, setContracts }) => {
     setPayedContractId(contract.id); // Set the ID for the selected contract
     setPaymentDetails({
       contractId: contract.id,
-      amount: contract.price + contract.warrantedAmount,
+      amount: contract.price,
     });
     setOpenPayment(true);
   };
-
 
   const onPaymentSuccess = async () => {
     try {

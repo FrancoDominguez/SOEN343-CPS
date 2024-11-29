@@ -140,7 +140,7 @@ const Deliveries = ({ deliveries, handleDeliveryUpdated }) => {
                   <Typography>ETA: {delivery.status.eta}</Typography>
                 </Box>
 
-                {delivery.flexible && (
+                {delivery.flexible && delivery.status.status === "pending" && (
                   <Box marginTop={2}>
                     <Button
                       onClick={() => handlePickupTimeChange(delivery.id)}

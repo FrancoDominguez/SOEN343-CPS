@@ -113,15 +113,32 @@ public class HomePickup extends Contract {
 
   @Override
   protected LocalDateTime calculateEta() {
-    // Base delivery time is 3 days
-    int daysToAdd = 3;
-
-    // If priority shipping is selected, reduce by 1 day
-    if (this.hasPriority()) {
-      daysToAdd = 2;
-    }
-
-    return LocalDateTime.now().plusDays(daysToAdd);
+      // Distance calculation logic (in meters)
+      int distance = getDurationDistance(this.origin.toString(), this.destination.toString());
+  
+      // Base ETA in days
+      int etaInDays;
+  
+      // ETA based on distance thresholds
+      if (distance <= 5000) { // Up to 5 km
+          etaInDays = 1; // 1 day
+      } else if (distance <= 20000) { // 5 to 20 km
+          etaInDays = 2; // 2 days
+      } else if (distance <= 50000) { // 20 to 50 km
+          etaInDays = 3; // 3 days
+      } else if (distance <= 200000) { // 50 to 200 km
+          etaInDays = 4; // 4 days
+      } else { // Above 200 km
+          etaInDays = 5; // 5 days
+      }
+  
+      // If priority shipping is selected, reduce the ETA by 1 day (minimum 1 day)
+      if (this.hasPriority() && etaInDays > 1) {
+          etaInDays -= 1;
+      }
+  
+      // Calculate and return the final ETA
+      return LocalDateTime.now().plusDays(etaInDays);
   }
 
 }
