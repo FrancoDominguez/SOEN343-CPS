@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import "../styles/chatbot.css";
+import { useAuth } from "../../hooks/useAuth";
 
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [userInput, setUserInput] = useState("");
+  const { user } = useAuth();
 
   // Pre-defined Questions
   const preMadeQuestions = [
@@ -65,7 +67,10 @@ const Chatbot = () => {
       const response = await fetch("http://localhost:8080/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: userMessage }),
+        body: JSON.stringify({
+          message: userMessage,
+          userId: user ? user.userId : -1,
+        }),
       });
 
       const data = await response.json();

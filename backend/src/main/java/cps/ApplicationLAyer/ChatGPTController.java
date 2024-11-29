@@ -17,7 +17,8 @@ public class ChatGPTController {
     @PostMapping
     public ResponseEntity<?> getResponse(@RequestBody Map<String, String> input) {
         String userInput = input.get("message");
-        String response = chatGPTService.getChatGPTResponse(userInput);
+        int userId = Integer.parseInt(input.get("userId"));
+        String response = chatGPTService.getChatGPTResponse(userInput, userId);
 
         // Wrap the response in a JSON object
         Map<String, String> jsonResponse = new HashMap<>();
