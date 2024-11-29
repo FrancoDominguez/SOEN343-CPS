@@ -6,6 +6,7 @@ public class PayPalPaymentStrategy implements PaymentStrategy {
     @Override
     public String pay(double amount) {
         // Mock payment logic
-        return "PayPal Payment Successful with Amount = $" + amount;
+        System.out.println("PayPal Payment Successful with Amount = $" + amount/100);
+        return "PayPal Payment Successful with Amount = $" + amount/100;
     }
 }

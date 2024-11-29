@@ -55,7 +55,7 @@ public class PaymentController {
         // Prepare and return the response
         Map<String, String> responseData = new HashMap<>();
         if (method.equalsIgnoreCase("stripe")) {
-            responseData.put("clientSecret", responseMessage); // Key the frontend expects
+            responseData.put("clientSecret", responseMessage); // CLIENTSECRETKey the frontend expects
         } else {
             responseData.put("message", responseMessage); // Mock PayPal response
         }

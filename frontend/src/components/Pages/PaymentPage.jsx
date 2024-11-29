@@ -73,9 +73,10 @@ const CheckoutForm = ({ amount, contractId, onPaymentSuccess }) => {
   };
 
   // Handle PayPal payment submission
-  const handlePaypalSubmit = (e) => {
+  const handlePaypalSubmit = async (e) => {
     e.preventDefault();
-
+  
+    // Validate the PayPal credentials
     if (!paypalCredentials.username || !paypalCredentials.password) {
       setPaypalErrors({
         username: !paypalCredentials.username ? "Email is required" : "",
@@ -83,14 +84,35 @@ const CheckoutForm = ({ amount, contractId, onPaymentSuccess }) => {
       });
       return;
     }
-
     setLoading(true);
-    setTimeout(() => {
-      setPaymentStatus("Mock PayPal Payment Successful");
-      onPaymentSuccess();
+    try {
+      // Send the PayPal payment request to the backend
+      const response = await fetch("http://localhost:8080/api/payment/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: paymentAmount * 100, // Convert to cents
+          method: "paypal",
+        }),
+      });
+  
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || "Failed to process PayPal payment");
+      }
+  
+      const { message } = await response.json();
+  
+      setPaymentStatus(message); // Show the mock PayPal response message
+      alert(message); // Display success/failure message from the backend
+      onPaymentSuccess(); // Notify parent component about payment success
+    } catch (err) {
+      setPaymentStatus(`Error: ${err.message}`);
+    } finally {
       setLoading(false);
-    }, 2000); // Simulate delay
+    }
   };
+  
 
   return (
     <div className="max-w-xl mx-auto p-8 bg-gray-100 rounded shadow">

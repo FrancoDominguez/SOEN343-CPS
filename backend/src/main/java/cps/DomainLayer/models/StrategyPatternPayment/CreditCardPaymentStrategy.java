@@ -19,6 +19,7 @@ public class CreditCardPaymentStrategy implements PaymentStrategy {
 
             PaymentIntent intent = PaymentIntent.create(params);
             System.out.println("Stripe Payment Successful: PaymentIntent ID = " + intent.getId());
+            System.out.println("Stripe Payment Successful with Amount = $" + amount/100);
             return intent.getClientSecret();
         } catch (StripeException e) {
             throw new RuntimeException("Stripe Payment Failed: " + e.getMessage());
