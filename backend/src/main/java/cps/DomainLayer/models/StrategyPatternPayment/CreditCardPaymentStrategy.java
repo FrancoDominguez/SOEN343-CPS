@@ -6,7 +6,17 @@ import com.stripe.model.PaymentIntent;
 import com.stripe.param.PaymentIntentCreateParams;
 
 public class CreditCardPaymentStrategy implements PaymentStrategy {
+    private String cardNumber;
+    private String cvv;
+    private String expirationDate;
 
+    public CreditCardPaymentStrategy(){}
+
+    public CreditCardPaymentStrategy(String cardNumber, String cvv, String expirationDate) {
+        this.cardNumber = cardNumber;
+        this.cvv = cvv;
+        this.expirationDate = expirationDate;
+    }
     @Override
     public String pay(double amount) {
         try {
