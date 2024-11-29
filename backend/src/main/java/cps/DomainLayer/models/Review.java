@@ -1,16 +1,13 @@
 package cps.DomainLayer.models;
 
 public class Review {
-    private int id;
-    private int trackingId;
-    private int rating; 
-    private String comment; 
+     private String comment; 
+     private int rating; 
+   
      
-    public Review(int id, int trackingId, int rating, String comment) {
-        this.id = id;
-        this.trackingId = trackingId;
-        this.rating = rating;
+    public Review(String comment, int rating) {
         this.comment = comment;
+        this.rating = rating;
     }
 
     public int getRating() {
@@ -18,9 +15,6 @@ public class Review {
     }
 
     public void setRating(int rating) {
-        if (rating < 1 || rating > 5) {
-            throw new IllegalArgumentException("Rating must be between 1 and 5.");
-        }
         this.rating = rating;
     }
 
@@ -32,24 +26,11 @@ public class Review {
         this.comment = comment;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setid(int id) {
-        this.id = id;
-    }
-
-    public int getTrackingId(){
-        return trackingId;
-    }
-
     @Override
     public String toString() {
         return "Review{" +
                 "Rating=" + rating +
                 ", Comment='" + comment + '\'' +
-                ", Tracking ID='" + trackingId + '\'' +
                 '}';
     }
 }

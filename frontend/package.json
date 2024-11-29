@@ -20,6 +20,7 @@
     "axios": "^1.7.7",
     "js-cookie": "^3.0.5",
     "my-app": "file:",
+    "mysql": "^2.18.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.53.1",

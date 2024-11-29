@@ -16,21 +16,23 @@ function ReviewPage() {
     }
   };
 
-  const handleReviewSubmit =  (e) => {
+  const handleReviewSubmit = async (e) => {
     e.preventDefault();
-    //for now
-    console.log("Review Submitted:", { trackingID, comment, rating });
-    //Reset form
-    setTrackingID("");
-    setComment("");
-    setRating(0);
-    setShowReviewForm(false);
-    navigate("/review"); 
+    try {
+      await axios.post("http://localhost:8080/reviews", { 
+        comment: comment,
+        rating: rating,
+      });
+      navigate("/home");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to submit review");
+    }
   };
+  
 
   return (
     <Container
-      className="h-screen flex items-center justify-center"
+      className="h-screen flex items-center rounded justify-center"
       sx={{
         background: "linear-gradient(to bottom, #3d72b4, #525252)",
         zIndex: 10000,

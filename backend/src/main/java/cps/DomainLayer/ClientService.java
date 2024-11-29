@@ -86,17 +86,9 @@ public class ClientService implements OrderTracker {
   public Review createReview(ReviewRequestBody reviewInfo) throws Exception {
     Review newReview = null;
     ReviewDAO reviewDAO = new ReviewDAO();
-    if (reviewInfo.getRating() < 1 || reviewInfo.getRating() > 5) {
-        throw new Exception("Rating must be between 1 and 5");
-    }
-    if (reviewInfo.getTrackingId() <= 0) {
-        throw new Exception("Invalid Tracking ID");
-    }
     newReview = new Review(
-        reviewInfo.getId(),
-        reviewInfo.getTrackingId(),
-        reviewInfo.getRating(),
-        reviewInfo.getComment()
+      reviewInfo.getComment(),
+        reviewInfo.getRating()      
     );
     // Save the review to the database
     reviewDAO.insert(newReview);
