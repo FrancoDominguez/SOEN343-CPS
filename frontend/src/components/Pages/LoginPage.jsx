@@ -12,7 +12,7 @@ import { parseJwt } from "../../assets/jwtSevice";
 function LoginPage() {
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
-  const { handleSubmit, control, reset, getValues, setValue } = useForm({
+  const { handleSubmit, control, getValues } = useForm({
     defaultValues: {
       firstname: "",
       lastname: "",

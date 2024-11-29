@@ -8,6 +8,10 @@
 
 - [Sprint 3 Docs](https://docs.google.com/document/d/19A_7qKFYMrg6esX5F3NyFJg9eGfYO34FmZy8TgPjLWU/edit?tab=t.0)
 
+- [Sprint 4 Docs](https://docs.google.com/document/d/1RoCCGSqYTVoNRvgNDRftAo6vvPY6rdROKlTo5lG-PD4/edit?usp=sharing)
+
+- [Presentation Slides](https://liveconcordia-my.sharepoint.com/:p:/g/personal/s_hambit_live_concordia_ca/EXABjHhAhf1JtI_u65obF6QBzgp-FVXQLBDK5j6Pfo0KLg?e=blsqS3)
+
 ### Diagrams
 
 - [Context Diagram and Domain Model](https://app.diagrams.net/#G1Jo-fCdNV0BeeOHu39IpNm5gcvtYM7EvU#%7B%22pageId%22%3A%22FhaqLYx5OxTo6mxjSn0A%22%7D)

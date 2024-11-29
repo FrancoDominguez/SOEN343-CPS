@@ -3,7 +3,6 @@ package cps.DAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,77 +14,34 @@ import cps.DomainLayer.models.Parcel;
 import cps.DomainLayer.models.ShippingStatus;
 import cps.utils.Mysqlcon;
 
-public class DeliveryDAO {
-
-  public int insert(int contractId) {
-    return 1;
-  }
-
-  public int insert(Delivery delivery) {
+public class ShippingStatusDAO {
+  public ShippingStatus trackOrder(int trackingId) {
     try {
       Mysqlcon con = Mysqlcon.getInstance();
       con.connect();
       Connection sqlcon = con.getConnection();
+      String qs1 = "SELECT FROM shipping_status WHERE tracking_id = ?";
 
-      ShippingStatus status = delivery.getStatus();
-      String qs1 = "INSERT INTO shipping_status (status, eta) VALUES (?, ?);";
-      PreparedStatement pst1 = sqlcon.prepareStatement(qs1, Statement.RETURN_GENERATED_KEYS);
-      pst1.setString(1, status.getStatus());
-      pst1.setObject(2, java.sql.Date.valueOf(status.getEta()));
+      PreparedStatement pst1 = sqlcon.prepareStatement(qs1);
+      pst1.setInt(1, trackingId);
 
-      pst1.executeUpdate();
-
-      ResultSet rs1 = pst1.getGeneratedKeys();
-      int trackingId = -1;
-      if (rs1.next()) {
-        trackingId = rs1.getInt(1);
+      ResultSet rs = pst1.executeQuery();
+      ShippingStatus shippingStatus = null;
+      while (rs.next()) {
+        String status = rs.getString("status");
+        Timestamp etaTimestamp = rs.getTimestamp("eta");
+        LocalDate etaDate = (etaTimestamp != null) ? etaTimestamp.toLocalDateTime().toLocalDate() : null;
+        shippingStatus = new ShippingStatus(trackingId, status, etaDate);
       }
-
-      System.out.println("\n\n TRACKING ID: " + trackingId + "\n\n");
-
-      String qs3 = "INSERT INTO deliveries (client_id, tracking_id, parcel_id, destination_id," +
-          " signature_required, has_priority, is_flexible, pickup_time, pickup_location_id) VALUES " +
-          "(?, ?, ?, ?, ?, ?, ?, ?, ?)";
-      PreparedStatement pst2 = sqlcon.prepareStatement(qs3, Statement.RETURN_GENERATED_KEYS);
-      pst2.setInt(1, delivery.getClientId());
-      pst2.setInt(2, trackingId);
-      pst2.setInt(3, delivery.getParcel().getId());
-      pst2.setInt(4, delivery.getDestination().getId());
-      pst2.setBoolean(5, delivery.isSignatureRequired());
-      pst2.setBoolean(6, delivery.hasPriority());
-      pst2.setBoolean(7, delivery.isFlexible());
-      if (delivery.getPickupTime() != null && delivery.getPickupLocation() != null) {
-        pst2.setTimestamp(8, Timestamp.valueOf(delivery.getPickupTime()));
-        pst2.setInt(9, delivery.getPickupLocation().getId());
-      } else {
-        pst2.setNull(8, java.sql.Types.NULL);
-        pst2.setNull(9, java.sql.Types.NULL);
-      }
-
-      pst2.executeUpdate();
-
-      System.out.println("\nupdate executed\n");
-      int deliveryId = -1;
-      ResultSet rs2 = pst2.getGeneratedKeys();
-      if (rs2.next()) {
-        deliveryId = rs2.getInt(1);
-      }
-
-      con.close();
-      System.out.println("new delivery has been created");
-      return deliveryId;
+      return shippingStatus;
     } catch (Exception e) {
-      System.out.println("Error inserting Delivery into database" + e.getMessage());
+      System.out.println("Error fetching all shipping statuses: " + e.getMessage());
     }
-    return -1;
+    return null;
   }
 
-  public void update(Delivery del) {
-    return;
-  }
-
-  public ArrayList<Delivery> fetchAllByClientId(int clientId) {
-    ArrayList<Delivery> deliveries = new ArrayList<>();
+  public Delivery trackOrder2(int trackingId) {
+    Delivery delivery = null;
     try {
       Mysqlcon con = Mysqlcon.getInstance();
       con.connect();
@@ -111,13 +67,13 @@ public class DeliveryDAO {
           "LEFT JOIN locations l2 ON d.pickup_location_id = l2.location_id " +
           "LEFT JOIN parcels p ON d.parcel_id = p.parcel_id " +
           "LEFT JOIN shipping_status s ON d.tracking_id = s.tracking_id " +
-          "WHERE d.client_id = ?;";
+          "WHERE d.tracking_id = ?;";
       PreparedStatement pst = sqlcon.prepareStatement(qs);
-      pst.setInt(1, clientId);
+      pst.setInt(1, trackingId);
       ResultSet rs = pst.executeQuery();
       while (rs.next()) {
+        int clientId = rs.getInt("client_id");
         int deliveryId = rs.getInt("id"); // Clarified variable name
-        int trackingId = rs.getInt("tracking_id");
         String status = rs.getString("status");
         Timestamp etaTimestamp = rs.getTimestamp("eta");
         LocalDate etaDate = (etaTimestamp != null) ? etaTimestamp.toLocalDateTime().toLocalDate() : null;
@@ -152,7 +108,6 @@ public class DeliveryDAO {
         Parcel parcel = new Parcel(parcelId, parcelHeight, parcelLength, parcelWidth, parcelWeight, isFragile);
         System.out.println("extracted eta date: " + etaDate);
 
-        Delivery delivery = null;
         if (pickupStreetAddress != null) {
           Location pickup = new Location(pickupLocationId, pickupStreetAddress, pickupPostalCode, pickupCity,
               pickupCountry);
@@ -162,38 +117,53 @@ public class DeliveryDAO {
           delivery = new Delivery(deliveryId, clientId, parcel, destination, signatureRequired, hasPriority,
               shippingStatus);
         }
-        deliveries.add(delivery);
       }
     } catch (Exception e) {
       System.out.println("Error fetching all deliveries: " + e.getMessage());
     }
 
-    return deliveries;
+    return delivery;
   }
 
-  public Delivery findById(int deliveryId) {
-    return null;
-  }
-
-  public void updatePickupTime(int deliveryId, String newTime){
+  public ArrayList<ShippingStatus> fretchAll() {
+    ArrayList<ShippingStatus> statuses = new ArrayList<ShippingStatus>();
     try {
       Mysqlcon con = Mysqlcon.getInstance();
       con.connect();
       Connection sqlcon = con.getConnection();
 
-      System.out.println("Changing pick up time to " + newTime);
-      Timestamp newTimestamp = Timestamp.valueOf(newTime);
+      String qs1 = "SELECT * FROM shipping_status";
+      PreparedStatement pst1 = sqlcon.prepareStatement(qs1);
+      ResultSet rs = pst1.executeQuery();
 
-      PreparedStatement pst1 = sqlcon.prepareStatement("UPDATE deliveries SET pickup_time = ? WHERE id = ?");
-      pst1.setTimestamp(1, newTimestamp);
-      pst1.setInt(2, deliveryId);
+      while (rs.next()) {
+        String status = rs.getString("status");
+        int trackingId = rs.getInt("tracking_id");
+        Timestamp etaTimestamp = rs.getTimestamp("eta");
+        LocalDate etaDate = (etaTimestamp != null) ? etaTimestamp.toLocalDateTime().toLocalDate() : null;
+        ShippingStatus shippingStat = new ShippingStatus(trackingId, status, etaDate);
+        statuses.add(shippingStat);
+      }
+    } catch (Exception e) {
+      System.out.println("Error fetching all " + e.getMessage());
+    }
+    return statuses;
+  }
 
+  public void setStatus(int trackingId, String newStatus) {
+    try {
+      Mysqlcon con = Mysqlcon.getInstance();
+      con.connect();
+      Connection sqlcon = con.getConnection();
+
+      String qs1 = "UPDATE shipping_status SET status = ? WHERE tracking_id = ?";
+      PreparedStatement pst1 = sqlcon.prepareStatement(qs1);
+      pst1.setString(1, newStatus);
+      pst1.setInt(2, trackingId);
       pst1.executeUpdate();
-
-      System.out.println("Successfully changed pickup time");
-
-    }catch(Exception e){
-      System.err.println(e);
+      System.out.println("Status has been updated");
+    } catch (Exception e) {
+      System.out.println("Error updating status: " + e.getMessage());
     }
   }
 }

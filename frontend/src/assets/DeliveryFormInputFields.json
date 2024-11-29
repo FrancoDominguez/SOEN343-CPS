@@ -55,6 +55,5 @@
       }
     ],
     "warranty": { "id": "warrantyAmount", "label": "Warranty Amount" }
-  },
-  "review": { "title": "Review Details" }
+  }
 }

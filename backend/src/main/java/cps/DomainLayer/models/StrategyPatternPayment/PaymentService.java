@@ -1,32 +1,20 @@
+// // PaymentService.java
 package cps.DomainLayer.models.StrategyPatternPayment;
 
 public class PaymentService {
-    private int amount;
-    private boolean includeDelivery;
-    private PaymentStrategy strategy;
 
-    public void setStrategy(PaymentStrategy strategy) {
-        this.strategy = strategy;
+    private PaymentStrategy paymentStrategy; // Current payment strategy
+
+    // Setter for injecting the strategy dynamically
+    public void setPaymentStrategy(PaymentStrategy paymentStrategy) {
+        this.paymentStrategy = paymentStrategy;
     }
 
-    public void processOrder() {
-        strategy.collectPaymentDetails();
-        if (strategy.validatePaymentDetails()) {
-            strategy.pay(getTotal());
-        } else {
-            System.out.println("Order failed: Payment details are invalid.");
+    // Executes the payment using the selected strategy
+    public String executePayment(double amount) {
+        if (paymentStrategy == null) {
+            throw new IllegalStateException("Payment strategy is not set!");
         }
-    }
-
-    private int getTotal() {
-        return includeDelivery ? amount + 10 : amount;
-    }
-
-    public void setAmount(int amount) {
-        this.amount = amount;
-    }
-
-    public void setIncludeDelivery(boolean includeDelivery) {
-        this.includeDelivery = includeDelivery;
+        return paymentStrategy.pay(amount);
     }
 }

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import cps.DTO.RequestBodies.ContractRequestBody;
 import cps.DTO.RequestBodies.ReviewRequestBody;
 import cps.DAO.ContractDAO;
+import cps.DAO.DeliveryDAO;
+import cps.DAO.ShippingStatusDAO;
 import cps.DAO.ReviewDAO;
 import cps.DAO.StationDAO;
 import cps.DomainLayer.models.Contract;
@@ -17,23 +19,13 @@ import cps.DomainLayer.models.StationDropoff;
 import cps.DomainLayer.models.Interfaces.OrderTracker;
 
 public class ClientService implements OrderTracker {
+  ContractDAO contractDAO = new ContractDAO();
+  DeliveryDAO deliveryDAO = new DeliveryDAO();
 
-  // @Override
-  // public ShippingStatus trackOrder(int trackingId) {
-  // // Use DeliveryDAO to fetch the delivery by trackingId
-  // DeliveryDAO deliveryDAO = new DeliveryDAO();
-  // Delivery delivery = deliveryDAO.fetchByTrackingId(trackingId);
-
-  // if (delivery == null) {
-  // throw new IllegalArgumentException("Invalid tracking ID: " + trackingId);
-  // }
-
-  // // Return the ShippingStatus object from the delivery
-  // return delivery.getStatus();
-  // }
-
-  public ShippingStatus trackOrder(int trackingId) {
-    return null;
+  public Delivery trackOrder(int trackingId) {
+    ShippingStatusDAO statusDAO = new ShippingStatusDAO();
+    Delivery delivery = statusDAO.trackOrder2(trackingId);
+    return delivery;
   }
 
   public Contract addNewContract(ContractRequestBody contractInfo) throws Exception {
@@ -64,7 +56,6 @@ public class ClientService implements OrderTracker {
 
   // Franco
   public ArrayList<Contract> viewAllActiveContracts(int clientId) {
-    ContractDAO contractDAO = new ContractDAO();
     ArrayList<Contract> contracts = contractDAO.fetchAllByClientId(clientId);
     return contracts;
   }
@@ -73,12 +64,13 @@ public class ClientService implements OrderTracker {
   public void updateContract(String key, String value) {
   }
 
-  // Franco
   public void deleteContract(int contractId) {
+    contractDAO.delete(contractId);
   }
 
   public int createDelivery(Contract contract) {
     Delivery newDelivery = new Delivery(contract);
+    this.deleteContract(contract.getId());
     int contractId = newDelivery.save();
     return contractId;
   }
@@ -96,8 +88,9 @@ public class ClientService implements OrderTracker {
 
 
 
-  public ArrayList<Delivery> viewAllActiveDeliveries() {
-    return null;
+  public ArrayList<Delivery> viewAllActiveDeliveries(int clientId) {
+    ArrayList<Delivery> deliveries = deliveryDAO.fetchAllByClientId(clientId);
+    return deliveries;
   }
 
   public ArrayList<Delivery> viewPendingDeliveries() {
@@ -110,6 +103,11 @@ public class ClientService implements OrderTracker {
 
   public ArrayList<Delivery> viewCompletedDeliveries() {
     return null;
+  }
+
+  public void updatePickupTime(int deliveryId, String newTime){
+    System.out.println("Update pickup time of " + deliveryId);
+    deliveryDAO.updatePickupTime(deliveryId, newTime);
   }
 
 }

@@ -10,6 +10,7 @@ import {
     TextField,
 } from "@mui/material";
 import { toast } from "react-toastify";
+import Chatbot from '../Chatbot'; // Adjust the path based on your directory structure
 
 function HomePage() {
     const [trackingNumber, setTrackingNumber] = useState("");
@@ -56,9 +57,8 @@ function HomePage() {
     };
 
     return (
-        <div className="flex flex-col items-start justify-start w-full h-full p-5">
-            {/* Tracking Box */}
-            <div className="bg-white bg-opacity-70 p-5 rounded-lg shadow-lg max-w-xs mb-5">
+        <div className="flex items-start justify-start w-full h-full p-5">
+            <div className="bg-white bg-opacity-70 p-5 rounded-lg shadow-lg max-w-xs">
                 <h1 className="text-2xl font-bold text-gray-800 mb-2">Your Mail Matters</h1>
                 <p className="text-gray-800">
                     From our hands to your doorstep, CPS delivers with a smile! Speed,
@@ -80,70 +80,6 @@ function HomePage() {
                     </button>
                 </form>
             </div>
-
-            {/* Leave a Review Section */}
-            <div className="bg-white bg-opacity-70 p-5 rounded-lg shadow-lg w-full md:w-1/2">
-                <Typography variant="h5" className="text-gray-800 mb-4">
-                    Leave a Review
-                </Typography>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => setIsModalOpen(true)}
-                >
-                    Open Review Form
-                </Button>
-            </div>
-
-            {/* Modal for Reviews */}
-            <Modal
-                open={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                aria-labelledby="leave-review-modal"
-                aria-describedby="modal-to-leave-a-review"
-            >
-                <Box
-                    sx={{
-                        position: "absolute",
-                        top: "50%",
-                        left: "50%",
-                        transform: "translate(-50%, -50%)",
-                        bgcolor: "background.paper",
-                        boxShadow: 24,
-                        p: 4,
-                        borderRadius: "12px",
-                        width: 400,
-                    }}
-                >
-                    <Typography id="leave-review-modal" variant="h6" gutterBottom>
-                        Leave a Review
-                    </Typography>
-                    <form onSubmit={handleReviewSubmit} className="flex flex-col gap-4">
-                        <Rating
-                            name="delivery-rating"
-                            value={rating}
-                            onChange={(e, newValue) => setRating(newValue)}
-                            size="large"
-                        />
-                        <TextField
-                            label="Comment"
-                            multiline
-                            rows={4}
-                            value={comment}
-                            onChange={(e) => setComment(e.target.value)}
-                            fullWidth
-                        />
-                        <Button
-                            type="submit"
-                            variant="contained"
-                            color="primary"
-                            fullWidth
-                        >
-                            Submit Review
-                        </Button>
-                    </form>
-                </Box>
-            </Modal>
         </div>
     );
 }
