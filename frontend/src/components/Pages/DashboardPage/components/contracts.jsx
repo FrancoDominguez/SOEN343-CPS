@@ -16,11 +16,18 @@ import { toast } from "react-toastify";
 const Contracts = ({ contracts, setContracts }) => {
   const [openPayment, setOpenPayment] = useState(false);
   const [payedContractId, setPayedContractId] = useState();
+  const [paymentDetails, setPaymentDetails] = useState(); // added
 
-  const handlePay = (contractId) => {
+  // Modified
+  const handlePay = (contract) => {
+    setPayedContractId(contract.id); // Set the ID for the selected contract
+    setPaymentDetails({
+      contractId: contract.id,
+      amount: contract.price + contract.warrantedAmount,
+    });
     setOpenPayment(true);
-    setPayedContractId(contractId);
   };
+
 
   const onPaymentSuccess = async () => {
     try {
@@ -30,8 +37,10 @@ const Contracts = ({ contracts, setContracts }) => {
       setContracts((prevContracts) =>
         prevContracts.filter((contract) => contract.id !== payedContractId)
       );
+      toast.success("Payment successful and contract removed.");
+      setOpenPayment(false); // Close the payment modal
     } catch (error) {
-      toast.error(error);
+      toast.error(error.message || "Failed to update contract status.");
     }
   };
 
@@ -46,14 +55,38 @@ const Contracts = ({ contracts, setContracts }) => {
         prevContracts.filter((contract) => contract.id !== contractId)
       );
     } catch (error) {
-      toast.error(error);
+      toast.error(error.message || "Failed to delete contract.");
     }
   };
 
   return (
     <Box>
-      <Modal open={openPayment} onClose={() => setOpenPayment(false)}>
-        <PaymentPage onPaymentSuccess={onPaymentSuccess} />
+      <Modal
+        open={openPayment}
+        onClose={() => setOpenPayment(false)}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          backdropFilter: "blur(3px)",
+        }}
+      >
+        <Box
+          sx={{
+            bgcolor: "background.paper",
+            border: "2px solid #000",
+            boxShadow: 24,
+            p: 4,
+          }}
+        >
+          {paymentDetails && (
+            <PaymentPage
+              amount={paymentDetails.amount}
+              contractId={paymentDetails.contractId}
+              onPaymentSuccess={onPaymentSuccess}
+            />
+          )}
+        </Box>
       </Modal>
       {contracts.length === 0 ? (
         <Typography>No contracts available</Typography>
@@ -78,7 +111,6 @@ const Contracts = ({ contracts, setContracts }) => {
                 </Box>
               </AccordionSummary>
               <AccordionDetails>
-                {/* Parcel Information */}
                 <Box>
                   <Typography>
                     <strong>Parcel Details:</strong>
@@ -100,8 +132,6 @@ const Contracts = ({ contracts, setContracts }) => {
                     Fragile: {contract.parcel.fragile ? "Yes" : "No"}
                   </Typography>
                 </Box>
-
-                {/* Origin or Station */}
                 <Box marginTop={2}>
                   {contract.station ? (
                     <Box>
@@ -119,7 +149,7 @@ const Contracts = ({ contracts, setContracts }) => {
                       <Typography variant="subtitle1">
                         <strong>Home Pickup Details:</strong>
                       </Typography>
-                      <Typography variant="body1">
+                      <Typography>
                         Origin Address: {contract.origin.streetAddress},{" "}
                         {contract.origin.city}, {contract.origin.country},{" "}
                         {contract.origin.postalCode}
@@ -134,8 +164,6 @@ const Contracts = ({ contracts, setContracts }) => {
                     </Box>
                   )}
                 </Box>
-
-                {/* Additional Information */}
                 <Box marginTop={2}>
                   <Typography variant="subtitle1">
                     <strong>Additional Details:</strong>
@@ -146,10 +174,9 @@ const Contracts = ({ contracts, setContracts }) => {
                   <Typography>Price: ${contract.price}</Typography>
                   <Typography>ETA: {contract.eta}</Typography>
                 </Box>
-
                 <Box marginTop={2}>
                   <Button
-                    onClick={() => handlePay(contract.id)}
+                    onClick={() => handlePay(contract)}
                     sx={{
                       width: "100px",
                       marginRight: "12px",
