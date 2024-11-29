@@ -122,9 +122,6 @@ public class DeliveryDAO {
       while (rs.next()) {
         int deliveryId = rs.getInt("id"); // Clarified variable name
         int trackingId = rs.getInt("tracking_id");
-        LocalDateTime eta;
-        Timestamp etaTimeStamp = rs.getTimestamp("pickup_time");
-        eta = (etaTimeStamp != null) ? etaTimeStamp.toLocalDateTime() : null;
         String status = rs.getString("status");
         Timestamp etaTimestamp = rs.getTimestamp("eta");
         LocalDate etaDate = (etaTimestamp != null) ? etaTimestamp.toLocalDateTime().toLocalDate() : null;

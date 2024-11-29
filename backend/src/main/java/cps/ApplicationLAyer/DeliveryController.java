@@ -20,11 +20,11 @@ import cps.DomainLayer.models.ShippingStatus;
 
 @RestController
 public class DeliveryController {
+    ClientService clientService = new ClientService();
 
     @GetMapping("/delivery/status")
     public ResponseEntity<Object> getDeliveryStatus(@RequestParam int trackingId) {
         try {
-            ClientService clientService = new ClientService();
             ShippingStatus shippingStatus = clientService.trackOrder(trackingId);
 
             // Return the status as a string (e.g., "pending", "in transit", "delivered")
@@ -37,13 +37,30 @@ public class DeliveryController {
     }
     // create delivery
     @PostMapping("/delivery")
-    public ResponseEntity<Object> createNewDelivery(@RequestParam int clientId) {
+    public ResponseEntity<Object> createNewDelivery(@RequestBody CreateDelivReqBody body) {
         try {
+            int contractId = body.getContractId();
+            System.out.println("\n received contract id: \n" + contractId);
             ClientService clientService = new ClientService();
-            ArrayList<Delivery> deliveries = clientService.viewAllActiveDeliveries(clientId);
-            return new ResponseEntity<>(deliveries, HttpStatus.OK);
+            ContractDAO contractDAO = new ContractDAO();
+            Contract contract = contractDAO.fetchById(contractId);
+            clientService.createDelivery(contract);
+            BasicResponse response = new BasicResponse("Delivery has been created");
+            return new ResponseEntity<Object>(response, HttpStatus.OK);
         } catch (Error e) {
             System.out.println("Error in create delivery endpoint" + e.getMessage());
+        }
+        return null;
+    }
+
+
+    @GetMapping("/delivery")
+    public ArrayList<Delivery> getDeliveriesByUserId(@RequestParam int userId){
+        try {
+            ArrayList<Delivery> deliveries = clientService.viewAllActiveDeliveries(userId);
+            return deliveries;
+        } catch(Exception e){
+            System.err.println(e);
         }
         return null;
     }

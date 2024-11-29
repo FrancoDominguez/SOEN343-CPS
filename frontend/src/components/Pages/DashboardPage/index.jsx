@@ -12,22 +12,40 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 import { useAuth } from "../../../../hooks/useAuth";
+import Deliveries from "./components/deliveries";
 
 function DashboardPage() {
   const [contracts, setContracts] = useState([]);
+  const [deliveries, setDeliveries] = useState([]);
   const { user } = useAuth();
 
   useEffect(() => {
     getContracts();
   }, [user]);
 
+  useEffect(() => {
+    contracts.length > 0 && getDeliveries();
+  }, [contracts]);
+
   const getContracts = async () => {
     try {
-      const contracts = (
-        await axios.get(`http://localhost:8080/contract?userId=${user.userId}`)
+      const response = await axios.get(
+        `http://localhost:8080/contract?userId=${user.userId}`
+      );
+
+      setContracts(response.data);
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+
+  const getDeliveries = async () => {
+    try {
+      const deliveries = (
+        await axios.get(`http://localhost:8080/delivery?userId=${user.userId}`)
       ).data;
 
-      setContracts(contracts);
+      setDeliveries(deliveries);
     } catch (error) {
       toast.error(error);
     }
@@ -49,7 +67,9 @@ function DashboardPage() {
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             Deliveries
           </AccordionSummary>
-          <AccordionDetails></AccordionDetails>
+          <AccordionDetails>
+            <Deliveries deliveries={deliveries} />
+          </AccordionDetails>
         </Accordion>
       </Box>
     </div>

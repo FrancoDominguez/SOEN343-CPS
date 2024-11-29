@@ -53,7 +53,9 @@ const Contracts = ({ contracts, setContracts }) => {
   return (
     <Box>
       <Modal open={openPayment} onClose={() => setOpenPayment(false)}>
-        <PaymentPage onPaymentSuccess={onPaymentSuccess} />
+        <Box>
+          <PaymentPage onPaymentSuccess={onPaymentSuccess} />
+        </Box>
       </Modal>
       {contracts.length === 0 ? (
         <Typography>No contracts available</Typography>
