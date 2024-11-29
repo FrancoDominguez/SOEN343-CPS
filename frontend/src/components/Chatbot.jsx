@@ -1,13 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/chatbot.css";
+import { useUser } from "../../hooks/useUser";
 
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [userInput, setUserInput] = useState("");
-
-  // Pre-defined Questions
-  const preMadeQuestions = [
+  const [questions, setQuestions] = useState([
     {
       text: "Who is CPS?",
       response:
@@ -28,14 +27,36 @@ const Chatbot = () => {
       response:
         "CPS offers station drop-offs at locations across Canada and home pickup services. Fill out the online form for home pickup, and a driver will collect your package.",
     },
-  ];
+  ]);
 
-  // Toggle Chat Window
+  const { user } = useUser(); // Check if the user is logged in
+
+  useEffect(() => {
+    if (user) {
+      setQuestions((prevQuestions) => {
+        // Check if "View my deliveries" is already in the questions array
+        if (prevQuestions.some((q) => q.text === "View my deliveries")) {
+          return prevQuestions;
+        }
+  
+        // Add "View my deliveries" if not already present
+        return [
+          ...prevQuestions,
+          {
+            text: "View my deliveries",
+            response:
+              "You can view your deliveries here: http://localhost:5173/dashboard",
+          },
+        ];
+      });
+    }
+  }, [user]);
+  
+
   const toggleChat = () => {
     setIsOpen(!isOpen);
   };
 
-  // Send Message Logic
   const sendMessage = async (message) => {
     const userMessage = message || userInput;
 
@@ -45,7 +66,7 @@ const Chatbot = () => {
     setMessages([...messages, { type: "user", text: `You: ${userMessage}` }]);
 
     // Check for pre-made question response
-    const preMadeResponse = preMadeQuestions.find(
+    const preMadeResponse = questions.find(
       (q) => q.text.toLowerCase() === userMessage.toLowerCase()
     );
 
@@ -53,7 +74,7 @@ const Chatbot = () => {
       // Add pre-made response to chat
       setMessages((prev) => [
         ...prev,
-        { type: "bot", text: `Assistant: ${preMadeResponse.response}` },
+        { type: "bot", text: preMadeResponse.response, isLink: preMadeResponse.text === "View my deliveries" },
       ]);
       setUserInput("");
       return;
@@ -73,15 +94,31 @@ const Chatbot = () => {
       // Add bot response to the chat
       setMessages((prev) => [
         ...prev,
-        { type: "bot", text: `Assistant: ${data.assistant}` },
+        { type: "bot", text: `Assistant: ${data.assistant}`, isLink: false },
       ]);
     } catch (error) {
       console.error("Error:", error);
       setMessages((prev) => [
         ...prev,
-        { type: "bot", text: "Assistant: Sorry, something went wrong." },
+        { type: "bot", text: "Assistant: Sorry, something went wrong.", isLink: false },
       ]);
     }
+  };
+
+  const renderMessage = (msg) => {
+    if (msg.isLink) {
+      return (
+        <a
+          href={msg.text.split("here: ")[1]}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="link"
+        >
+          {msg.text}
+        </a>
+      );
+    }
+    return msg.text;
   };
 
   return (
@@ -101,7 +138,7 @@ const Chatbot = () => {
 
           {/* Pre-made Questions */}
           <div className="pre-made-questions">
-            {preMadeQuestions.map((q, idx) => (
+            {questions.map((q, idx) => (
               <div
                 key={idx}
                 className="pre-made-question"
@@ -119,7 +156,7 @@ const Chatbot = () => {
                 key={idx}
                 className={`message ${msg.type === "user" ? "user" : "bot"}`}
               >
-                {msg.text}
+                {renderMessage(msg)}
               </div>
             ))}
           </div>
