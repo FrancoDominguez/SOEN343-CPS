@@ -88,6 +88,7 @@ function App() {
               />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/payment" element={<PaymentPage />} />
+              <Route path="/reviews" element={<ReviewPage />}/>
             </Routes>
           </div>
         </div>
