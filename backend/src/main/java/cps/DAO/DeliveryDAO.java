@@ -9,14 +9,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import com.mysql.cj.x.protobuf.MysqlxPrepare.Prepare;
-
-import cps.DomainLayer.models.Contract;
 import cps.DomainLayer.models.Delivery;
 import cps.DomainLayer.models.Location;
 import cps.DomainLayer.models.Parcel;
 import cps.DomainLayer.models.ShippingStatus;
-import cps.DomainLayer.models.Station;
 import cps.utils.Mysqlcon;
 
 public class DeliveryDAO {
@@ -177,5 +173,27 @@ public class DeliveryDAO {
 
   public Delivery findById(int deliveryId) {
     return null;
+  }
+
+  public void updatePickupTime(int deliveryId, String newTime){
+    try {
+      Mysqlcon con = Mysqlcon.getInstance();
+      con.connect();
+      Connection sqlcon = con.getConnection();
+
+      System.out.println("Changing pick up time to " + newTime);
+      Timestamp newTimestamp = Timestamp.valueOf(newTime);
+
+      PreparedStatement pst1 = sqlcon.prepareStatement("UPDATE deliveries SET pickup_time = ? WHERE id = ?");
+      pst1.setTimestamp(1, newTimestamp);
+      pst1.setInt(2, deliveryId);
+
+      pst1.executeUpdate();
+
+      System.out.println("Successfully changed pickup time");
+
+    }catch(Exception e){
+      System.err.println(e);
+    }
   }
 }

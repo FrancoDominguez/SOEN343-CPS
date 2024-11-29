@@ -3,13 +3,64 @@ import {
   AccordionDetails,
   AccordionSummary,
   Box,
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
   Typography,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { useState } from "react";
+import FormDateTimePicker from "../../../FormDateTimePicker";
+import { useForm } from "react-hook-form";
+import axios from "axios";
+import dayjs from "dayjs";
 
 const Deliveries = ({ deliveries }) => {
+  const [changingTime, setChangingTime] = useState(false);
+  const [deliveryId, setDeliveryId] = useState();
+  const { control, handleSubmit } = useForm();
+
+  const handlePickupTimeChange = (deliveryId) => {
+    setChangingTime(true);
+    setDeliveryId(deliveryId);
+  };
+
+  const handleConfirm = async (values) => {
+    try {
+      const formattedDate = dayjs(values.newTime).format("YYYY-MM-DD HH:mm:ss");
+      console.log(formattedDate);
+
+      await axios.put(
+        `http://localhost:8080/delivery?deliveryId=${deliveryId}&newTime=${formattedDate}`
+      );
+
+      setChangingTime(false);
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+
   return (
     <>
+      <Dialog open={changingTime} onClose={() => setChangingTime(false)}>
+        <DialogTitle>Change Pickup Time</DialogTitle>
+        <DialogContent
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "12px",
+            overflow: "visible",
+          }}
+        >
+          <FormDateTimePicker
+            control={control}
+            name="newTime"
+            label="New Pickup Time"
+          />
+          <Button onClick={handleSubmit(handleConfirm)}>Confirm</Button>
+        </DialogContent>
+      </Dialog>
       {deliveries.length === 0 ? (
         <Typography>No deliveries available</Typography>
       ) : (
@@ -87,6 +138,17 @@ const Deliveries = ({ deliveries }) => {
                   <Typography>Status: {delivery.status.status}</Typography>
                   <Typography>ETA: {delivery.status.eta}</Typography>
                 </Box>
+
+                {delivery.flexible && (
+                  <Box marginTop={2}>
+                    <Button
+                      onClick={() => handlePickupTimeChange(delivery.id)}
+                      variant="contained"
+                    >
+                      Change Pickup Time
+                    </Button>
+                  </Box>
+                )}
               </AccordionDetails>
             </Accordion>
           ))}

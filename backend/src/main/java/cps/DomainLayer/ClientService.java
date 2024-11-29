@@ -16,6 +16,7 @@ import cps.DomainLayer.models.Interfaces.OrderTracker;
 
 public class ClientService implements OrderTracker {
   ContractDAO contractDAO = new ContractDAO();
+  DeliveryDAO deliveryDAO = new DeliveryDAO();
 
 
   // @Override
@@ -84,7 +85,6 @@ public class ClientService implements OrderTracker {
   }
 
   public ArrayList<Delivery> viewAllActiveDeliveries(int clientId) {
-    DeliveryDAO deliveryDAO = new DeliveryDAO();
     ArrayList<Delivery> deliveries = deliveryDAO.fetchAllByClientId(clientId);
     return deliveries;
   }
@@ -99,6 +99,11 @@ public class ClientService implements OrderTracker {
 
   public ArrayList<Delivery> viewCompletedDeliveries() {
     return null;
+  }
+
+  public void updatePickupTime(int deliveryId, String newTime){
+    System.out.println("Update pickup time of " + deliveryId);
+    deliveryDAO.updatePickupTime(deliveryId, newTime);
   }
 
 }

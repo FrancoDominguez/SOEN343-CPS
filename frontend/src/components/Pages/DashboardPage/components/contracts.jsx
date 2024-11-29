@@ -57,7 +57,7 @@ const Contracts = ({ contracts, setContracts }) => {
           <PaymentPage onPaymentSuccess={onPaymentSuccess} />
         </Box>
       </Modal>
-      {contracts.length === 0 ? (
+      {!contracts || contracts.length === 0 ? (
         <Typography>No contracts available</Typography>
       ) : (
         <Box>

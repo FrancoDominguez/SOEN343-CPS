@@ -15,7 +15,7 @@ import { useAuth } from "../../../../hooks/useAuth";
 import Deliveries from "./components/deliveries";
 
 function DashboardPage() {
-  const [contracts, setContracts] = useState([]);
+  const [contracts, setContracts] = useState();
   const [deliveries, setDeliveries] = useState([]);
   const { user } = useAuth();
 
@@ -24,7 +24,7 @@ function DashboardPage() {
   }, [user]);
 
   useEffect(() => {
-    contracts.length > 0 && getDeliveries();
+    contracts && getDeliveries();
   }, [contracts]);
 
   const getContracts = async () => {
