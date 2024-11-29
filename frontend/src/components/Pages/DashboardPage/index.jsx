@@ -51,6 +51,10 @@ function DashboardPage() {
     }
   };
 
+  const handleDeliveryUpdated = () => {
+    getDeliveries();
+  };
+
   return (
     <div className="mt-20 w-4/5 mx-80%">
       <Typography variant="h4">Dashboard</Typography>
@@ -68,7 +72,10 @@ function DashboardPage() {
             Deliveries
           </AccordionSummary>
           <AccordionDetails>
-            <Deliveries deliveries={deliveries} />
+            <Deliveries
+              deliveries={deliveries}
+              handleDeliveryUpdated={handleDeliveryUpdated}
+            />
           </AccordionDetails>
         </Accordion>
       </Box>

@@ -16,7 +16,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import dayjs from "dayjs";
 
-const Deliveries = ({ deliveries }) => {
+const Deliveries = ({ deliveries, handleDeliveryUpdated }) => {
   const [changingTime, setChangingTime] = useState(false);
   const [deliveryId, setDeliveryId] = useState();
   const { control, handleSubmit } = useForm();
@@ -36,6 +36,7 @@ const Deliveries = ({ deliveries }) => {
       );
 
       setChangingTime(false);
+      handleDeliveryUpdated();
     } catch (error) {
       toast.error(error);
     }
