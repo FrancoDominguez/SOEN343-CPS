@@ -45,6 +45,8 @@ public class DeliveryDAO {
         trackingId = rs1.getInt(1);
       }
 
+      System.out.println("\n\n TRACKING ID: " + trackingId + "\n\n");
+
       String qs3 = "INSERT INTO deliveries (client_id, tracking_id, parcel_id, destination_id," +
           " signature_required, has_priority, is_flexible, pickup_time, pickup_location_id) VALUES " +
           "(?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -120,6 +122,9 @@ public class DeliveryDAO {
       while (rs.next()) {
         int deliveryId = rs.getInt("id"); // Clarified variable name
         int trackingId = rs.getInt("tracking_id");
+        LocalDateTime eta;
+        Timestamp etaTimeStamp = rs.getTimestamp("pickup_time");
+        eta = (etaTimeStamp != null) ? etaTimeStamp.toLocalDateTime() : null;
         String status = rs.getString("status");
         Timestamp etaTimestamp = rs.getTimestamp("eta");
         LocalDate etaDate = (etaTimestamp != null) ? etaTimestamp.toLocalDateTime().toLocalDate() : null;
@@ -150,6 +155,7 @@ public class DeliveryDAO {
         Location destination = new Location(destinationId, destinationStreetAddress, destinationPostalCode,
             destinationCity,
             destinationCountry);
+        ShippingStatus shippingStatus = new ShippingStatus(trackingId, status, etaDate);
         Parcel parcel = new Parcel(parcelId, parcelHeight, parcelLength, parcelWidth, parcelWeight, isFragile);
         System.out.println("extracted eta date: " + etaDate);
 
@@ -158,10 +164,10 @@ public class DeliveryDAO {
           Location pickup = new Location(pickupLocationId, pickupStreetAddress, pickupPostalCode, pickupCity,
               pickupCountry);
           delivery = new Delivery(deliveryId, clientId, parcel, destination, pickupSignatureRequired, hasPriority,
-              isFlexible, pickupTime, pickup);
+              isFlexible, pickupTime, pickup, shippingStatus);
         } else {
           delivery = new Delivery(deliveryId, clientId, parcel, destination, signatureRequired, hasPriority,
-              trackingId);
+              shippingStatus);
         }
         deliveries.add(delivery);
       }

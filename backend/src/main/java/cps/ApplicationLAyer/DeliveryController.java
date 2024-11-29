@@ -35,7 +35,6 @@ public class DeliveryController {
             return new ResponseEntity<>("An error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
     // create delivery
     @PostMapping("/delivery")
     public ResponseEntity<Object> createNewDelivery(@RequestParam int clientId) {
