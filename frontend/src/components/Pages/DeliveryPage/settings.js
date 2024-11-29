@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 export const contractDefaultValues = {
   country: "",
   province: "",
@@ -18,7 +20,7 @@ export const contractDefaultValues = {
   originCity: "",
   originPostalCode: "",
   originStreetAddress: "",
-  originPickUpTime: new Date(),
+  pickUpTime: null,
 };
 
 export const MockStations = [
@@ -48,7 +50,6 @@ export const transformData = (data, user, deliveryType, station) => {
     signatureRequired: data.signatureRequired,
     hasPriority: data.priorityShipping,
     warrantedAmount: parseFloat(data.warrantyAmount),
-    isFlexible: data.isFlexible,
   };
 
   if (deliveryType === "pickup") {
@@ -58,9 +59,10 @@ export const transformData = (data, user, deliveryType, station) => {
       city: data.originCity,
       country: data.originCountry,
     };
-    transformedData.pickupTime = data.originPickUpTime.toISOString(); // Pickup time should be part of the origin data
+    transformedData.pickupTime = dayjs(data.pickUpTime).toISOString();
+    transformedData.isFlexible = data.isFlexible;
   } else if (deliveryType === "dropoff") {
-    transformedData.station = station ? parseInt(station) : undefined; // If station is available, add it
+    transformedData.stationId = station ? parseInt(station) : undefined;
   }
 
   return transformedData;

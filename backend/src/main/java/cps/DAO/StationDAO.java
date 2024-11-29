@@ -20,8 +20,8 @@ public class StationDAO {
         String address = rs.getString("street_address");
         String postalCode = rs.getString("postal_code");
         String city = rs.getString("city");
-        String country = rs.getString("street_address");
-        station = new Station(stationId, name, address, postalCode, city, country);
+        String province = rs.getString("province");
+        station = new Station(stationId, address, postalCode, city, province, name);
       }
       con.close();
     } catch (Exception e) {
@@ -44,8 +44,8 @@ public class StationDAO {
         String address = rs.getString("street_address");
         String postalCode = rs.getString("postal_code");
         String city = rs.getString("city");
-        String country = rs.getString("street_address");
-        Station station = new Station(stationId, name, address, postalCode, city, country);
+        String province = rs.getString("province");
+        Station station = new Station(stationId, address , postalCode , city, province , name);
         stations.add(station);
       }
       con.close();
