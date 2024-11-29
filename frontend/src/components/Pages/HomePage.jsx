@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Chatbot from '../Chatbot'; // Adjust the path based on your directory structure
 
 function HomePage() {
     const [trackingNumber, setTrackingNumber] = useState('');
@@ -13,7 +14,8 @@ function HomePage() {
     };
 
     return (
-        <div className="flex items-start justify-start w-full h-full p-5">
+        <div className="relative flex items-start justify-start w-full h-full p-5">
+            {/* Main content */}
             <div className="bg-white bg-opacity-70 p-5 rounded-lg shadow-lg max-w-xs">
                 <h1 className="text-2xl font-bold text-gray-800 mb-2">Your Mail Matters</h1>
                 <p className="text-gray-800">
@@ -33,6 +35,9 @@ function HomePage() {
                     </button>
                 </form>
             </div>
+
+            {/* Chatbot */}
+            <Chatbot />
         </div>
     );
 }

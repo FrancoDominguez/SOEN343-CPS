@@ -88,7 +88,7 @@ const Contracts = ({ contracts, setContracts }) => {
           )}
         </Box>
       </Modal>
-      {contracts.length === 0 ? (
+      {!contracts || contracts.length === 0 ? (
         <Typography>No contracts available</Typography>
       ) : (
         <Box>

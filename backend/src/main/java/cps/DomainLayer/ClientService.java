@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import cps.DTO.RequestBodies.ContractRequestBody;
 import cps.DAO.ContractDAO;
+import cps.DAO.DeliveryDAO;
 import cps.DAO.StationDAO;
 import cps.DomainLayer.models.Contract;
 import cps.DomainLayer.models.Delivery;
@@ -15,6 +16,7 @@ import cps.DomainLayer.models.Interfaces.OrderTracker;
 
 public class ClientService implements OrderTracker {
   ContractDAO contractDAO = new ContractDAO();
+  DeliveryDAO deliveryDAO = new DeliveryDAO();
 
 
   // @Override
@@ -82,8 +84,9 @@ public class ClientService implements OrderTracker {
     return contractId;
   }
 
-  public ArrayList<Delivery> viewAllActiveDeliveries() {
-    return null;
+  public ArrayList<Delivery> viewAllActiveDeliveries(int clientId) {
+    ArrayList<Delivery> deliveries = deliveryDAO.fetchAllByClientId(clientId);
+    return deliveries;
   }
 
   public ArrayList<Delivery> viewPendingDeliveries() {
@@ -96,6 +99,11 @@ public class ClientService implements OrderTracker {
 
   public ArrayList<Delivery> viewCompletedDeliveries() {
     return null;
+  }
+
+  public void updatePickupTime(int deliveryId, String newTime){
+    System.out.println("Update pickup time of " + deliveryId);
+    deliveryDAO.updatePickupTime(deliveryId, newTime);
   }
 
 }
