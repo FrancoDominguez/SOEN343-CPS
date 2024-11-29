@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Button, Card, Container, Typography, TextField, Rating } from "@mui/material";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 function ReviewPage() {
   const [trackingID, setTrackingID] = useState("");
@@ -19,10 +22,11 @@ function ReviewPage() {
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:8080/reviews", { 
+      await axios.post("http://localhost:8080/reviews", {
         comment: comment,
         rating: rating,
       });
+      toast.success("Review submitted successfully!");
       navigate("/home");
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to submit review");

@@ -83,18 +83,17 @@ public class ClientService implements OrderTracker {
     return contractId;
   }
 
-  public Review createReview(ReviewRequestBody reviewInfo) throws Exception {
-    Review newReview = null;
-    ReviewDAO reviewDAO = new ReviewDAO();
-    newReview = new Review(
-      reviewInfo.getComment(),
-        reviewInfo.getRating()      
-    );
-    // Save the review to the database
-    reviewDAO.insert(newReview);
+  public static void createReview(ReviewRequestBody reviewRequest) throws Exception {
 
-    return newReview;
+    ReviewDAO reviewDAO = new ReviewDAO();
+    Review review = new Review(
+        reviewRequest.getComment(),
+        reviewRequest.getRating()
+    );
+
+    reviewDAO.insert(review); // Save the review to the database
 }
+
 
 
   public ArrayList<Delivery> viewAllActiveDeliveries() {

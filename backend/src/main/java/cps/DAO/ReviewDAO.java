@@ -28,20 +28,19 @@ public class ReviewDAO {
         return reviewObj;
     }
 
-    // Insert a new review
-    public void insert(Review reviewObj) throws Exception {
+    public void insert(Review review) throws Exception {
+        String query = "INSERT INTO reviews (comment, rating) VALUES (?, ?)";
         Mysqlcon con = Mysqlcon.getInstance();
         con.connect();
-
-        String query = "INSERT INTO reviews (comment, rating) VALUES (?, ?)";
+    
         PreparedStatement statement = con.getConnection().prepareStatement(query);
-
-        statement.setString(1, reviewObj.getComment());
-        statement.setInt(2, reviewObj.getRating());
-
+        statement.setString(1, review.getComment());
+        statement.setInt(2, review.getRating());
         statement.executeUpdate();
+    
         con.close();
     }
+    
 
 
 }

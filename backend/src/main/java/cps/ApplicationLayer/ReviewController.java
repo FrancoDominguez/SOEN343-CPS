@@ -15,19 +15,15 @@ public class ReviewController {
     ClientService clientService = new ClientService();
 
   @CrossOrigin(origins = "http://localhost:5173")
-  @PostMapping("/review")
-  public ResponseEntity<String> submitReview(@RequestBody ReviewRequestBody reviewRequest) {
-    System.out.println("Processing review submission...\n");
-    try {
-      // Call the service layer to handle review creation
-      clientService.createReview(reviewRequest);
-
-      // Return a success message
-      System.out.println("Review submission completed\n");
-      return new ResponseEntity<>("Review submitted successfully", HttpStatus.CREATED);
-    } catch (Exception e) {
-      e.printStackTrace();
-      return new ResponseEntity<>("Failed to submit review", HttpStatus.BAD_REQUEST);
-    }
+  @PostMapping("/reviews")
+  public ResponseEntity<String> createReview(@RequestBody ReviewRequestBody reviewRequest) {
+      try {
+          ClientService.createReview(reviewRequest);
+          return new ResponseEntity<>("Review submitted successfully!", HttpStatus.CREATED);
+      } catch (Exception e) {
+          e.printStackTrace();
+          return new ResponseEntity<>("Failed to submit review", HttpStatus.BAD_REQUEST);
+      }
   }
+  
 }
