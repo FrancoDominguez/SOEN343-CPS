@@ -124,5 +124,46 @@ public class ShippingStatusDAO {
 
     return delivery;
   }
-}
 
+  public ArrayList<ShippingStatus> fretchAll() {
+    ArrayList<ShippingStatus> statuses = new ArrayList<ShippingStatus>();
+    try {
+      Mysqlcon con = Mysqlcon.getInstance();
+      con.connect();
+      Connection sqlcon = con.getConnection();
+
+      String qs1 = "SELECT * FROM shipping_status";
+      PreparedStatement pst1 = sqlcon.prepareStatement(qs1);
+      ResultSet rs = pst1.executeQuery();
+
+      while (rs.next()) {
+        String status = rs.getString("status");
+        int trackingId = rs.getInt("tracking_id");
+        Timestamp etaTimestamp = rs.getTimestamp("eta");
+        LocalDate etaDate = (etaTimestamp != null) ? etaTimestamp.toLocalDateTime().toLocalDate() : null;
+        ShippingStatus shippingStat = new ShippingStatus(trackingId, status, etaDate);
+        statuses.add(shippingStat);
+      }
+    } catch (Exception e) {
+      System.out.println("Error fetching all " + e.getMessage());
+    }
+    return statuses;
+  }
+
+  public void setStatus(int trackingId, String newStatus) {
+    try {
+      Mysqlcon con = Mysqlcon.getInstance();
+      con.connect();
+      Connection sqlcon = con.getConnection();
+
+      String qs1 = "UPDATE shipping_status SET status = ? WHERE tracking_id = ?";
+      PreparedStatement pst1 = sqlcon.prepareStatement(qs1);
+      pst1.setString(1, newStatus);
+      pst1.setInt(2, trackingId);
+      pst1.executeUpdate();
+      System.out.println("Status has been updated");
+    } catch (Exception e) {
+      System.out.println("Error updating status: " + e.getMessage());
+    }
+  }
+}

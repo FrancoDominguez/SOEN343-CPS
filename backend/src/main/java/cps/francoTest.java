@@ -8,6 +8,7 @@ import cps.DAO.ContractDAO;
 
 import cps.DAO.StationDAO;
 import cps.DomainLayer.ClientService;
+import cps.DomainLayer.Services.MovementService;
 import cps.DomainLayer.models.ClientModel;
 import cps.DomainLayer.models.Contract;
 import cps.DomainLayer.models.Delivery;
@@ -110,9 +111,8 @@ public class francoTest {
 
       System.out.println("done ---------------------");
 
-      for (int i = 0; i < deliveries.size(); i++) {
-        System.out.println("\n" + deliveries.get(i));
-      }
+      // MovementService movement = new MovementService();
+      // movement.updateShippingStatus();
 
     } catch (Exception e) {
       System.out.println(e.getMessage());

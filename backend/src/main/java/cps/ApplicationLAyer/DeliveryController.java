@@ -15,6 +15,7 @@ import cps.DTO.RequestBodies.CreateDelivReqBody;
 import cps.DTO.ResponseBodies.BasicResponse;
 import cps.DTO.ResponseBodies.TrackingResponse;
 import cps.DomainLayer.ClientService;
+import cps.DomainLayer.Services.MovementService;
 import cps.DomainLayer.models.Contract;
 import cps.DomainLayer.models.Delivery;
 import cps.DomainLayer.models.ShippingStatus;
@@ -67,5 +68,12 @@ public class DeliveryController {
             System.err.println(e);
         }
         return null;
+    }
+
+    @GetMapping("/move-shipments")
+    public void moveShipments() {
+        System.out.println("Movement request received");
+        MovementService movements = new MovementService();
+        movements.updateShippingStatus();
     }
 }
