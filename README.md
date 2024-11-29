@@ -10,7 +10,7 @@
 
 - [Sprint 4 Docs](https://docs.google.com/document/d/1RoCCGSqYTVoNRvgNDRftAo6vvPY6rdROKlTo5lG-PD4/edit?usp=sharing)
 
-- [Presentation Slides](https://docs.google.com/presentation/d/1b4Lhw6yehudaWA30O0aX0U9uFg-J7bRJamZubxW7Jk8/edit#slide=id.p)
+- [Presentation Slides](https://liveconcordia-my.sharepoint.com/:p:/g/personal/s_hambit_live_concordia_ca/EXABjHhAhf1JtI_u65obF6QBzgp-FVXQLBDK5j6Pfo0KLg?e=blsqS3)
 
 ### Diagrams
 
