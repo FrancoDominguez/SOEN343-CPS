@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import com.mysql.cj.x.protobuf.MysqlxPrepare.Prepare;
@@ -84,7 +86,7 @@ public class DeliveryDAO {
     return;
   }
 
-  public ArrayList<Delivery> fetchAllByClientId() {
+  public ArrayList<Delivery> fetchAllByClientId(int clientId) {
     ArrayList<Delivery> deliveries = new ArrayList<>();
     try {
       Mysqlcon con = Mysqlcon.getInstance();
@@ -104,19 +106,65 @@ public class DeliveryDAO {
           "    l2.city AS pickup_city," +
           "    l2.country AS pickup_country," +
           "    p.*," +
-          "    s.*" +
+          "    s.* " +
           "FROM " +
-          "    deliveries d" +
-          "LEFT JOIN locations l1 ON d.destination_id = l1.location_id" +
-          "LEFT JOIN locations l2 ON d.pickup_location_id = l2.location_id" +
-          "LEFT JOIN parcels p ON d.parcel_id = p.parcel_id" +
-          "LEFT JOIN shipping_status s ON d.tracking_id = s.tracking_id;";
+          "    deliveries d " +
+          "LEFT JOIN locations l1 ON d.destination_id = l1.location_id " +
+          "LEFT JOIN locations l2 ON d.pickup_location_id = l2.location_id " +
+          "LEFT JOIN parcels p ON d.parcel_id = p.parcel_id " +
+          "LEFT JOIN shipping_status s ON d.tracking_id = s.tracking_id " +
+          "WHERE d.client_id = ?;";
       PreparedStatement pst = sqlcon.prepareStatement(qs);
+      pst.setInt(1, clientId);
       ResultSet rs = pst.executeQuery();
       while (rs.next()) {
+        int deliveryId = rs.getInt("id"); // Clarified variable name
+        int trackingId = rs.getInt("tracking_id");
+        String status = rs.getString("status");
+        Timestamp etaTimestamp = rs.getTimestamp("eta");
+        LocalDate etaDate = (etaTimestamp != null) ? etaTimestamp.toLocalDateTime().toLocalDate() : null;
+        int parcelId = rs.getInt("parcel_id");
+        double parcelHeight = rs.getDouble("height");
+        double parcelLength = rs.getDouble("length");
+        double parcelWidth = rs.getDouble("width");
+        double parcelWeight = rs.getDouble("weight");
+        Boolean isFragile = rs.getBoolean("is_fragile");
+        int destinationId = rs.getInt("destination_location_id"); // Fixed column name
+        String destinationStreetAddress = rs.getString("destination_street_address"); // Renamed
+        String destinationPostalCode = rs.getString("destination_postal_code");
+        String destinationCity = rs.getString("destination_city");
+        String destinationCountry = rs.getString("destination_country");
+        Boolean signatureRequired = rs.getBoolean("signature_required"); // Correct column
+        Boolean hasPriority = rs.getBoolean("has_priority"); // Correct column
+        Boolean isFlexible = rs.getBoolean("is_flexible"); // Correct column
+        LocalDateTime pickupTime;
+        Timestamp pickupTimestamp = rs.getTimestamp("pickup_time");
+        pickupTime = (pickupTimestamp != null) ? pickupTimestamp.toLocalDateTime() : null;
+        Boolean pickupSignatureRequired = rs.getBoolean("signature_required"); // Renamed
+        int pickupLocationId = rs.getInt("pickup_location_id"); // Renamed
+        String pickupStreetAddress = rs.getString("pickup_street_address"); // Renamed
+        String pickupPostalCode = rs.getString("pickup_postal_code");
+        String pickupCity = rs.getString("pickup_city");
+        String pickupCountry = rs.getString("pickup_country");
 
+        Location destination = new Location(destinationId, destinationStreetAddress, destinationPostalCode,
+            destinationCity,
+            destinationCountry);
+        Parcel parcel = new Parcel(parcelId, parcelHeight, parcelLength, parcelWidth, parcelWeight, isFragile);
+        System.out.println("extracted eta date: " + etaDate);
+
+        Delivery delivery = null;
+        if (pickupStreetAddress != null) {
+          Location pickup = new Location(pickupLocationId, pickupStreetAddress, pickupPostalCode, pickupCity,
+              pickupCountry);
+          delivery = new Delivery(deliveryId, clientId, parcel, destination, pickupSignatureRequired, hasPriority,
+              isFlexible, pickupTime, pickup);
+        } else {
+          delivery = new Delivery(deliveryId, clientId, parcel, destination, signatureRequired, hasPriority,
+              trackingId);
+        }
+        deliveries.add(delivery);
       }
-
     } catch (Exception e) {
       System.out.println("Error fetching all deliveries: " + e.getMessage());
     }

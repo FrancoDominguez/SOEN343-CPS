@@ -52,7 +52,7 @@ public class Delivery {
 
     // Constructor for StationDropoff contracts
     public Delivery(int id, int clientId, Parcel parcel, Location destination, Boolean signatureRequired,
-            Boolean hasPriority) {
+            Boolean hasPriority, int trackingId) {
         this.id = id; // Default ID for new deliveries
         this.clientId = clientId;
         this.parcel = parcel;
@@ -63,6 +63,7 @@ public class Delivery {
         this.isFlexible = false; // Not flexible by default for StationDropoff
         this.pickupTime = null; // No pickup time for StationDropoff
         this.pickupLocation = null; // No pickup location for StationDropoff
+        this.trackingId = trackingId;
     }
 
     // Getters and Setters
