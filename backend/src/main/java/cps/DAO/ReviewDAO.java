@@ -4,11 +4,13 @@ import cps.DomainLayer.models.Review;
 import cps.utils.Mysqlcon;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReviewDAO {
 
-    // Fetch a review by its ID
-    public Review fetchById(int reviewId) throws Exception {
+    
+    public ArrayList<Review> fetchAll() throws Exception {
         String query = "SELECT * FROM reviews";
 
         Mysqlcon con = Mysqlcon.getInstance();
@@ -17,15 +19,16 @@ public class ReviewDAO {
         PreparedStatement statement = con.getConnection().prepareStatement(query);
         ResultSet rs = statement.executeQuery();
 
-        Review reviewObj = null;
-        if (rs.next()) {
+        ArrayList<Review> reviews = new ArrayList<>();
+        while (rs.next()) {
             String comment = rs.getString("comment");
             int rating = rs.getInt("rating");
-            reviewObj = new Review(comment, rating);
+            Review reviewObj = new Review(comment, rating);
+            reviews.add(reviewObj);
         }
 
         con.close();
-        return reviewObj;
+        return reviews;
     }
 
     public void insert(Review review) throws Exception {
