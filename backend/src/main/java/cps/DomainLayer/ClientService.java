@@ -3,13 +3,16 @@ package cps.DomainLayer;
 import java.util.ArrayList;
 
 import cps.DTO.RequestBodies.ContractRequestBody;
+import cps.DTO.RequestBodies.ReviewRequestBody;
 import cps.DAO.ContractDAO;
 import cps.DAO.DeliveryDAO;
 import cps.DAO.ShippingStatusDAO;
+import cps.DAO.ReviewDAO;
 import cps.DAO.StationDAO;
 import cps.DomainLayer.models.Contract;
 import cps.DomainLayer.models.Delivery;
 import cps.DomainLayer.models.HomePickup;
+import cps.DomainLayer.models.Review;
 import cps.DomainLayer.models.ShippingStatus;
 import cps.DomainLayer.models.Station;
 import cps.DomainLayer.models.StationDropoff;
@@ -71,6 +74,19 @@ public class ClientService implements OrderTracker {
     int contractId = newDelivery.save();
     return contractId;
   }
+
+  public static void createReview(ReviewRequestBody reviewRequest) throws Exception {
+
+    ReviewDAO reviewDAO = new ReviewDAO();
+    Review review = new Review(
+        reviewRequest.getComment(),
+        reviewRequest.getRating()
+    );
+
+    reviewDAO.insert(review); // Save the review to the database
+}
+
+
 
   public ArrayList<Delivery> viewAllActiveDeliveries(int clientId) {
     ArrayList<Delivery> deliveries = deliveryDAO.fetchAllByClientId(clientId);
