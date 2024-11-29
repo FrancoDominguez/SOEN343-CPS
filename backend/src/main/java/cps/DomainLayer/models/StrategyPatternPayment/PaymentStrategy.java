@@ -1,7 +1,6 @@
 // PaymentStrategy.java
-package cps.models.StrategyPatternPayment;
+package cps.DomainLayer.models.StrategyPatternPayment;
 
 public interface PaymentStrategy {
-    void processPayment(double amount);
+    String pay(double amount); // Method for executing the payment
 }
-

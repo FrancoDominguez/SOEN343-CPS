@@ -1,28 +1,20 @@
-// PaymentService.java
-package cps.models.StrategyPatternPayment;
-
-import cps.models.Quotation;
+// // PaymentService.java
+package cps.DomainLayer.models.StrategyPatternPayment;
 
 public class PaymentService {
-    private PaymentStrategy paymentStrategy; // Strategy interface
-    private Quotation quotation;            // Quotation object for amount
 
-    public PaymentService(Quotation quotation) {
-        this.quotation = quotation;
-    }
+    private PaymentStrategy paymentStrategy; // Current payment strategy
 
+    // Setter for injecting the strategy dynamically
     public void setPaymentStrategy(PaymentStrategy paymentStrategy) {
         this.paymentStrategy = paymentStrategy;
     }
 
-    public void processPayment() {
-        if (quotation == null || paymentStrategy == null) {
-            System.out.println("Quotation or Payment Strategy is not set.");
-            return;
+    // Executes the payment using the selected strategy
+    public String executePayment(double amount) {
+        if (paymentStrategy == null) {
+            throw new IllegalStateException("Payment strategy is not set!");
         }
-
-        double amount = quotation.getPrice().doubleValue(); // Fetch price from Quotation
-        System.out.println("Processing payment for amount: " + amount);
-        paymentStrategy.processPayment(amount);
+        return paymentStrategy.pay(amount);
     }
 }
